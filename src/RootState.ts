@@ -22,33 +22,37 @@ export class RootState {
 
     constructor() {
         makeAutoObservable(this);
-        ws.onopen = () => {
-            console.log('connected');
-        }
+        // ws.onopen = () => {
+        //     console.log('connected');
+        // }
         
-        ws.onmessage = evt => {
-            const purchase = JSON.parse(evt.data);
-            this.setPurchasesAndCalculateTotal([purchase.purchase, ...this.purchases])
-            addNotification({
-                title: 'Saldoa lisätty',
-                subtitle: purchase.purchase.amount.toFixed(2) + '€',
-                message: purchase.purchase.description,
-                // theme: 'darkblue',
-                native: false,
-                // duration: 10000
+        // ws.onmessage = evt => {
+        //     const purchase = JSON.parse(evt.data);
+        //     this.setPurchasesAndCalculateTotal([purchase.purchase, ...this.purchases])
+        //     addNotification({
+        //         title: 'Saldoa lisätty',
+        //         subtitle: purchase.purchase.amount.toFixed(2) + '€',
+        //         message: purchase.purchase.description,
+        //         // theme: 'darkblue',
+        //         native: false,
+        //         // duration: 10000
             
-            });
-        }
+        //     });
+        // }
       
-        ws.onerror = err => {
-            console.error(
-                "Socket encountered error: ",
-                //@ts-ignore
-                err.message,
-                "Closing socket"
-            );
-            ws.close();
-        };
+        // ws.onerror = err => {
+        //     console.error(
+        //         "Socket encountered error: ",
+        //         //@ts-ignore
+        //         err.message,
+        //         "Closing socket"
+        //     );
+        //     ws.close();
+        // };
+
+        setInterval(() => {
+            this.fetchPurchases();
+        }, 10000);
 
         document.addEventListener("visibilitychange", () => {
             !document.hidden && this.fetchPurchases();

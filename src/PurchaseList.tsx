@@ -47,7 +47,7 @@ const PurchaseItem = observer(({purchase, style, deletePurchase, deleteMode}: { 
                 </Box>
                 <Box>
                     <Text color={purchase.amount > 0 ? '#E54131' : '#90B571'} textAlign='right'>{purchase.amount > 0 && '+'}{purchase.amount} €</Text>
-                    <Text textAlign='right' className='purchaseDate'>{purchase.cumTotal} €</Text>
+                    <Text textAlign='right' className='purchaseDate'>{purchase.cumTotal.toFixed(2)} €</Text>
                 </Box>
             </Flex>
         </Box>
