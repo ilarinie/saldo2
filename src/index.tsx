@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ChakraProvider } from "@chakra-ui/react"
+import { RootState } from './RootState';
+import theme from './theme';
+
+const rootState = new RootState();
+
+export const RootContext = createContext<RootState>(rootState);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RootContext.Provider value={rootState}>
+    <ChakraProvider theme={theme}>
+      <App />
+    </ChakraProvider>
+    </RootContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
