@@ -4,7 +4,7 @@ process.env.NODE_ENV = 'test';
 
 describe('Server spec', () => {
     it('should respond to health check', async () => {
-        const res = await request(app).get('/');
+        const res = await request(app).get('/api');
         expect(res.status).toEqual(200);
         expect(res.text).toEqual('Server running A-OK');
     })

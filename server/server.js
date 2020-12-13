@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 
 require('./purchaseController')(app, wss);
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.send('Server running A-OK')
 })
 
