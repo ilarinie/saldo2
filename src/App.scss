@@ -45,30 +45,8 @@ label {
   }
 }
 
-.purchase-button {
-  border: 0.5px solid grey;
-  margin-bottom: 1em;
-}
-
-.preset-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
 .fab {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  background-color: #38B2AC;
-  color: #DBDADC;
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9;
+  
 }
 
 .list-container {

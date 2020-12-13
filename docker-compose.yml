@@ -1,0 +1,42 @@
+version: '3.5'
+
+services:
+  saldo-app:
+    build: .
+    ports:
+      - "3001:3001"
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/home/app/appDir
+    depends_on:
+      - mongo
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://saldo-app:password123@mongo/saldo-app
+      - SECRET=correcthorsebatterystaple
+    networks:
+      - backend
+    command: yarn start
+  mongo:
+    image: 'mongo'
+    restart: unless-stopped
+    container_name: 'saldo-app-mongo'
+    environment:
+      - MONGO_INITDB_DATABASE=saldo-app
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root_password
+    volumes:
+      - ./init-dev-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+    networks:
+      - backend
+    logging:
+      driver: 'none'
+    command: --quiet
+ 
+networks:
+  backend:

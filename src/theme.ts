@@ -4,14 +4,18 @@ const theme = extendTheme({
     styles: {
         global: {
             body: {
-                bg: '#1F1D2B',
-                color: '#DBDADC'
+                bg: 'background',
+                color: 'textColor'
             } 
         }
     },
     colors: {
       transparent: "transparent",
       lighterDark: '#212230',
+      background: '#1F1D2B',
+      textColor: '#DBDADC',
+      positiveColor: '#90B571',
+      negativeColor: '#E54131',
       black: "#000",
       white: "#fff",
     },
@@ -20,6 +24,11 @@ const theme = extendTheme({
             baseStyle: {
                 paddingLeft: '1em',
                 paddingRight: '1em'
+            }
+        },
+        IconButton: {
+            baseStyle: {
+                background: '#1F1D2B',
             }
         }
     },
