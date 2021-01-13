@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { Flex, Box, Switch, Text, Center, Container } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { PurchaseList } from "./PurchaseList";
 import'./dashboard.scss'
 import { RootContext } from "../../state/RootContext";
@@ -9,10 +9,6 @@ import { RootContext } from "../../state/RootContext";
 const Dashboard: React.FC = observer(() => {
 
     const rootState = useContext(RootContext);
-
-    useEffect(() => { 
-        // rootState.fetchPurchases()
-    }, [rootState]);
 
     const [ deleteMode, setDeleteMode ] = useState(false);
     const [ fullScreenList, setFullscreenList ] = useState(false);

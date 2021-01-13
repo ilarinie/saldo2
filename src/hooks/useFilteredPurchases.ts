@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Purchase } from "../models/Purchase";
-import { toJS } from 'mobx';
 
 export const useFilteredPurchases = (purchases: Purchase[]) => {
 
@@ -8,7 +7,6 @@ export const useFilteredPurchases = (purchases: Purchase[]) => {
 
     useEffect(() => {
        const sortedPurchases = purchases.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-       console.log(toJS(sortedPurchases))
        const uniquePurchaseList = [] as Purchase[];
        uniquePurchaseList.length = 0;
        let i = 0;
@@ -16,8 +14,6 @@ export const useFilteredPurchases = (purchases: Purchase[]) => {
 
        while (uniquePurchaseList.length < Math.min(5, sortedPurchases.length) && i < sortedPurchases.length) {
            const j = i;
-           console.log(uniquePurchaseList)
-           console.log(j)
             if (!uniquePurchaseList.find(p => { console.log(p); return p.amount === sortedPurchases[j].amount && p.description === sortedPurchases[j].description })) {
                 uniquePurchaseList.push(sortedPurchases[i]);
             }

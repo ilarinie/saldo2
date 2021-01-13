@@ -17,7 +17,8 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = observer(({ purchase, d
     return (
         <Box className='purchaseItemContainer'>
             {deleteMode &&
-                <IconButton onClick={() => deletePurchase(purchase._id)} variant='outlined' aria-label='delete' icon={<DeleteIcon />} className='deleteButton' />}
+                <IconButton onClick={() => deletePurchase(purchase._id)} variant='outlined' aria-label='delete' icon={<DeleteIcon />} className='deleteButton' />
+            }
             <Box marginRight='1em'>
                 <ArrowIcon radius='36px' up={purchase.amount > 0} color={purchase.amount > 0 ? theme.colors.negativeColor : theme.colors.positiveColor} />
             </Box>
