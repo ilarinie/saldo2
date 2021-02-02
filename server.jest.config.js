@@ -1,4 +1,4 @@
 module.exports = {
-    testEnvironment: 'node',
-    moduleDirectories: ['node_modules', 'server']
-}
+  testEnvironment: 'node',
+  moduleDirectories: ['node_modules', 'server'],
+};

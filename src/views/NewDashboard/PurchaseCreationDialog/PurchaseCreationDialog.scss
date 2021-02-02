@@ -1,0 +1,62 @@
+@mixin purchase-creation-dialog {
+  .confirm-dialog-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 18%;
+    text-align: left;
+
+    .header {
+      padding-left: 20%;
+      font-size: 32px;
+      margin-bottom: 1em;
+    }
+    .label {
+      padding-left: 20%;
+      font-variant: small-caps;
+    }
+    .value {
+      padding-left: 20%;
+      font-size: 32px;
+    }
+
+    .value-container.payer-container {
+      img:first-child {
+        margin-left: 20%;
+      }
+      img {
+        margin-top: 0.5em;
+        margin-left: 1em;
+      }
+    }
+    .buttonContainer {
+      display: flex;
+      padding: 2em 2em;
+      button {
+        flex-grow: 1;
+        height: 50px;
+      }
+    }
+
+    .payer-selector {
+      filter: grayscale(90%) opacity(30%);
+      cursor: pointer;
+      &.selected {
+        filter: grayscale(0%);
+        outline: 1px solid green;
+      }
+    }
+
+    .swipe-container {
+      background-color: #eee;
+      margin: 2em 2em 0em 2em;
+    }
+
+    .swipe-overlay {
+      background-color: #90b571;
+    }
+
+    .swipe-caret {
+      background-color: #90b571 !important;
+    }
+  }
+}

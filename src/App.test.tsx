@@ -14,11 +14,15 @@ test('Renders login screen when logged out', () => {
   render(<App />);
   const linkElement = screen.getAllByText(/SaldoApp Login/i);
   expect(linkElement[0]).toBeInTheDocument();
-})
+});
 
 test('Renders dashboard when logged in', () => {
   rootState.loginState = 'LOGGED_IN';
-  render(<Router><Route component={App} /></Router>);
+  render(
+    <Router>
+      <Route component={App} />
+    </Router>
+  );
   const linkElement = screen.getAllByText(/Saldolista/i);
   expect(linkElement[0]).toBeInTheDocument();
-})
+});

@@ -1,0 +1,59 @@
+.newdashboard {
+  display: grid;
+  height: 100%;
+  grid-template-rows: 175px 100px 3fr;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .slider {
+    overflow: hidden;
+    // border-top-left-radius: 25px;
+    // border-top-right-radius: 25px;
+    padding-top: 2em;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    position: fixed;
+    top: 260px;
+    transition: all 0.25s ease-in;
+    z-index: 9999;
+    height: 100%;
+    &.fullsize {
+      z-index: 9999;
+      max-height: 100%;
+      height: 100vh;
+      top: 0;
+      border-top-left-radius: 0px;
+      border-top-right-radius: 0px;
+    }
+    .sliderChevron {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      font-size: 30px;
+    }
+  }
+
+  .modal {
+    position: fixed;
+    z-index: 99999;
+    background: #1f1d2b;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  @import 'SearchField/SearchField';
+  @import 'PurchaseList/PurchaseList';
+  @import 'SaldoHistoryDialog/SaldoHistoryDialog';
+  @import 'PurchaseCreationDialog/PurchaseCreationDialog';
+
+  @include search-field;
+  @include purchase-list;
+  @include saldo-history-dialog;
+  @include purchase-creation-dialog;
+}
