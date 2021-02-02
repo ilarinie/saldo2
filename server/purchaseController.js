@@ -15,14 +15,16 @@ module.exports = (app, wss) => {
         const purchase = await PurchaseModel.create({ ...req.body });
         res.send(purchase);
         try {
+          logger.info(`${wss.clients.size} WS clients found`);
           wss.clients.forEach((ws) => {
             if (!ws.isAlive) return ws.terminate();
             ws.isAlive = false;
             ws.ping(null, false, true);
+            logger.info('Sending purchase to WS client');
             ws.send(JSON.stringify({ purchase }));
           });
         } catch (err) {
-          logger.err(`Error reporting created purchase via websocket ${err}`);
+          logger.error(`Error reporting created purchase via websocket ${err}`);
         }
       } catch (err) {
         logger.error(`Error creating a purchase: ${err}`);
