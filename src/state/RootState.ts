@@ -66,20 +66,20 @@ export class RootState {
     };
 
     newWebsocket.onmessage = (event) => {
-      // const purchase = JSON.parse(event.data);
-      // const newestPurchase = this.purchases[this.purchases.length - 1];
-      // if (!newestPurchase || newestPurchase._id != purchase.purchase._id) {
-      //   this.setPurchasesAndCalculateTotal([
-      //     purchase.purchase,
-      //     ...this.purchases,
-      //   ]);
-      // }
-      // addNotification({
-      //   title: 'Saldoa lisätty',
-      //   subtitle: purchase.purchase.amount.toFixed(2) + '€',
-      //   message: purchase.purchase.description,
-      //   native: false,
-      // });
+      const purchase = JSON.parse(event.data);
+      const newestPurchase = this.purchases[this.purchases.length - 1];
+      if (!newestPurchase || newestPurchase._id != purchase.purchase._id) {
+        this.setPurchasesAndCalculateTotal([
+          purchase.purchase,
+          ...this.purchases,
+        ]);
+      }
+      addNotification({
+        title: 'Saldoa lisätty',
+        subtitle: purchase.purchase.amount.toFixed(2) + '€',
+        message: purchase.purchase.description,
+        native: false,
+      });
     };
 
     newWebsocket.onerror = function (err) {
@@ -173,7 +173,7 @@ export class RootState {
           amount,
           description,
         });
-        this.setPurchasesAndCalculateTotal([res.data, ...this.purchases]);
+        // this.setPurchasesAndCalculateTotal([res.data, ...this.purchases]);
       } catch (err) {
         this.purchaseCreationError = err.message;
       }
