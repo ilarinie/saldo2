@@ -1,4 +1,4 @@
-import { InfoIcon } from '@chakra-ui/icons';
+import { InfoIcon, RepeatIcon } from '@chakra-ui/icons';
 import { Center, Flex, IconButton, Text } from '@chakra-ui/react';
 import { addZeroes } from '../../addZeroes';
 
@@ -6,10 +6,12 @@ export const SaldoPanel = ({
   total,
   changeToday,
   openSaldoHistory,
+  refreshPurchases,
 }: {
   total: number;
   changeToday: number;
   openSaldoHistory: () => void;
+  refreshPurchases: () => void;
 }) => {
   return (
     <Center>
@@ -23,6 +25,17 @@ export const SaldoPanel = ({
         icon={<InfoIcon />}
         aria-label='info'
         onClick={openSaldoHistory}
+      />
+      <IconButton
+        style={{
+          position: 'fixed',
+          top: '20px',
+          left: '20px',
+        }}
+        variant='outlined'
+        icon={<RepeatIcon />}
+        aria-label='refresh'
+        onClick={refreshPurchases}
       />
       <Flex alignItems='flex-end'>
         <Text

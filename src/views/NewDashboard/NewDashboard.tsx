@@ -62,6 +62,7 @@ export const NewDashboard = observer(() => {
         openSaldoHistory={openSaldoHistoryDialog}
         total={rootState.totalSaldo}
         changeToday={rootState.changeToday}
+        refreshPurchases={() => rootState.fetchPurchases()}
       />
       <SearchField
         requestConfirmPurchase={requestConfirmPurchase}
