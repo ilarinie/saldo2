@@ -11,7 +11,10 @@ import { useDebouncedValue } from '../../../hooks/useDebouncedValue';
 
 interface SearchFieldProps {
   onSearchTextChange: (searchText: string) => void;
-  requestConfirmPurchase: (amount: number | null, description: string) => void;
+  requestConfirmPurchase: (
+    amount: number | undefined,
+    description: string
+  ) => void;
 }
 
 export const SearchField = ({
@@ -49,7 +52,7 @@ export const SearchField = ({
           isFullWidth
           onClick={() => {
             setFilterText('');
-            requestConfirmPurchase(null, filterText);
+            requestConfirmPurchase(undefined, filterText);
           }}
         >
           Lisää "{filterText}"

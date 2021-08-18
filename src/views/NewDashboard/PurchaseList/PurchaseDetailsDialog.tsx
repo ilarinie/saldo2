@@ -6,7 +6,10 @@ import { PurchaseItem } from './PurchaseItem';
 interface PurchaseDetailsDialogProps {
   purchase: PurchaseWithCumTotal | null;
   deletePurchase: (purchaseId: string) => void;
-  requestConfirmPurchase: (amount: number | null, description: string) => void;
+  requestConfirmPurchase: (
+    amount: number | undefined,
+    description: string
+  ) => void;
   onClose: () => void;
 }
 

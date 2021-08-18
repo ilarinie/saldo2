@@ -7,8 +7,8 @@ import { AmountInput } from './AmountInput';
 
 export interface PurchaseCreationDialogProps {
   description: string;
-  amount: number | null;
-  confirmPurchase: (amount: number, description: string) => void;
+  amount: number | undefined;
+  confirmPurchase: (amount: number | undefined, description: string) => void;
   onClose: () => void;
 }
 
@@ -25,18 +25,20 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
   };
 
   const onPayerSelect = (payer: 'olli' | 'ilari') => {
-    if (payer === 'ilari') {
-      if (actualAmount < 0) {
-        setActualAmount(actualAmount * -1);
-      }
-    } else {
-      if (actualAmount > 0) {
-        setActualAmount(actualAmount * -1);
+    if (actualAmount) {
+      if (payer === 'ilari') {
+        if (actualAmount < 0) {
+          setActualAmount(actualAmount * -1);
+        }
+      } else {
+        if (actualAmount > 0) {
+          setActualAmount(actualAmount * -1);
+        }
       }
     }
   };
 
-  const [actualAmount, setActualAmount] = useState(amount || 0);
+  const [actualAmount, setActualAmount] = useState(amount);
 
   return (
     <Box className='confirm-dialog-container'>
@@ -49,7 +51,7 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
       </Box>
       <Box className='value-container'>
         <Text className='label'>vaikutus saldoon</Text>
-        {amount ? (
+        {amount && actualAmount ? (
           <Text
             className='value'
             color={actualAmount > 0 ? 'negativeColor' : 'positiveColor'}
@@ -66,13 +68,17 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
         <Flex>
           <Image
             src={ilariNaama}
-            className={`payer-selector ${actualAmount > 0 && 'selected'}`}
+            className={`payer-selector ${
+              actualAmount && actualAmount > 0 && 'selected'
+            }`}
             onClick={() => onPayerSelect('ilari')}
           />
           <Image
             src={olliNaama}
             onClick={() => onPayerSelect('olli')}
-            className={`payer-selector ${actualAmount < 0 && 'selected'}`}
+            className={`payer-selector ${
+              actualAmount && actualAmount < 0 && 'selected'
+            }`}
           />
         </Flex>
       </Box>

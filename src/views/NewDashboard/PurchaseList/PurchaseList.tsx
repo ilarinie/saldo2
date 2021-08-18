@@ -11,7 +11,10 @@ export interface PurchaseListProps {
   dateToPurchaseMap: DateToPurchaseMap;
   deletePurchase: (purchaseId: string) => void;
   deleteMode: boolean;
-  requestConfirmPurchase: (amount: number | null, description: string) => void;
+  requestConfirmPurchase: (
+    amount: number | undefined,
+    description: string
+  ) => void;
   filterText?: string;
 }
 

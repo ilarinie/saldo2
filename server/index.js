@@ -2,7 +2,7 @@ const { server } = require('./server');
 const logger = require('./logger');
 const connectToDatabase = require('./database');
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3033;
 
 connectToDatabase(process.env.MONGO_URI)
   .then(() => {

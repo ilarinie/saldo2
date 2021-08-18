@@ -30,9 +30,10 @@ export const NewDashboard = observer(() => {
   };
 
   const requestConfirmPurchase = (
-    amount: number | null,
+    amount: number | undefined,
     description: string
   ) => {
+    console.log('funktiossa', amount);
     if (description) {
       const contents = (
         <PurchaseCreationDialog
@@ -46,7 +47,13 @@ export const NewDashboard = observer(() => {
     }
   };
 
-  const confirmPurchase = async (amount: number, description: string) => {
+  const confirmPurchase = async (
+    amount: number | undefined,
+    description: string
+  ) => {
+    if (!amount) {
+      return;
+    }
     setModalContents(<LoadingScreen message='Luodaan..' />);
     try {
       await rootState.createPurchase(amount, description);

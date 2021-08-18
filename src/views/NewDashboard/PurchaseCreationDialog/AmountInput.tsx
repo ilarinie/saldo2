@@ -2,11 +2,12 @@ import { Input, InputGroup, InputRightAddon } from '@chakra-ui/react';
 import React from 'react';
 
 interface AmountInputProps {
-  amount: number;
+  amount: number | undefined;
   onAmountChange: (amount: number) => void;
 }
 
 export const AmountInput = ({ amount, onAmountChange }: AmountInputProps) => {
+  console.log(amount);
   return (
     <InputGroup size='md' marginY='0.5em'>
       <Input
@@ -16,12 +17,9 @@ export const AmountInput = ({ amount, onAmountChange }: AmountInputProps) => {
         width='50%'
         value={amount}
         type='number'
+        step='0.01'
         onChange={(event) => {
-          const num = parseFloat(event.target.value);
-          if (isNaN(num)) {
-            onAmountChange(0);
-          }
-          onAmountChange(num);
+          onAmountChange(event.target.value as any);
         }}
         placeholder='Aseta summa'
       />

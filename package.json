@@ -2,7 +2,7 @@
   "name": "saldo2",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "http://localhost:3033",
   "dependencies": {
     "@chakra-ui/icons": "^1.0.1",
     "@chakra-ui/react": "^1.0.3",
