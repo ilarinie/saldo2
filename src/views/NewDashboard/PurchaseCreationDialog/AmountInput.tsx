@@ -7,7 +7,6 @@ interface AmountInputProps {
 }
 
 export const AmountInput = ({ amount, onAmountChange }: AmountInputProps) => {
-  console.log(amount);
   return (
     <InputGroup size='md' marginY='0.5em'>
       <Input
@@ -15,7 +14,7 @@ export const AmountInput = ({ amount, onAmountChange }: AmountInputProps) => {
         background='#eee'
         color='black'
         width='50%'
-        value={amount}
+        value={amount || ''}
         type='number'
         step='0.01'
         onChange={(event) => {

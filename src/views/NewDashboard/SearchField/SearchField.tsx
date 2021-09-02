@@ -26,7 +26,7 @@ export const SearchField = ({
 
   useEffect(() => {
     onSearchTextChange(debouncedFilterText);
-  }, [debouncedFilterText]);
+  }, [debouncedFilterText, onSearchTextChange]);
 
   return (
     <Box className='search'>

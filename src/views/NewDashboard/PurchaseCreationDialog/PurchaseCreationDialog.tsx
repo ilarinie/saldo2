@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Image, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import Swipezor from 'react-swipezor';
 import ilariNaama from '../../../assets/ilarinaama.jpeg';
 import olliNaama from '../../../assets/ollinaama.jpeg';
 import { AmountInput } from './AmountInput';
@@ -18,6 +17,8 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
   confirmPurchase,
   onClose,
 }) => {
+  const [actualAmount, setActualAmount] = useState(amount);
+
   const delayPurchaseConfirmation = () => {
     setTimeout(() => {
       confirmPurchase(actualAmount, description);
@@ -37,8 +38,6 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
       }
     }
   };
-
-  const [actualAmount, setActualAmount] = useState(amount);
 
   return (
     <Box className='confirm-dialog-container'>
@@ -67,6 +66,7 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
         <Text className='label'>rahaa käytti</Text>
         <Flex>
           <Image
+            alt=''
             src={ilariNaama}
             className={`payer-selector ${
               actualAmount && actualAmount > 0 && 'selected'
@@ -74,6 +74,7 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
             onClick={() => onPayerSelect('ilari')}
           />
           <Image
+            alt=''
             src={olliNaama}
             onClick={() => onPayerSelect('olli')}
             className={`payer-selector ${
@@ -83,13 +84,14 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
         </Flex>
       </Box>
       <Box zIndex={actualAmount ? 1 : -2} className='swipe-container'>
-        <Swipezor
+        <Button onClick={delayPurchaseConfirmation}>Vahvista</Button>
+        {/* <Swipezor
           mainText='Vahvista'
           onSwipeDone={delayPurchaseConfirmation}
           overlayText='OK'
           overlayClassList='swipe-overlay'
           caretClassList='swipe-caret'
-        />
+        /> */}
       </Box>
       <Box className='buttonContainer'>
         <Button colorScheme='darkgray' variant='outline' onClick={onClose}>

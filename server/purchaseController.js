@@ -38,7 +38,6 @@ module.exports = (app, wss) => {
       await PurchaseModel.findByIdAndUpdate(req.params.id, { deleted: true });
       res.status(203).send();
     } catch (err) {
-      console.log(err);
       res.status(500).send(err);
     }
   });

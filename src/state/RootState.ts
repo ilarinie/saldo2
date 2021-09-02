@@ -4,7 +4,6 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { ReactNode } from 'react';
 import addNotification from 'react-push-notification';
 import { Purchase, PurchaseWithCumTotal } from '../models/Purchase';
-import { PurchaseCreationDialog } from '../views/NewDashboard/PurchaseCreationDialog/PurchaseCreationDialog';
 
 type FetchingState = 'PENDING' | 'ERROR' | 'FETCHED';
 type LoginState = 'PENDING' | 'UNAUTHORIZED' | 'LOGGED_IN';
@@ -47,7 +46,7 @@ export class RootState {
         this.loginState = 'LOGGED_IN';
         this.loginError = '';
       });
-    } catch (err) {
+    } catch (err: any) {
       runInAction(() => {
         this.loginState = 'UNAUTHORIZED';
         this.loginError = err.message;
@@ -68,6 +67,7 @@ export class RootState {
     newWebsocket.onmessage = (event) => {
       const purchase = JSON.parse(event.data);
       const newestPurchase = this.purchases[this.purchases.length - 1];
+      // eslint-disable-next-line eqeqeq
       if (!newestPurchase || newestPurchase._id != purchase.purchase._id) {
         this.setPurchasesAndCalculateTotal([
           purchase.purchase,
@@ -116,7 +116,7 @@ export class RootState {
       this.purchasesWithCumulativeTotal = [...purchases]
         .reverse()
         .map((p, index) => {
-          if (isSameDay(new Date(p.createdAt), new Date())) { 
+          if (isSameDay(new Date(p.createdAt), new Date())) {
             newChangeToday += p.amount;
           }
           cumTotal += p.amount;
@@ -128,7 +128,6 @@ export class RootState {
         .reverse();
       this.changeToday = newChangeToday;
 
-      
       const newDateToPurchaseMap: DateToPurchaseMap = {};
 
       this.purchasesWithCumulativeTotal.forEach((p) => {
@@ -169,12 +168,11 @@ export class RootState {
   createPurchase = async (amount: number, description: string) => {
     if (amount && description) {
       try {
-        const res = await axios.post<Purchase>('/api/purchases', {
+        await axios.post<Purchase>('/api/purchases', {
           amount,
           description,
         });
-        // this.setPurchasesAndCalculateTotal([res.data, ...this.purchases]);
-      } catch (err) {
+      } catch (err: any) {
         this.purchaseCreationError = err.message;
       }
     } else {
@@ -211,5 +209,4 @@ export class RootState {
       });
     }
   };
-
 }

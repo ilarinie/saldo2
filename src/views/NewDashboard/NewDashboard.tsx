@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
-import React, { ReactNode, useContext, useState } from 'react';
+import React, { ReactNode, useCallback, useContext, useState } from 'react';
 import { LoadingScreen } from '../../components';
 import { RootContext } from '../../state/RootContext';
 import './newdashboard.scss';
@@ -42,6 +42,7 @@ export const NewDashboard = observer(() => {
           confirmPurchase={confirmPurchase}
           onClose={() => setModalContents(null)}
         />
+        // <div>muu</div>
       );
       setModalContents(contents);
     }
@@ -63,6 +64,10 @@ export const NewDashboard = observer(() => {
     }
   };
 
+  const onSearchTextChange = useCallback((searchText) => {
+    setSearchText(searchText);
+  }, []);
+
   return (
     <Box className='newdashboard'>
       <SaldoPanel
@@ -73,7 +78,7 @@ export const NewDashboard = observer(() => {
       />
       <SearchField
         requestConfirmPurchase={requestConfirmPurchase}
-        onSearchTextChange={(searchText) => setSearchText(searchText)}
+        onSearchTextChange={onSearchTextChange}
       />
       <Slider>
         <PurchaseList

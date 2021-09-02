@@ -41,6 +41,7 @@ export const PurchaseItem: React.FC<PurchaseItemProps> = observer(
             minHeight='35px'
             maxWidth='35px'
             maxHeight='35px'
+            alt=''
           />
         </Box>
         <Flex justifyContent='space-between' flexGrow={1}>
