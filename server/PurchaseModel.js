@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// Schema for purchase
 const PurchaseSchema = new mongoose.Schema(
   {
     amount: { type: Number },
