@@ -1,6 +1,6 @@
-const { server } = require('./server');
-const logger = require('./logger');
-const connectToDatabase = require('./database');
+import connectToDatabase from './database';
+import logger from './logger';
+import { server } from './server';
 
 const port = process.env.PORT || 3033;
 

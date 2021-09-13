@@ -2,6 +2,7 @@ export interface Purchase {
   _id: string;
   amount: number;
   description: string;
+  budgetId: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -15,21 +15,15 @@ services:
       - mongo
     environment:
       - NODE_ENV=development
-      - MONGO_URI=mongodb://saldo-app:password123@mongo/saldo-app
+      - MONGO_URI=mongodb://mongo/saldo-app
       - SECRET=correcthorsebatterystaple
     networks:
       - backend
     command: npm run-script docker:start
   mongo:
     image: 'mongo'
-    restart: unless-stopped
-    container_name: 'saldo-app-mongo'
-    environment:
-      - MONGO_INITDB_DATABASE=saldo-app
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=root_password
+    restart: always
     volumes:
-      - ./init-dev-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - ./mongo-volume:/data/db
     ports:
       - '27017-27019:27017-27019'
@@ -37,7 +31,6 @@ services:
       - backend
     logging:
       driver: 'none'
-    command: --quiet
  
 networks:
   backend:

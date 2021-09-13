@@ -1,6 +1,7 @@
-const PurchaseModel = require('./PurchaseModel.js');
-const checkAuth = require('./checkAuth.js');
-const logger = require('./logger');
+const PurchaseModel = require('../models/PurchaseModel.js');
+const checkAuth = require('../checkAuth.js');
+const logger = require('../logger');
+const { getBudget } = require('../services/budget-service.js');
 
 module.exports = (app, wss) => {
   app.get('/api/purchases', checkAuth, async (req, res) => {
@@ -8,11 +9,16 @@ module.exports = (app, wss) => {
   });
 
   app.post('/api/purchases', checkAuth, async (req, res) => {
-    if (!req.body.amount || !req.body.description) {
+    if (!req.body.amount || !req.body.description || req.body.budgetId) {
       res.status(406).send({ message: 'Invalid request' });
     } else {
       try {
-        const purchase = await PurchaseModel.create({ ...req.body });
+        const budget = await getBudget(req.body.budgetId, req.user);
+
+        const purchase = await PurchaseModel.create({
+          ...req.body,
+          budgetId: budget._id,
+        });
         res.send(purchase);
         try {
           logger.info(`${wss.clients.size} WS clients found`);

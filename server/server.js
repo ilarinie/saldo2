@@ -8,8 +8,19 @@ const WebSocket = require('ws');
 const http = require('http');
 const logger = require('./logger');
 const checkAuth = require('./checkAuth');
+const cookieSession = require('cookie-session');
+const passport = require('./passport');
 
 const app = express();
+
+app.use(
+  cookieSession({
+    secret: 'asdasdasd',
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const server = http.createServer(app);
 
@@ -26,8 +37,9 @@ wss.on('connection', (ws, socket, request) => {
 });
 
 app.use(bodyParser.json());
-
-require('./purchaseController')(app, wss);
+require('./controllers/authController')(app);
+require('./controllers/purchaseController')(app, wss);
+require('./controllers/budgetController')(app);
 
 app.get('/api', (req, res) => {
   res.send('Server running A-OK');
@@ -38,10 +50,12 @@ app.post('/api/checklogin', checkAuth, async (req, res) => {
 });
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.resolve(__dirname, '../build')));
+  logger.info('Serving client');
+  app.use(express.static(path.resolve(__dirname, './public')));
 
   app.get('*', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '../build', 'index.html'));
+    logger.info('fooo');
+    res.sendFile(path.resolve(__dirname, './public', 'index.html'));
   });
 }
 

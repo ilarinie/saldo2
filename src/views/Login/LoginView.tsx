@@ -1,33 +1,19 @@
-import {
-  Button,
-  Container,
-  Heading,
-  Input,
-  Spacer,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Container, Heading, Spacer, Stack } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
-import { useContext, useState } from 'react';
-import { RootContext } from '../../state/RootContext';
+import googleLoginButton from '../../assets/google-signin.png';
 
 export const LoginView: React.FC = observer(() => {
-  const { loginError, logIn } = useContext(RootContext);
-  const [secret, setSecret] = useState('');
-
   return (
     <Container>
-      <Stack spacing={5}>
+      <Stack spacing={5} alignItems='center'>
         <Spacer />
-        <Heading>SaldoApp Login</Heading>
-        <Input
-          type='password'
-          onChange={(event) => setSecret(event.target.value)}
-        />
-        <Button colorScheme='teal' onClick={() => logIn(secret)}>
-          Login
-        </Button>
-        {loginError && <Text>{loginError}</Text>}
+        <Heading>SaldoApp</Heading>
+        <Heading as='h3' size='md'>
+          Saldoing your saldo
+        </Heading>
+        <a href='/api/auth/google'>
+          <img src={googleLoginButton} alt='google login button' />
+        </a>
       </Stack>
     </Container>
   );

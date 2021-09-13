@@ -3,6 +3,7 @@ import { isSameDay } from 'date-fns';
 import { makeAutoObservable, runInAction } from 'mobx';
 import { ReactNode } from 'react';
 import addNotification from 'react-push-notification';
+import { Budget } from 'src/models/Budget';
 import { Purchase, PurchaseWithCumTotal } from '../models/Purchase';
 
 type FetchingState = 'PENDING' | 'ERROR' | 'FETCHED';
@@ -12,6 +13,8 @@ export type DateToPurchaseMap = { [date: string]: PurchaseWithCumTotal[] };
 
 export class RootState {
   purchases: Purchase[] = [];
+  budgets: Budget[] = [];
+  selectedBudget: Budget | undefined;
   totalSaldo: number = 0;
   changeToday: number = 0;
   purchasesWithCumulativeTotal: PurchaseWithCumTotal[] = [];
@@ -33,7 +36,7 @@ export class RootState {
     this.tryLogin();
 
     this.setupVisibilityChangeListener();
-    this.fetchPurchases();
+    this.fetchBudgets();
 
     // this.setupPolling();
     this.setupWebsocket();
@@ -149,6 +152,18 @@ export class RootState {
       this.dateToPurchaseMap = newDateToPurchaseMap;
       this.totalSaldo = parseFloat(cumTotal.toFixed(2));
     });
+  };
+
+  fetchBudgets = async () => {
+    this.budgets = [];
+    this.state = 'PENDING';
+    try {
+      const res = await axios.get('/api/budgets');
+      this.budgets = res.data.resp;
+      this.selectedBudget = res.data.resp[0];
+    } catch (err) {
+      this.state = 'ERROR';
+    }
   };
 
   fetchPurchases = async () => {
