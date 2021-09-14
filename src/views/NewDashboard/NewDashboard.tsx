@@ -1,15 +1,13 @@
-import { Box } from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { ReactNode, useCallback, useContext, useState } from 'react';
+import { Budget } from 'src/models/Budget';
 import { LoadingScreen } from '../../components';
 import { RootContext } from '../../state/RootContext';
+import { BudgetList } from './BudgetList/BudgetList';
 import './newdashboard.scss';
 import { PurchaseCreationDialog } from './PurchaseCreationDialog/PurchaseCreationDialog';
-import { PurchaseList } from './PurchaseList/PurchaseList';
 import { SaldoHistoryDialog } from './SaldoHistoryDialog/SaldoHistoryDialog';
-import { SaldoPanel } from './SaldoPanel';
-import { SearchField } from './SearchField/SearchField';
-import { Slider } from './Slider';
 
 export const NewDashboard = observer(() => {
   const rootState = useContext(RootContext);
@@ -29,36 +27,52 @@ export const NewDashboard = observer(() => {
     );
   };
 
-  const requestConfirmPurchase = (
-    amount: number | undefined,
-    description: string
-  ) => {
-    console.log('funktiossa', amount);
-    if (description) {
-      const contents = (
-        <PurchaseCreationDialog
-          amount={amount}
-          description={description}
-          confirmPurchase={confirmPurchase}
-          onClose={() => setModalContents(null)}
-        />
-        // <div>muu</div>
-      );
-      setModalContents(contents);
-    }
+  const addPurchase = (budget: Budget) => {
+    const contents = (
+      <PurchaseCreationDialog
+        budgetId={budget._id}
+        members={[...budget.members, ...budget.owners]}
+        amount={undefined}
+        confirmPurchase={confirmPurchase}
+        onClose={() => setModalContents(null)}
+      />
+    );
+    setModalContents(contents);
   };
+
+  // const requestConfirmPurchase = (
+  //   amount: number | undefined,
+  //   description: string
+  // ) => {
+  //   console.log('funktiossa', amount);
+  //   if (description) {
+  //     const contents = (
+  //       <PurchaseCreationDialog
+  //         amount={amount}
+  //         description={description}
+  //         confirmPurchase={confirmPurchase}
+  //         onClose={() => setModalContents(null)}
+  //       />
+  //       // <div>muu</div>
+  //     );
+  //     setModalContents(contents);
+  //   }
+  // };
 
   const confirmPurchase = async (
     amount: number | undefined,
-    description: string
+    description: string,
+    budgetId: string,
+    payerId: string
   ) => {
     if (!amount) {
       return;
     }
     setModalContents(<LoadingScreen message='Luodaan..' />);
     try {
-      await rootState.createPurchase(amount, description);
+      await rootState.createPurchase(amount, description, budgetId, payerId);
     } catch (err) {
+      console.error(err);
     } finally {
       setModalContents(null);
     }
@@ -70,7 +84,16 @@ export const NewDashboard = observer(() => {
 
   return (
     <Box className='newdashboard'>
-      <SaldoPanel
+      <Box>
+        <Heading>SaldoApp</Heading>
+        <div>Logged in as {rootState.currentUser.name}</div>
+      </Box>
+      <BudgetList
+        addPurchase={addPurchase}
+        budgets={rootState.budgets}
+        currentUser={rootState.currentUser}
+      />
+      {/* <SaldoPanel
         openSaldoHistory={openSaldoHistoryDialog}
         total={rootState.totalSaldo}
         changeToday={rootState.changeToday}
@@ -89,7 +112,7 @@ export const NewDashboard = observer(() => {
           requestConfirmPurchase={requestConfirmPurchase}
           filterText={searchText}
         />
-      </Slider>
+      </Slider> */}
       {modalContents && <Box className='modal'>{modalContents}</Box>}
     </Box>
   );

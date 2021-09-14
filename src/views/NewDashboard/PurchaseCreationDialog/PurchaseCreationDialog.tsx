@@ -1,13 +1,19 @@
-import { Box, Button, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import ilariNaama from '../../../assets/ilarinaama.jpeg';
-import olliNaama from '../../../assets/ollinaama.jpeg';
+import { User } from 'src/models/Budget';
 import { AmountInput } from './AmountInput';
 
 export interface PurchaseCreationDialogProps {
-  description: string;
-  amount: number | undefined;
-  confirmPurchase: (amount: number | undefined, description: string) => void;
+  description?: string;
+  amount?: number;
+  budgetId: string;
+  members: User[];
+  confirmPurchase: (
+    amount: number | undefined,
+    description: string,
+    budgetId: string,
+    payerId: string
+  ) => void;
   onClose: () => void;
 }
 
@@ -16,13 +22,26 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
   amount,
   confirmPurchase,
   onClose,
+  budgetId,
+  members,
 }) => {
   const [actualAmount, setActualAmount] = useState(amount);
+  const [actualDescription, setActualDescription] = useState(description || '');
+  const [selectedUserId, setSelectedUserId] = useState(
+    undefined as undefined | string
+  );
 
   const delayPurchaseConfirmation = () => {
-    setTimeout(() => {
-      confirmPurchase(actualAmount, description);
-    }, 300);
+    if (selectedUserId) {
+      setTimeout(() => {
+        confirmPurchase(
+          actualAmount,
+          actualDescription,
+          budgetId,
+          selectedUserId
+        );
+      }, 300);
+    }
   };
 
   const onPayerSelect = (payer: 'olli' | 'ilari') => {
@@ -44,9 +63,12 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
       <Text className='header'>Vahvista luonti</Text>
       <Box className='value-container'>
         <Text className='label'>selite</Text>
-        <Text className='value' fontWeight={600}>
-          {description}
-        </Text>
+        <Input
+          className='value'
+          fontWeight={600}
+          value={actualDescription}
+          onChange={(e) => setActualDescription(e.target.value)}
+        />
       </Box>
       <Box className='value-container'>
         <Text className='label'>vaikutus saldoon</Text>
@@ -64,34 +86,25 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
       </Box>
       <Box className='value-container payer-container'>
         <Text className='label'>rahaa käytti</Text>
-        <Flex>
-          <Image
-            alt=''
-            src={ilariNaama}
-            className={`payer-selector ${
-              actualAmount && actualAmount > 0 && 'selected'
-            }`}
-            onClick={() => onPayerSelect('ilari')}
-          />
-          <Image
-            alt=''
-            src={olliNaama}
-            onClick={() => onPayerSelect('olli')}
-            className={`payer-selector ${
-              actualAmount && actualAmount < 0 && 'selected'
-            }`}
-          />
+        <Flex className='user-selector-container'>
+          {members.map((m) => (
+            <Flex
+              onClick={() => setSelectedUserId(m._id)}
+              key={m._id}
+              className={`user-selector${
+                selectedUserId === m._id ? ' selected-user' : ''
+              }`}
+            >
+              <img src={m.picture} alt='' />
+              <Box>{m.name}</Box>
+            </Flex>
+          ))}
         </Flex>
       </Box>
-      <Box zIndex={actualAmount ? 1 : -2} className='swipe-container'>
-        <Button onClick={delayPurchaseConfirmation}>Vahvista</Button>
-        {/* <Swipezor
-          mainText='Vahvista'
-          onSwipeDone={delayPurchaseConfirmation}
-          overlayText='OK'
-          overlayClassList='swipe-overlay'
-          caretClassList='swipe-caret'
-        /> */}
+      <Box className='buttonContainer'>
+        <Button colorScheme='green' onClick={delayPurchaseConfirmation}>
+          Vahvista
+        </Button>
       </Box>
       <Box className='buttonContainer'>
         <Button colorScheme='darkgray' variant='outline' onClick={onClose}>

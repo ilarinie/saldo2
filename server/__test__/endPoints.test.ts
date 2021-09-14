@@ -1,9 +1,11 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-const connectToDatabase = require('../database');
-const { app } = require('../server');
-const seed = require('./seed');
-const PurchaseModel = require('../models/PurchaseModel');
+import mongoose from 'mongoose';
+import request from 'supertest';
+import { connectToDatabase } from '../database';
+import PurchaseModel from '../models/PurchaseModel';
+import { app } from '../server';
+import seed from './seed';
+
+// @ts-ignore
 process.env.NODE_ENV = 'test';
 const testSecret = 'test_secret';
 process.env.SECRET = testSecret;

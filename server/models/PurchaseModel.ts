@@ -1,7 +1,17 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
+export type PurchaseType = {
+  amount: number;
+  description: string;
+  deleted: boolean;
+  budgetId: any;
+  payer: any;
+  createdBy: any;
+  createdAt: string;
+  updatedAt: string;
+};
 // Schema for purchase
-const PurchaseSchema = new mongoose.Schema(
+const PurchaseSchema = new mongoose.Schema<PurchaseType>(
   {
     amount: { type: Number },
     description: { type: String },
@@ -15,4 +25,4 @@ const PurchaseSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Purchase', PurchaseSchema);
+export default mongoose.model('Purchase', PurchaseSchema);

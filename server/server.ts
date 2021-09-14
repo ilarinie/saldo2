@@ -1,15 +1,18 @@
-const dotenv = require('dotenv');
-dotenv.config();
+import bodyParser from 'body-parser';
+import cookieSession from 'cookie-session';
+import dotenv from 'dotenv';
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import WebSocket from 'ws';
+import checkAuth from './checkAuth';
+import authController from './controllers/authController';
+import budgetController from './controllers/budgetController';
+import purchaseController from './controllers/purchaseController';
+import logger from './logger';
+import passport from './passport';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const WebSocket = require('ws');
-const http = require('http');
-const logger = require('./logger');
-const checkAuth = require('./checkAuth');
-const cookieSession = require('cookie-session');
-const passport = require('./passport');
+dotenv.config();
 
 const app = express();
 
@@ -37,16 +40,16 @@ wss.on('connection', (ws, socket, request) => {
 });
 
 app.use(bodyParser.json());
-require('./controllers/authController')(app);
-require('./controllers/purchaseController')(app, wss);
-require('./controllers/budgetController')(app);
+authController(app);
+purchaseController(app, wss);
+budgetController(app);
 
 app.get('/api', (req, res) => {
   res.send('Server running A-OK');
 });
 
 app.post('/api/checklogin', checkAuth, async (req, res) => {
-  res.send('Logged in');
+  res.send(req.user);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -59,8 +62,4 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-module.exports = {
-  server,
-  app,
-  wss,
-};
+export { server, app, wss };

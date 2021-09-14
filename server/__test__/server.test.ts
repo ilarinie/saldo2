@@ -1,5 +1,7 @@
 const request = require('supertest');
 const { app } = require('../server');
+
+//@ts-ignore
 process.env.NODE_ENV = 'test';
 
 describe('Server spec', () => {

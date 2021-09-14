@@ -1,4 +1,4 @@
-const winston = require('winston');
+import winston from 'winston';
 
 const getTransports = () => {
   if (process.env.NODE_ENV === 'test') {
@@ -56,4 +56,4 @@ if (process.env.NODE_ENV !== 'production') {
   logger.level = 'info';
 }
 
-module.exports = logger;
+export default logger;

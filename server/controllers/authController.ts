@@ -1,8 +1,9 @@
-const passport = require('passport');
+import passport from 'passport';
 
-module.exports = (app) => {
+const foo = (app) => {
   app.get('/api/auth/google', (req, res, next) => {
     console.log('faaa');
+    // @ts-ignore
     passport.authenticate('google', {
       scope: [
         'https://www.googleapis.com/auth/plus.login',
@@ -12,6 +13,7 @@ module.exports = (app) => {
   });
   app.get(
     '/api/auth/google/callback',
+    // @ts-ignore
     passport.authenticate('google', {
       failureRedirect: '/api/auth/google/failure',
       successRedirect: '/',
@@ -32,3 +34,5 @@ module.exports = (app) => {
     res.redirect('/');
   });
 };
+
+export default foo;

@@ -11,8 +11,8 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
     "@types/node": "^16.7.10",
+    "@types/passport-google-oauth20": "^2.0.9",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
@@ -51,16 +51,17 @@
     "use-long-press": "^1.1.1",
     "web-vitals": "^2.1.0",
     "winston": "^3.3.3",
-    "ws": "^8.2.1"
+    "ws": "^8.2.1",
+    "jest": "26.6.0"
   },
   "scripts": {
     "dev": "npm-run-all --parallel dev:*",
     "dev:run-frontend": "react-scripts start",
-    "dev:run-backend": "ts-node-dev server/index.ts",
-    "start": "concurrently \"react-scripts start\"  \"ts-node-dev server/index.js\" ",
+    "dev:run-backend": "ts-node-dev --project server/tsconfig.json server/index.ts",
+    "start": "concurrently \"react-scripts start\"  \"ts-node-dev --project server/tsconfig.json server/index.ts\" ",
     "build": "node buildScript.js",
     "test": "react-scripts test",
-    "test-server": "jest server/**/*.js --watch --config server.jest.config.js --detectOpenHandles",
+    "test-server": "export TS_NODE_PROJECT=server/tsconfig.json; ./node_modules/.bin/jest ./server/**/*.ts --watch --config ts-jest.config.js --detectOpenHandles",
     "eject": "react-scripts eject",
     "docker:start": "npm rebuild node-sass && npm start",
     "format": "prettier --write .",
@@ -96,14 +97,20 @@
   },
   "devDependencies": {
     "@types/date-fns": "^2.6.0",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^27.0.1",
+    "@types/passport": "^1.0.7",
     "@types/react-vis": "^1.11.7",
+    "@types/supertest": "^2.0.11",
+    "@types/ws": "^7.4.7",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
-    "prettier-plugin-organize-imports": "^2.3.3"
+    "prettier-plugin-organize-imports": "^2.3.3",
+    "ts-jest": "26.5.6"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix"

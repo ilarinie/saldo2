@@ -1,17 +1,18 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const request = require('supertest');
-const mongoose = require('mongoose');
-const connectToDatabase = require('../database');
-const seed = require('./seed');
-const { app } = require('../server');
-const {
-  TEST_BUDGET_ID,
-  TEST_BUDGET_2_ID,
-  TEST_USER_ID,
-  TEST_USER_ID_2,
-} = require('./constants');
+/* eslint-disable */
+import mongoose from 'mongoose';
+import request from 'supertest';
+import { connectToDatabase } from '../database';
+import { app } from '../server';
+import constants from './constants';
+import seed from './seed';
+
+const { TEST_USER_ID, TEST_USER_ID_2, TEST_BUDGET_ID, TEST_BUDGET_2_ID } =
+  constants;
+
+// @ts-ignore
 process.env.NODE_ENV = 'test';
 
 describe('Endpoints spec', () => {
@@ -44,7 +45,7 @@ describe('Endpoints spec', () => {
       const res = await request(app).get(`/api/budgets/${TEST_BUDGET_ID}`);
       expect(res.status).toBe(200);
       const resp = res.body.resp;
-      expect(resp.budget.name).toBe('test_budget');
+      expect(resp.name).toBe('test_budget');
     });
     it('returns 403 if budget not accesible', async () => {
       const res = await request(app).get(`/api/budgets/${TEST_BUDGET_2_ID}`);

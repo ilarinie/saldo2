@@ -1,22 +1,28 @@
-const PurchaseModel = require('../models/PurchaseModel.js');
-const checkAuth = require('../checkAuth.js');
-const logger = require('../logger');
-const { getBudget } = require('../services/budget-service.js');
+import checkAuth from '../checkAuth';
+import logger from '../logger';
+import PurchaseModel from '../models/PurchaseModel';
+import { getBudget } from '../services/budget-service';
 
-module.exports = (app, wss) => {
+const foo = (app, wss) => {
   app.get('/api/purchases', checkAuth, async (req, res) => {
     res.send(await PurchaseModel.find({ deleted: false }));
   });
 
   app.post('/api/purchases', checkAuth, async (req, res) => {
-    if (!req.body.amount || !req.body.description || req.body.budgetId) {
+    if (!req.body.amount || !req.body.description || !req.body.budgetId) {
       res.status(406).send({ message: 'Invalid request' });
     } else {
+      logger.info(
+        `Trying to create purchase: budgetId: ${req.body.budgetId}, amount: ${req.body.amount}, payerId: ${req.body.payerId}`
+      );
       try {
-        const budget = await getBudget(req.body.budgetId, req.user);
+        const budget = await getBudget(req.body.budgetId, req.user._id);
 
         const purchase = await PurchaseModel.create({
-          ...req.body,
+          amount: req.body.amount,
+          payer: req.body.payerId,
+          description: req.body.description,
+          // @ts-ignore
           budgetId: budget._id,
         });
         res.send(purchase);
@@ -48,3 +54,5 @@ module.exports = (app, wss) => {
     }
   });
 };
+
+export default foo;

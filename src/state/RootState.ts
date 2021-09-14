@@ -25,13 +25,10 @@ export class RootState {
   ws: WebSocket | undefined;
   purchaseCreationError: string | undefined;
   modalContents: null | ReactNode = null;
+  currentUser: any | undefined;
 
   constructor() {
     makeAutoObservable(this);
-
-    axios.defaults.headers.common = {
-      Authorization: localStorage.getItem('token') || '',
-    };
 
     this.tryLogin();
 
@@ -44,15 +41,17 @@ export class RootState {
 
   private tryLogin = async () => {
     try {
-      await axios.post('/api/checklogin');
+      const { data } = await axios.post('/api/checklogin');
       runInAction(() => {
         this.loginState = 'LOGGED_IN';
         this.loginError = '';
+        this.currentUser = data;
       });
     } catch (err: any) {
       runInAction(() => {
         this.loginState = 'UNAUTHORIZED';
         this.loginError = err.message;
+        this.currentUser = undefined;
       });
     }
   };
@@ -180,12 +179,24 @@ export class RootState {
       });
     }
   };
-  createPurchase = async (amount: number, description: string) => {
+  createPurchase = async (
+    amount: number,
+    description: string,
+    budgetId: string,
+    payerId: string
+  ) => {
+    console.log('fooo');
+    console.log('desc', description);
+    console.log('budgetId', budgetId);
+    console.log('payerId', payerId);
+
     if (amount && description) {
       try {
         await axios.post<Purchase>('/api/purchases', {
           amount,
           description,
+          budgetId,
+          payerId,
         });
       } catch (err: any) {
         this.purchaseCreationError = err.message;

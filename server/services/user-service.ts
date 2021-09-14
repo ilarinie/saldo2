@@ -1,5 +1,5 @@
-const UserModel = require('../models/User');
-const { TEST_USER_ID } = require('../__test__/constants');
+import UserModel from '../models/User';
+import constants from '../__test__/constants';
 
 const create = async () => {};
 
@@ -18,7 +18,9 @@ const findOrCreateFromGoogleProfile = async (googleProfile) => {
     };
     user = await UserModel.create(newUser);
   } else {
+    // @ts-ignore
     user.name = name;
+    // @ts-ignore
     user.picture = picture;
     user = await user.save();
   }
@@ -27,18 +29,18 @@ const findOrCreateFromGoogleProfile = async (googleProfile) => {
 
 const findOrCreateTestUser = async () => {
   let user;
-  user = await UserModel.findById(TEST_USER_ID);
+  user = await UserModel.findById(constants.TEST_USER_ID);
   if (!user) {
     user = await UserModel.create({
       name: 'test_user',
       picture: 'https://asdasdasd',
-      _id: TEST_USER_ID,
+      _id: constants.TEST_USER_ID,
     });
   }
   return user;
 };
 
-module.exports = {
+export {
   create,
   findById,
   findOrCreateFromGoogleProfile,

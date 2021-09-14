@@ -1,4 +1,4 @@
-import connectToDatabase from './database';
+import { connectToDatabase } from './database';
 import logger from './logger';
 import { server } from './server';
 

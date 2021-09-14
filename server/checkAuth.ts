@@ -1,4 +1,4 @@
-const UserService = require('./services/user-service');
+import * as UserService from './services/user-service';
 
 const checkAuth = async (req, res, next) => {
   if (process.env.NODE_ENV === 'test') {
@@ -12,4 +12,4 @@ const checkAuth = async (req, res, next) => {
   }
 };
 
-module.exports = checkAuth;
+export default checkAuth;

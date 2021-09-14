@@ -1,12 +1,10 @@
-const checkAuth = require('../checkAuth');
-const logger = require('../logger');
-const BudgetService = require('../services/budget-service');
+import checkAuth from '../checkAuth';
+import logger from '../logger';
+import * as BudgetService from '../services/budget-service';
 
-module.exports = (app) => {
+const foo = (app) => {
   app.get('/api/budgets', checkAuth, async (req, res) => {
-    console.log(req.user);
     const budgets = await BudgetService.getUserBudgets(req.user._id);
-    console.log(budgets);
     res.status(200).send({ resp: budgets });
   });
 
@@ -54,3 +52,5 @@ module.exports = (app) => {
     }
   });
 };
+
+export default foo;

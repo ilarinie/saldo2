@@ -1,7 +1,7 @@
 .newdashboard {
   display: grid;
   height: 100%;
-  grid-template-rows: 175px 100px 3fr;
+  grid-template-rows: 100px auto;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -51,9 +51,11 @@
   @import 'PurchaseList/PurchaseList';
   @import 'SaldoHistoryDialog/SaldoHistoryDialog';
   @import 'PurchaseCreationDialog/PurchaseCreationDialog';
+  @import 'BudgetList/budgetlist';
 
   @include search-field;
   @include purchase-list;
   @include saldo-history-dialog;
   @include purchase-creation-dialog;
+  @include budget-list;
 }

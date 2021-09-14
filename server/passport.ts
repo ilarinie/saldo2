@@ -1,16 +1,18 @@
-const passport = require('passport'),
-  GoogleStrategy = require('passport-google-oauth20').Strategy,
-  UserService = require('./services/user-service');
+import dotenv from 'dotenv';
+import passport from 'passport';
+import GoogleStrategy from 'passport-google-oauth20';
+import * as UserService from './services/user-service';
+dotenv.config();
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL } =
   process.env;
 
 passport.use(
-  new GoogleStrategy(
+  new GoogleStrategy.Strategy(
     {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: GOOGLE_CALLBACK_URL,
+      clientID: GOOGLE_CLIENT_ID as string,
+      clientSecret: GOOGLE_CLIENT_SECRET as string,
+      callbackURL: GOOGLE_CALLBACK_URL as string,
     },
     async (accessToken, refreshToken, profile, cb) => {
       const user = await UserService.findOrCreateFromGoogleProfile(profile);
@@ -19,7 +21,7 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function (user: any, done) {
   done(null, user._id);
 });
 
@@ -28,4 +30,4 @@ passport.deserializeUser(async function (_id, done) {
   done(null, user);
 });
 
-module.exports = passport;
+export default passport;

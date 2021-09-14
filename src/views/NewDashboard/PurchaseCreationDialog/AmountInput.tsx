@@ -10,10 +10,6 @@ export const AmountInput = ({ amount, onAmountChange }: AmountInputProps) => {
   return (
     <InputGroup size='md' marginY='0.5em'>
       <Input
-        marginLeft='20%'
-        background='#eee'
-        color='black'
-        width='50%'
         value={amount || ''}
         type='number'
         step='0.01'
