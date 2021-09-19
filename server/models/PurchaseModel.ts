@@ -5,10 +5,14 @@ export type PurchaseType = {
   description: string;
   deleted: boolean;
   budgetId: any;
-  payer: any;
   createdBy: any;
   createdAt: string;
   updatedAt: string;
+  benefactors: Array<{
+    amountPaid: number;
+    amountBenefitted: number;
+    user: string;
+  }>;
 };
 // Schema for purchase
 const PurchaseSchema = new mongoose.Schema<PurchaseType>(
@@ -17,12 +21,24 @@ const PurchaseSchema = new mongoose.Schema<PurchaseType>(
     description: { type: String },
     deleted: { type: Boolean, default: false },
     budgetId: { type: mongoose.Types.ObjectId, ref: 'Budget' },
-    payer: { type: mongoose.Types.ObjectId, ref: 'User' },
+    benefactors: [
+      {
+        amountPaid: Number,
+        amountBenefitted: Number,
+        user: { type: mongoose.Types.ObjectId, ref: 'User' },
+      },
+    ],
     createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
   },
   {
     timestamps: true,
   }
 );
+
+export interface BenefactorDocument {
+  amountPaid: number;
+  amountBenefitted: number;
+  user: string;
+}
 
 export default mongoose.model('Purchase', PurchaseSchema);

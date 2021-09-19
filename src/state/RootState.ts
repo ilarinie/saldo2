@@ -3,7 +3,7 @@ import { isSameDay } from 'date-fns';
 import { makeAutoObservable, runInAction } from 'mobx';
 import { ReactNode } from 'react';
 import addNotification from 'react-push-notification';
-import { Budget } from 'src/models/Budget';
+import { Benefactor, Budget } from 'src/models/Budget';
 import { Purchase, PurchaseWithCumTotal } from '../models/Purchase';
 
 type FetchingState = 'PENDING' | 'ERROR' | 'FETCHED';
@@ -183,7 +183,8 @@ export class RootState {
     amount: number,
     description: string,
     budgetId: string,
-    payerId: string
+    payerId: string,
+    benefactors: Benefactor[]
   ) => {
     console.log('fooo');
     console.log('desc', description);
@@ -197,6 +198,10 @@ export class RootState {
           description,
           budgetId,
           payerId,
+          benefactors: benefactors.map((b) => ({
+            ...b,
+            user: b.user._id,
+          })),
         });
       } catch (err: any) {
         this.purchaseCreationError = err.message;

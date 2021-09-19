@@ -1,7 +1,8 @@
 import logger from '../logger';
 import BudgetModel, { BudgetType } from '../models/Budget';
-import PurchaseModel, { PurchaseType } from '../models/PurchaseModel';
-import { BudgetResponse, PurchaseUser } from '../types/BudgetResponse';
+import PurchaseModel from '../models/PurchaseModel';
+import { BudgetResponse, Purchase } from '../types/BudgetResponse';
+import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse';
 
 const createBudgetQuery = (budgetId, userId, requireOwner) => {
   return {
@@ -37,6 +38,17 @@ const ownerOrMemberQuery = (userId, requireOwner) => {
   };
 };
 
+const getBudgetById = async (budgetId, userId): Promise<BudgetType> => {
+  try {
+    const budget: BudgetType = await BudgetModel.findOne(
+      createBudgetQuery(budgetId, userId, false)
+    );
+    return Promise.resolve(budget);
+  } catch (err) {
+    return Promise.reject(err);
+  }
+};
+
 const getBudget = async (budgetId, userId): Promise<BudgetResponse> => {
   try {
     const budget: BudgetType = await BudgetModel.findOne(
@@ -45,56 +57,11 @@ const getBudget = async (budgetId, userId): Promise<BudgetResponse> => {
       .populate('owners')
       .populate('members');
     if (budget) {
-      const purchases: PurchaseType[] = await PurchaseModel.find({
+      const purchases: Purchase[] = await PurchaseModel.find({
         $and: [{ deleted: false }, { budgetId: budget._id }],
-      }).populate('payer');
+      }).populate('benefactors.user');
 
-      const allBudgetUsers = [...budget.owners, ...budget.members];
-
-      const userIdToTotalMap: { [key: string]: number } = {};
-      let total = 0;
-
-      purchases.forEach((purchase) => {
-        total = total + purchase.amount;
-        if (!userIdToTotalMap[purchase.payer._id]) {
-          userIdToTotalMap[purchase.payer._id] = 0;
-        }
-        userIdToTotalMap[purchase.payer._id] =
-          userIdToTotalMap[purchase.payer._id] + purchase.amount;
-      });
-
-      const average = total / allBudgetUsers.length;
-
-      const totals = [] as BudgetResponse['totals'];
-
-      if (Object.keys(userIdToTotalMap).length < allBudgetUsers.length) {
-        const keys = Object.keys(userIdToTotalMap);
-        const notPresent = allBudgetUsers.filter(
-          (u) => !keys.includes(u._id.toString())
-        );
-        notPresent.forEach((u) => {
-          userIdToTotalMap[u._id] = 0;
-        });
-      }
-
-      Object.keys(userIdToTotalMap).forEach((key) => {
-        totals.push({
-          user: allBudgetUsers.filter(
-            (u) => u._id.toString() === key
-          )[0] as unknown as PurchaseUser,
-          saldo: userIdToTotalMap[key] - average,
-        });
-      });
-
-      const response: BudgetResponse = {
-        _id: budget._id,
-        name: budget.name,
-        members: budget.members,
-        owners: budget.owners,
-        total,
-        purchases,
-        totals,
-      };
+      const response = budgetPurchasesToBudgetResponse(budget, purchases);
       return Promise.resolve(response);
     } else {
       throw Error('budget not found or not accesible');
@@ -146,4 +113,11 @@ const getUserBudgets = async (userId) => {
   return Promise.resolve(res);
 };
 
-export { getBudget, createBudget, updateBudget, deleteBudget, getUserBudgets };
+export {
+  getBudget,
+  createBudget,
+  updateBudget,
+  deleteBudget,
+  getUserBudgets,
+  getBudgetById,
+};

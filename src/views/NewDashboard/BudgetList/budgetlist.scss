@@ -9,6 +9,7 @@
       justify-content: space-between;
       .pic-and-name {
         display: flex;
+        flex-direction: column;
       }
       img {
         width: 50px;

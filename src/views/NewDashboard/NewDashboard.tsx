@@ -1,11 +1,12 @@
 import { Box, Heading } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { ReactNode, useCallback, useContext, useState } from 'react';
-import { Budget } from 'src/models/Budget';
+import { Benefactor, Budget } from 'src/models/Budget';
 import { LoadingScreen } from '../../components';
 import { RootContext } from '../../state/RootContext';
 import { BudgetList } from './BudgetList/BudgetList';
 import './newdashboard.scss';
+import { initBenefactors } from './PurchaseCreationDialog/NewDialogue';
 import { PurchaseCreationDialog } from './PurchaseCreationDialog/PurchaseCreationDialog';
 import { SaldoHistoryDialog } from './SaldoHistoryDialog/SaldoHistoryDialog';
 
@@ -17,6 +18,34 @@ export const NewDashboard = observer(() => {
   };
   const [modalContents, setModalContents] = useState(null as null | ReactNode);
   const [searchText, setSearchText] = useState('');
+  const [benefactors, setBenefactors] = useState(
+    initBenefactors(
+      [
+        {
+          _id: '123123',
+          name: 'testUser',
+          picture: 'nan',
+        },
+        {
+          _id: '2222222',
+          name: 'testUser2',
+          picture: 'nan',
+        },
+        {
+          _id: '333333333',
+          name: 'testUser2',
+          picture: 'nan',
+        },
+      ],
+      12.4,
+      'even-split',
+      '123123'
+    )
+  );
+
+  const onBenefactorsChanged = (benefactors: any) => {
+    setBenefactors(benefactors);
+  };
 
   const openSaldoHistoryDialog = () => {
     setModalContents(
@@ -35,6 +64,7 @@ export const NewDashboard = observer(() => {
         amount={undefined}
         confirmPurchase={confirmPurchase}
         onClose={() => setModalContents(null)}
+        currentUser={rootState.currentUser}
       />
     );
     setModalContents(contents);
@@ -63,14 +93,21 @@ export const NewDashboard = observer(() => {
     amount: number | undefined,
     description: string,
     budgetId: string,
-    payerId: string
+    payerId: string,
+    benefactors: Benefactor[]
   ) => {
     if (!amount) {
       return;
     }
     setModalContents(<LoadingScreen message='Luodaan..' />);
     try {
-      await rootState.createPurchase(amount, description, budgetId, payerId);
+      await rootState.createPurchase(
+        amount,
+        description,
+        budgetId,
+        payerId,
+        benefactors
+      );
     } catch (err) {
       console.error(err);
     } finally {
@@ -93,6 +130,12 @@ export const NewDashboard = observer(() => {
         budgets={rootState.budgets}
         currentUser={rootState.currentUser}
       />
+      Total: 12.4
+      {/* <Dialogue
+        total={12.4}
+        benefactors={benefactors}
+        onBenefactorsChanged={onBenefactorsChanged}
+      /> */}
       {/* <SaldoPanel
         openSaldoHistory={openSaldoHistoryDialog}
         total={rootState.totalSaldo}

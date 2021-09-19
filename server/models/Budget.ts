@@ -9,6 +9,7 @@ export type BudgetType = {
   deleted: boolean;
   createdAt: string;
   updatedAt: string;
+  type: 'saldo' | 'budget';
 };
 
 const BudgetSchema = new mongoose.Schema<BudgetType, any, BudgetType>(
@@ -17,6 +18,7 @@ const BudgetSchema = new mongoose.Schema<BudgetType, any, BudgetType>(
     owners: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     members: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
     deleted: { type: Boolean, default: false },
+    type: { type: String },
   },
   {
     timestamps: true,

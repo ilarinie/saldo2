@@ -30,3 +30,6 @@ yarn-error.log*
 
 /mongo-volume
 purchases.json
+
+/saldodump
+/saldotestdump

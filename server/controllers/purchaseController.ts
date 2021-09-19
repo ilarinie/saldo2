@@ -1,7 +1,33 @@
+import currency from 'currency.js';
 import checkAuth from '../checkAuth';
 import logger from '../logger';
+import { BudgetType } from '../models/Budget';
 import PurchaseModel from '../models/PurchaseModel';
-import { getBudget } from '../services/budget-service';
+import { getBudgetById } from '../services/budget-service';
+
+const validatePurchase = (purchase: any, budget: BudgetType): boolean => {
+  const allMemberIds = [...budget.members, ...budget.owners];
+  if (purchase.benefactors.length !== allMemberIds.length) {
+    console.log('members');
+    return false;
+  }
+  let total = currency(0);
+  let totalBenefits = currency(0);
+  purchase.benefactors.forEach((b) => {
+    total = total.add(currency(b.amountPaid));
+    totalBenefits = totalBenefits.add(currency(b.amountBenefitted));
+  });
+  if (
+    total.value !== currency(purchase.amount).value ||
+    totalBenefits.value !== currency(purchase.amount).value
+  ) {
+    console.log('total');
+    console.log(total.value);
+    console.log(currency(purchase.amount).value);
+    return false;
+  }
+  return true;
+};
 
 const foo = (app, wss) => {
   app.get('/api/purchases', checkAuth, async (req, res) => {
@@ -16,27 +42,33 @@ const foo = (app, wss) => {
         `Trying to create purchase: budgetId: ${req.body.budgetId}, amount: ${req.body.amount}, payerId: ${req.body.payerId}`
       );
       try {
-        const budget = await getBudget(req.body.budgetId, req.user._id);
-
-        const purchase = await PurchaseModel.create({
-          amount: req.body.amount,
-          payer: req.body.payerId,
-          description: req.body.description,
-          // @ts-ignore
-          budgetId: budget._id,
-        });
-        res.send(purchase);
-        try {
-          logger.info(`${wss.clients.size} WS clients found`);
-          wss.clients.forEach((ws) => {
-            if (!ws.isAlive) return ws.terminate();
-            ws.isAlive = false;
-            ws.ping(null, false, true);
-            logger.info('Sending purchase to WS client');
-            ws.send(JSON.stringify({ purchase }));
+        const budget = await getBudgetById(req.body.budgetId, req.user._id);
+        if (validatePurchase(req.body, budget)) {
+          const purchase = await PurchaseModel.create({
+            amount: req.body.amount,
+            description: req.body.description,
+            benefactors: req.body.benefactors,
+            // @ts-ignore
+            budgetId: budget._id,
+            createdBy: req.user._id,
           });
-        } catch (err) {
-          logger.error(`Error reporting created purchase via websocket ${err}`);
+          res.send(purchase);
+          try {
+            logger.info(`${wss.clients.size} WS clients found`);
+            wss.clients.forEach((ws) => {
+              if (!ws.isAlive) return ws.terminate();
+              ws.isAlive = false;
+              ws.ping(null, false, true);
+              logger.info('Sending purchase to WS client');
+              ws.send(JSON.stringify({ purchase }));
+            });
+          } catch (err) {
+            logger.error(
+              `Error reporting created purchase via websocket ${err}`
+            );
+          }
+        } else {
+          res.status(406).send('Not good purchase');
         }
       } catch (err) {
         logger.error(`Error creating a purchase: ${err}`);

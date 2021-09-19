@@ -1,6 +1,6 @@
 import { Box } from '@chakra-ui/layout';
 import { Budget } from 'src/models/Budget';
-import { BudgetItem } from './BudgetItem';
+import { SaldoBudgetItem } from './SaldoBudgetItem';
 
 interface BudgetListProps {
   budgets: Budget[];
@@ -15,14 +15,16 @@ export const BudgetList = ({
 }: BudgetListProps) => {
   return (
     <Box className='budget-list'>
-      {budgets.map((b) => (
-        <BudgetItem
-          key={b._id}
-          budget={b}
-          currentUser={currentUser}
-          addPurchase={addPurchase}
-        />
-      ))}
+      {budgets.map((b) =>
+        b.type === 'saldo' ? (
+          <SaldoBudgetItem
+            key={b._id}
+            budget={b}
+            currentUser={currentUser}
+            addPurchase={addPurchase}
+          />
+        ) : null
+      )}
     </Box>
   );
 };

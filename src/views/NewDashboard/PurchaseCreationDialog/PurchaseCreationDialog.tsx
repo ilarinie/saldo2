@@ -1,7 +1,8 @@
 import { Box, Button, Flex, Input, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import { User } from 'src/models/Budget';
+import { Benefactor, User } from 'src/models/Budget';
 import { AmountInput } from './AmountInput';
+import { Dialogue, initBenefactors } from './NewDialogue';
 
 export interface PurchaseCreationDialogProps {
   description?: string;
@@ -12,9 +13,11 @@ export interface PurchaseCreationDialogProps {
     amount: number | undefined,
     description: string,
     budgetId: string,
-    payerId: string
+    payerId: string,
+    benefactors: Benefactor[]
   ) => void;
   onClose: () => void;
+  currentUser: User;
 }
 
 export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
@@ -24,12 +27,28 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
   onClose,
   budgetId,
   members,
+  currentUser,
 }) => {
   const [actualAmount, setActualAmount] = useState(amount);
   const [actualDescription, setActualDescription] = useState(description || '');
-  const [selectedUserId, setSelectedUserId] = useState(
-    undefined as undefined | string
+  const [selectedUserId, setSelectedUserId] = useState(currentUser._id);
+  const [benefactors, setBenefactors] = useState(
+    initBenefactors(members, actualAmount || 0, 'saldo', selectedUserId || '')
   );
+
+  const onAmountChange = (amount: number) => {
+    setActualAmount(amount);
+    setBenefactors(
+      initBenefactors(members, amount || 0, 'saldo', selectedUserId || '')
+    );
+  };
+
+  const onSelectUserId = (userId: string) => {
+    setSelectedUserId(userId);
+    setBenefactors(
+      initBenefactors(members, actualAmount || 0, 'saldo', userId || '')
+    );
+  };
 
   const delayPurchaseConfirmation = () => {
     if (selectedUserId) {
@@ -38,23 +57,10 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
           actualAmount,
           actualDescription,
           budgetId,
-          selectedUserId
+          selectedUserId,
+          benefactors
         );
       }, 300);
-    }
-  };
-
-  const onPayerSelect = (payer: 'olli' | 'ilari') => {
-    if (actualAmount) {
-      if (payer === 'ilari') {
-        if (actualAmount < 0) {
-          setActualAmount(actualAmount * -1);
-        }
-      } else {
-        if (actualAmount > 0) {
-          setActualAmount(actualAmount * -1);
-        }
-      }
     }
   };
 
@@ -81,7 +87,7 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
             {actualAmount.toFixed(2)} €
           </Text>
         ) : (
-          <AmountInput amount={actualAmount} onAmountChange={setActualAmount} />
+          <AmountInput amount={actualAmount} onAmountChange={onAmountChange} />
         )}
       </Box>
       <Box className='value-container payer-container'>
@@ -89,7 +95,7 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
         <Flex className='user-selector-container'>
           {members.map((m) => (
             <Flex
-              onClick={() => setSelectedUserId(m._id)}
+              onClick={() => onSelectUserId(m._id)}
               key={m._id}
               className={`user-selector${
                 selectedUserId === m._id ? ' selected-user' : ''
@@ -101,6 +107,11 @@ export const PurchaseCreationDialog: React.FC<PurchaseCreationDialogProps> = ({
           ))}
         </Flex>
       </Box>
+      <Dialogue
+        benefactors={benefactors}
+        total={actualAmount || 0}
+        onBenefactorsChanged={setBenefactors}
+      />
       <Box className='buttonContainer'>
         <Button colorScheme='green' onClick={delayPurchaseConfirmation}>
           Vahvista
