@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Purchase } from '../models/Purchase';
+import { Purchase } from 'src/models/Budget';
 
 export const useFilteredPurchases = (purchases: Purchase[]) => {
   const [filteredPurchases, setFilteredPurchases] = useState([] as Purchase[]);

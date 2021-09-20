@@ -59,7 +59,9 @@ const getBudget = async (budgetId, userId): Promise<BudgetResponse> => {
     if (budget) {
       const purchases: Purchase[] = await PurchaseModel.find({
         $and: [{ deleted: false }, { budgetId: budget._id }],
-      }).populate('benefactors.user');
+      })
+        .sort({ createdAt: -1 })
+        .populate('benefactors.user');
 
       const response = budgetPurchasesToBudgetResponse(budget, purchases);
       return Promise.resolve(response);

@@ -1,15 +1,10 @@
 import axios from 'axios';
-import { isSameDay } from 'date-fns';
 import { makeAutoObservable, runInAction } from 'mobx';
 import { ReactNode } from 'react';
-import addNotification from 'react-push-notification';
-import { Benefactor, Budget } from 'src/models/Budget';
-import { Purchase, PurchaseWithCumTotal } from '../models/Purchase';
+import { Benefactor, Budget, Purchase } from 'src/models/Budget';
 
 type FetchingState = 'PENDING' | 'ERROR' | 'FETCHED';
 type LoginState = 'PENDING' | 'UNAUTHORIZED' | 'LOGGED_IN';
-
-export type DateToPurchaseMap = { [date: string]: PurchaseWithCumTotal[] };
 
 export class RootState {
   purchases: Purchase[] = [];
@@ -17,15 +12,20 @@ export class RootState {
   selectedBudget: Budget | undefined;
   totalSaldo: number = 0;
   changeToday: number = 0;
-  purchasesWithCumulativeTotal: PurchaseWithCumTotal[] = [];
   state: FetchingState = 'PENDING';
   loginState: LoginState = 'PENDING';
-  dateToPurchaseMap: DateToPurchaseMap = {};
   loginError: string | undefined;
   ws: WebSocket | undefined;
   purchaseCreationError: string | undefined;
   modalContents: null | ReactNode = null;
   currentUser: any | undefined;
+  budgetIds: string[] = [];
+  budgetMap: { [key: string]: Budget } = {};
+  snackBarOpen: boolean = false;
+  snackBarMessage: { severity: string; message: string } = {
+    severity: 'info',
+    message: 'test',
+  };
 
   constructor() {
     makeAutoObservable(this);
@@ -38,6 +38,20 @@ export class RootState {
     // this.setupPolling();
     this.setupWebsocket();
   }
+
+  showSnackbarMessage = (message: string, severity: string) => {
+    runInAction(() => {
+      this.snackBarOpen = true;
+      this.snackBarMessage = {
+        message,
+        severity,
+      };
+    });
+  };
+
+  closeSnackbar = () => {
+    this.snackBarOpen = false;
+  };
 
   private tryLogin = async () => {
     try {
@@ -68,20 +82,8 @@ export class RootState {
 
     newWebsocket.onmessage = (event) => {
       const purchase = JSON.parse(event.data);
-      const newestPurchase = this.purchases[this.purchases.length - 1];
-      // eslint-disable-next-line eqeqeq
-      if (!newestPurchase || newestPurchase._id != purchase.purchase._id) {
-        this.setPurchasesAndCalculateTotal([
-          purchase.purchase,
-          ...this.purchases,
-        ]);
-      }
-      addNotification({
-        title: 'Saldoa lisätty',
-        subtitle: purchase.purchase.amount.toFixed(2) + '€',
-        message: purchase.purchase.description,
-        native: false,
-      });
+
+      this.showSnackbarMessage('Saldoa lisätty', 'info');
     };
 
     newWebsocket.onerror = function (err) {
@@ -100,85 +102,40 @@ export class RootState {
 
   private setupVisibilityChangeListener = () => {
     document.addEventListener('visibilitychange', () => {
-      !document.hidden && this.fetchPurchases();
+      !document.hidden && this.fetchBudgets();
     });
   };
 
   private setupPolling = () => {
-    this.fetchPurchases();
+    this.fetchBudgets();
     setTimeout(this.setupPolling, 10000);
-  };
-
-  private setPurchasesAndCalculateTotal = (purchases: Purchase[]) => {
-    runInAction(() => {
-      this.loginState = 'LOGGED_IN';
-      this.purchases = purchases;
-      let cumTotal = 0;
-      let newChangeToday = 0;
-      this.purchasesWithCumulativeTotal = [...purchases]
-        .reverse()
-        .map((p, index) => {
-          if (isSameDay(new Date(p.createdAt), new Date())) {
-            newChangeToday += p.amount;
-          }
-          cumTotal += p.amount;
-          return {
-            cumTotal,
-            ...p,
-          };
-        })
-        .reverse();
-      this.changeToday = newChangeToday;
-
-      const newDateToPurchaseMap: DateToPurchaseMap = {};
-
-      this.purchasesWithCumulativeTotal.forEach((p) => {
-        if (
-          newDateToPurchaseMap[
-            new Date(p.createdAt || '').toLocaleDateString('fi-FI')
-          ]
-        ) {
-          newDateToPurchaseMap[
-            new Date(p.createdAt || '').toLocaleDateString('fi-FI')
-          ].push(p);
-        } else {
-          newDateToPurchaseMap[
-            new Date(p.createdAt || '').toLocaleDateString('fi-FI')
-          ] = [p];
-        }
-      });
-
-      this.dateToPurchaseMap = newDateToPurchaseMap;
-      this.totalSaldo = parseFloat(cumTotal.toFixed(2));
-    });
   };
 
   fetchBudgets = async () => {
     this.budgets = [];
-    this.state = 'PENDING';
     try {
       const res = await axios.get('/api/budgets');
       this.budgets = res.data.resp;
-      this.selectedBudget = res.data.resp[0];
+      let newBudgetIds: string[] = [];
+      let newBudgetMap: { [key: string]: Budget } = {};
+      console.log(res.data.resp);
+
+      res.data.resp.forEach((re: Budget) => {
+        newBudgetIds.push(re._id);
+        newBudgetMap[re._id] = re;
+      });
+
+      runInAction(() => {
+        this.budgetIds = newBudgetIds;
+        this.budgetMap = newBudgetMap;
+      });
     } catch (err) {
+      console.log('erro');
+      console.log(err);
       this.state = 'ERROR';
     }
   };
 
-  fetchPurchases = async () => {
-    this.purchases = [];
-    this.state = 'PENDING';
-    try {
-      const res = await axios.get('/api/purchases');
-      this.setPurchasesAndCalculateTotal(res.data.reverse());
-    } catch (err) {
-      console.log({ err });
-      runInAction(() => {
-        this.loginState = 'UNAUTHORIZED';
-        this.state = 'ERROR';
-      });
-    }
-  };
   createPurchase = async (
     amount: number,
     description: string,
@@ -186,11 +143,6 @@ export class RootState {
     payerId: string,
     benefactors: Benefactor[]
   ) => {
-    console.log('fooo');
-    console.log('desc', description);
-    console.log('budgetId', budgetId);
-    console.log('payerId', payerId);
-
     if (amount && description) {
       try {
         await axios.post<Purchase>('/api/purchases', {
@@ -203,6 +155,7 @@ export class RootState {
             user: b.user._id,
           })),
         });
+        this.refreshBudget(budgetId);
       } catch (err: any) {
         this.purchaseCreationError = err.message;
       }
@@ -211,12 +164,22 @@ export class RootState {
     }
   };
 
-  deletePurchase = async (purchaseId: string) => {
+  refreshBudget = async (budgetId: string) => {
+    const res = await axios.get<any>('/api/budgets/' + budgetId);
+    runInAction(() => {
+      this.budgetIds = [...this.budgetIds];
+      this.budgetMap = {
+        ...this.budgetMap,
+        [res.data.resp._id]: res.data.resp,
+      };
+    });
+  };
+
+  deletePurchase = async (purchaseId: string, budgetId: string) => {
     try {
       await axios.delete('/api/purchases/' + purchaseId);
-      this.setPurchasesAndCalculateTotal(
-        this.purchases.filter((p) => p._id !== purchaseId)
-      );
+      this.refreshBudget(budgetId);
+      this.showSnackbarMessage('Purchase deleted', 'info');
     } catch (err) {
       console.error('err', err);
     }

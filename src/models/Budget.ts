@@ -6,17 +6,22 @@ export interface Budget {
   purchases: Purchase[];
   total: number;
   type: 'saldo' | 'budget';
-  totals: {
-    user: User;
-    totalPaid: number;
-    totalBenefitted: number;
-    diff: number;
-  }[];
+  totals: UserTotal[];
+}
+
+export interface UserTotal {
+  user: User;
+  totalPaid: number;
+  totalBenefitted: number;
+  diff: number;
 }
 
 export interface Purchase {
+  _id: string;
+  budgetId: string;
   description: string;
   createdBy: User;
+  amount: number;
   benefactors: Benefactor[];
   createdAt: string;
   updatedAt: string;

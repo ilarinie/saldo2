@@ -1,22 +1,32 @@
 version: '3.5'
 
 services:
-  saldo-app:
+  saldo-backend:
     build: .
     ports:
       - "3001:3001"
-      - "3000:3000"
       - "3033:3033"
     environment:
       NODE_ENV: development
     volumes:
       - .:/home/app/appDir
-    depends_on:
-      - mongo
     environment:
       - NODE_ENV=development
       - MONGO_URI=mongodb://mongo/saldo-app
       - SECRET=correcthorsebatterystaple
+    networks:
+      - backend
+    command: npm run-script dev:run-backend
+  saldo-frontend:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/home/app/appDir
+    environment:
+      - NODE_ENV=development
     networks:
       - backend
     command: npm run-script docker:start

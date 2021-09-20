@@ -1,4 +1,9 @@
-import { ChakraProvider } from '@chakra-ui/react';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/system';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -6,16 +11,17 @@ import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { RootContext, rootState } from './state/RootContext';
-import theme from './theme';
+import { theme } from './theme/index';
 
 ReactDOM.render(
   <React.StrictMode>
     <RootContext.Provider value={rootState}>
-      <ChakraProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Router>
           <Route component={App} />
         </Router>
-      </ChakraProvider>
+      </ThemeProvider>
     </RootContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')

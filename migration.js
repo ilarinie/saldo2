@@ -1,3 +1,4 @@
+/* eslint-disable */
 db.getCollection('purchases')
   .find({})
   .forEach(function (purchase) {

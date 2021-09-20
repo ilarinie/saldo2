@@ -4,7 +4,7 @@ module.exports = function (app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'http://localhost:3033',
+      target: 'http://saldo-backend:3033',
       changeOrigin: false,
     })
   );
