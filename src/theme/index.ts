@@ -6,6 +6,9 @@ export const theme = createTheme({
       fontSize: '1.5rem',
       fontWeight: 500,
     },
+    subtitle1: {
+      marginTop: '8px',
+    },
   },
   palette: {
     mode: 'dark',

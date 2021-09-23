@@ -40,9 +40,18 @@ const findOrCreateTestUser = async () => {
   return user;
 };
 
+const createUserByUserName = async (username: string) => {
+  const newUser = await UserModel.create({
+    name: username,
+    picture: 'https://via.placeholder.com/150',
+  });
+  return newUser;
+};
+
 export {
   create,
   findById,
   findOrCreateFromGoogleProfile,
   findOrCreateTestUser,
+  createUserByUserName,
 };

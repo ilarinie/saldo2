@@ -9,7 +9,7 @@ export type UserType = {
 
 const UserSchema = new mongoose.Schema<UserType>(
   {
-    name: { type: String },
+    name: { type: String, unique: true, index: true },
     googleProfileId: { type: String },
     picture: { type: String },
   },

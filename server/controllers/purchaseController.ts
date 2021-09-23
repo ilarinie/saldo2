@@ -48,6 +48,7 @@ const foo = (app, wss) => {
             amount: req.body.amount,
             description: req.body.description,
             benefactors: req.body.benefactors,
+            type: req.body.type,
             // @ts-ignore
             budgetId: budget._id,
             createdBy: req.user._id,

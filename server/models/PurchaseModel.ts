@@ -13,6 +13,7 @@ export type PurchaseType = {
     amountBenefitted: number;
     user: string;
   }>;
+  type: 'transfer' | 'purchase';
 };
 // Schema for purchase
 const PurchaseSchema = new mongoose.Schema<PurchaseType>(
@@ -29,6 +30,7 @@ const PurchaseSchema = new mongoose.Schema<PurchaseType>(
       },
     ],
     createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
+    type: { type: String },
   },
   {
     timestamps: true,

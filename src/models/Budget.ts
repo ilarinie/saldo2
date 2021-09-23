@@ -1,8 +1,10 @@
 export interface Budget {
   _id: string;
   name: string;
-  owners: User[];
-  members: User[];
+  ownerIds: string[];
+  memberIds: string[];
+  allIds: string[];
+  userMap: { [userId: string]: User };
   purchases: Purchase[];
   total: number;
   type: 'saldo' | 'budget';

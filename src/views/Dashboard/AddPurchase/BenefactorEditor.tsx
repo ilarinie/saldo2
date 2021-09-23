@@ -1,20 +1,22 @@
-import { Avatar, Slider } from '@mui/material';
+import { Avatar, Button, ButtonGroup, Slider } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import currency from 'currency.js';
 import { Benefactor } from 'src/models/Budget';
-import { CurrencyFormatOptions } from './BudgetItem';
+import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem';
 
 interface BenefactorEditorProps {
   benefactors: Benefactor[];
   defaultMode?: 'even-split' | 'saldo';
   total: number;
   onBenefactorsChanged: (benefactors: Benefactor[]) => void;
+  onDefaultModeChanged: (mode: 'saldo' | 'even-split') => void;
 }
 
 export const BenefactorEditor = ({
   benefactors,
   onBenefactorsChanged,
   total,
+  onDefaultModeChanged,
 }: BenefactorEditorProps) => {
   const onAmountChanged = (event: any) => {
     const name = event.target.name;
@@ -46,7 +48,13 @@ export const BenefactorEditor = ({
   };
 
   return (
-    <>
+    <Box>
+      <ButtonGroup>
+        <Button onClick={() => onDefaultModeChanged('even-split')}>
+          Even split
+        </Button>
+      </ButtonGroup>
+      <Button onClick={() => onDefaultModeChanged('saldo')}>Saldo</Button>
       {benefactors.map((b) => (
         <StyledSliderContainer key={b.user._id}>
           <Box
@@ -79,7 +87,7 @@ export const BenefactorEditor = ({
           </ActualSliderContainer>
         </StyledSliderContainer>
       ))}
-    </>
+    </Box>
   );
 };
 

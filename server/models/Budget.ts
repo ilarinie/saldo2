@@ -15,8 +15,8 @@ export type BudgetType = {
 const BudgetSchema = new mongoose.Schema<BudgetType, any, BudgetType>(
   {
     name: { type: String },
-    owners: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
-    members: [{ type: mongoose.Types.ObjectId, ref: 'User' }],
+    owners: [{ type: mongoose.Types.ObjectId, ref: 'User', default: [] }],
+    members: [{ type: mongoose.Types.ObjectId, ref: 'User', default: [] }],
     deleted: { type: Boolean, default: false },
     type: { type: String },
   },

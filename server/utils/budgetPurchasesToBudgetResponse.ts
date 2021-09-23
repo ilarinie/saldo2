@@ -58,11 +58,34 @@ export const budgetPurchasesToBudgetResponse = (
     });
   });
 
+  const { allIds, memberIds, ownerIds, userMap } = (() => {
+    let ownerIds = [] as string[];
+    let memberIds = [] as string[];
+    let allIds = [] as string[];
+    let userMap: { [key: string]: PurchaseUser } = {};
+
+    budget.owners.forEach((m) => {
+      ownerIds.push(m._id);
+      allIds.push(m._id);
+      userMap[m._id] = m;
+    });
+
+    budget.members.forEach((m) => {
+      memberIds.push(m._id);
+      allIds.push(m._id);
+      userMap[m._id] = m;
+    });
+
+    return { allIds, memberIds, ownerIds, userMap };
+  })();
+
   const response: BudgetResponse = {
     _id: budget._id,
     name: budget.name,
-    members: budget.members,
-    owners: budget.owners,
+    allIds,
+    memberIds,
+    ownerIds,
+    userMap,
     type: budget.type,
     total: total.value,
     purchases: purchases as unknown as Purchase[],

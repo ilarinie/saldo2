@@ -1,8 +1,10 @@
 export interface BudgetResponse {
   _id: string;
   name: string;
-  owners: PurchaseUser[];
-  members: PurchaseUser[];
+  ownerIds: string[];
+  memberIds: string[];
+  allIds: string[];
+  userMap: { [userId: string]: PurchaseUser };
   purchases: Purchase[];
   total: number;
   type: 'budget' | 'saldo';

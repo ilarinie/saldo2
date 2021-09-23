@@ -38,10 +38,14 @@ const ownerOrMemberQuery = (userId, requireOwner) => {
   };
 };
 
-const getBudgetById = async (budgetId, userId): Promise<BudgetType> => {
+const getBudgetById = async (
+  budgetId,
+  userId,
+  requireOenwer = false
+): Promise<BudgetType> => {
   try {
     const budget: BudgetType = await BudgetModel.findOne(
-      createBudgetQuery(budgetId, userId, false)
+      createBudgetQuery(budgetId, userId, requireOenwer)
     );
     return Promise.resolve(budget);
   } catch (err) {
@@ -61,7 +65,8 @@ const getBudget = async (budgetId, userId): Promise<BudgetResponse> => {
         $and: [{ deleted: false }, { budgetId: budget._id }],
       })
         .sort({ createdAt: -1 })
-        .populate('benefactors.user');
+        .populate('benefactors.user')
+        .populate('createdBy');
 
       const response = budgetPurchasesToBudgetResponse(budget, purchases);
       return Promise.resolve(response);
@@ -82,14 +87,17 @@ const createBudget = async (budget, userId) => {
 };
 
 const updateBudget = async (budgetId, userId, updateData) => {
+  let updateQuery = updateData;
+  if (updateData.members) {
+    updateQuery = { $addToSet: { members: { $each: updateData.members } } };
+  }
+
   const budget = await BudgetModel.findOneAndUpdate(
     createBudgetQuery(budgetId, userId, true),
-    { ...updateData },
+    { ...updateQuery },
     { new: true }
   );
-  // @ts-ignore
   await budget.populate('owners');
-  // @ts-ignore
   await budget.populate('members');
   return budget;
 };

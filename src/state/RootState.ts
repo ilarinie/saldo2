@@ -1,41 +1,42 @@
 import axios from 'axios';
 import { makeAutoObservable, runInAction } from 'mobx';
-import { ReactNode } from 'react';
 import { Benefactor, Budget, Purchase } from 'src/models/Budget';
+import { BudgetStore } from './BudgetStore';
 
-type FetchingState = 'PENDING' | 'ERROR' | 'FETCHED';
 type LoginState = 'PENDING' | 'UNAUTHORIZED' | 'LOGGED_IN';
+
+export interface PurchaseCreationProps {
+  amount: number;
+  benefactors: Benefactor[];
+  type: 'transfer' | 'purchase';
+  description: string;
+  budgetId: string;
+}
 
 export class RootState {
   purchases: Purchase[] = [];
-  budgets: Budget[] = [];
   selectedBudget: Budget | undefined;
-  totalSaldo: number = 0;
-  changeToday: number = 0;
-  state: FetchingState = 'PENDING';
+
   loginState: LoginState = 'PENDING';
   loginError: string | undefined;
   ws: WebSocket | undefined;
   purchaseCreationError: string | undefined;
-  modalContents: null | ReactNode = null;
+
   currentUser: any | undefined;
-  budgetIds: string[] = [];
-  budgetMap: { [key: string]: Budget } = {};
   snackBarOpen: boolean = false;
+
   snackBarMessage: { severity: string; message: string } = {
     severity: 'info',
     message: 'test',
   };
 
-  constructor() {
+  budgetStore: BudgetStore;
+  constructor(budgetStore: BudgetStore) {
     makeAutoObservable(this);
+    this.budgetStore = budgetStore;
 
     this.tryLogin();
 
-    this.setupVisibilityChangeListener();
-    this.fetchBudgets();
-
-    // this.setupPolling();
     this.setupWebsocket();
   }
 
@@ -82,7 +83,7 @@ export class RootState {
 
     newWebsocket.onmessage = (event) => {
       const purchase = JSON.parse(event.data);
-
+      this.budgetStore.refreshBudget(purchase.budgetId);
       this.showSnackbarMessage('Saldoa lisätty', 'info');
     };
 
@@ -100,62 +101,28 @@ export class RootState {
     this.ws = newWebsocket;
   };
 
-  private setupVisibilityChangeListener = () => {
-    document.addEventListener('visibilitychange', () => {
-      !document.hidden && this.fetchBudgets();
-    });
-  };
-
   private setupPolling = () => {
-    this.fetchBudgets();
     setTimeout(this.setupPolling, 10000);
   };
 
-  fetchBudgets = async () => {
-    this.budgets = [];
-    try {
-      const res = await axios.get('/api/budgets');
-      this.budgets = res.data.resp;
-      let newBudgetIds: string[] = [];
-      let newBudgetMap: { [key: string]: Budget } = {};
-      console.log(res.data.resp);
-
-      res.data.resp.forEach((re: Budget) => {
-        newBudgetIds.push(re._id);
-        newBudgetMap[re._id] = re;
-      });
-
-      runInAction(() => {
-        this.budgetIds = newBudgetIds;
-        this.budgetMap = newBudgetMap;
-      });
-    } catch (err) {
-      console.log('erro');
-      console.log(err);
-      this.state = 'ERROR';
-    }
-  };
-
-  createPurchase = async (
-    amount: number,
-    description: string,
-    budgetId: string,
-    payerId: string,
-    benefactors: Benefactor[]
-  ) => {
+  createPurchase = async ({
+    amount,
+    description,
+    budgetId,
+    benefactors,
+  }: PurchaseCreationProps) => {
     if (amount && description) {
       try {
         await axios.post<Purchase>('/api/purchases', {
           amount,
           description,
           budgetId,
-          payerId,
           benefactors: benefactors.map((b) => ({
             ...b,
             user: b.user._id,
           })),
         });
-        this.refreshBudget(budgetId);
+        this.budgetStore.refreshBudget(budgetId);
       } catch (err: any) {
         this.purchaseCreationError = err.message;
       }
@@ -164,43 +131,26 @@ export class RootState {
     }
   };
 
-  refreshBudget = async (budgetId: string) => {
-    const res = await axios.get<any>('/api/budgets/' + budgetId);
-    runInAction(() => {
-      this.budgetIds = [...this.budgetIds];
-      this.budgetMap = {
-        ...this.budgetMap,
-        [res.data.resp._id]: res.data.resp,
-      };
-    });
-  };
-
   deletePurchase = async (purchaseId: string, budgetId: string) => {
     try {
       await axios.delete('/api/purchases/' + purchaseId);
-      this.refreshBudget(budgetId);
+      this.budgetStore.refreshBudget(budgetId);
       this.showSnackbarMessage('Purchase deleted', 'info');
     } catch (err) {
       console.error('err', err);
     }
   };
 
-  logIn = async (secret: string) => {
+  addUser = async (budget: Budget, newUserName: string) => {
     try {
-      axios.defaults.headers.common = {
-        Authorization: secret || '',
-      };
-      await axios.post('/api/checklogin');
-      localStorage.setItem('token', secret);
-      runInAction(() => {
-        this.loginError = '';
-        this.loginState = 'LOGGED_IN';
+      await axios.post(`/api/budgets/${budget._id}/addnewusers`, {
+        budgetId: budget._id,
+        username: newUserName,
       });
+      this.budgetStore.refreshBudget(budget._id);
+      this.showSnackbarMessage('User added', 'info');
     } catch (err) {
-      runInAction(() => {
-        this.loginState = 'UNAUTHORIZED';
-        this.loginError = 'Wrong secret, try again.';
-      });
+      console.error('err', err);
     }
   };
 }
