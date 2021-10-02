@@ -8,7 +8,7 @@ export const ArrowIcon = ({
 }: {
   up: boolean | undefined;
   color: string;
-    style?: React.CSSProperties;
+      style?: React.CSSProperties;
   radius?: string;
 }) => {
   return (
