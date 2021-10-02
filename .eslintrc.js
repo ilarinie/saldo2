@@ -1,14 +1,12 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
-  parserOptions: {
-    sourceType: "module"
-  },
   plugins: [
     "@typescript-eslint"
   ],
   extends: [
     "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "prettier",
+    "plugin:react/recommended"
   ],
   rules: {
     "max-len": [
@@ -16,6 +14,8 @@ module.exports = {
       {
         "code": 140
       }
-    ]
+    ],
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off"
   }
 }

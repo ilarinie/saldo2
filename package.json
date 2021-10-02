@@ -71,7 +71,7 @@
     "test-server": "export TS_NODE_PROJECT=server/tsconfig.json; ./node_modules/.bin/jest ./server/**/*.ts --watch --config ts-jest.config.js --detectOpenHandles",
     "eject": "react-scripts eject",
     "docker:start": "react-scripts start",
-    "format": "prettier --write .",
+    "format": "eslint --fix",
     "lint": "tsc --noEmit && eslint .",
     "prepare": "husky install"
   },
@@ -103,6 +103,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.26.1",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
