@@ -1,8 +1,10 @@
 import {
   colors,
+  Paper,
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
 } from '@mui/material';
@@ -11,8 +13,8 @@ import currency from 'currency.js';
 import { observer } from 'mobx-react-lite';
 import { useContext } from 'react';
 import { useRouteMatch } from 'react-router';
-import { Benefactor, Budget, Purchase, UserTotal } from 'src/models/Budget';
-import { RootContext } from 'src/state/RootContext';
+import { Benefactor, BudgetResponse, Purchase, UserTotal } from 'server/types';
+import { RootContext } from '../../state/RootContext';
 import {
   CurrencyFormatOptions,
   CurrencyFormatOptionsWithPlus,
@@ -31,125 +33,120 @@ export const BudgetReport = observer(() => {
     return purchase.benefactors.find((b) => b.user._id === userId);
   };
 
-  const getUserTotal = (budget: Budget, userId: string): UserTotal => {
+  const getUserTotal = (budget: BudgetResponse, userId: string): UserTotal => {
     return budget.totals.find((t) => t.user._id === userId) as UserTotal;
   };
 
-  const createTableCurrencyStyle = (reverse: boolean, amount?: number) => {
-    if (!amount) {
-      return {};
-    }
-    return;
-  };
-
   return (
-    <Box>
-      <StyledTable>
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
+    <Box maxWidth='100vw' sx={{ overflow: 'scroll' }}>
+      <TableContainer component={Paper}>
+        <StyledTable size='small'>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
 
-            {budget.allIds.map((i) => (
-              <TableCell colSpan={2} key={`table-head-${i}`}>
-                {budget.userMap[i].name}
-              </TableCell>
+              {budget.allIds.map((i: string) => (
+                <TableCell size='small' colSpan={2} key={`table-head-${i}`}>
+                  {budget.userMap[i].name}
+                </TableCell>
+              ))}
+            </TableRow>
+            <TableRow>
+              <TableCell size='small'>Description</TableCell>
+              {budget.allIds.map((i: string) => (
+                <>
+                  <TableCell key={`paid-${i}`}>paid</TableCell>
+                  <TableCell key={`got-${i}`}>got</TableCell>
+                </>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {budget.purchases.map((p: Purchase) => (
+              <TableRow key={p._id}>
+                <TableCell>{p.description}</TableCell>
+                {budget.allIds.map((i: string) => {
+                  const benefactor = getUserBenefactor(p, i) as Benefactor;
+                  return (
+                    <>
+                      <TableCell
+                        key={`paid-${i}`}
+                        sx={{
+                          color:
+                            benefactor.amountPaid === 0
+                              ? 'rgba(0,0,0,0)'
+                              : benefactor.amountPaid < 0
+                              ? colors.red[300]
+                              : colors.green[300],
+                        }}
+                      >
+                        {currency(benefactor.amountPaid).format(
+                          CurrencyFormatOptions
+                        )}
+                      </TableCell>
+                      <TableCell
+                        key={`got-${i}`}
+                        sx={{
+                          color:
+                            benefactor.amountBenefitted === 0
+                              ? 'rgba(0,0,0,0)'
+                              : benefactor.amountBenefitted > 0
+                              ? colors.red[300]
+                              : colors.green[300],
+                        }}
+                      >
+                        {currency(benefactor.amountBenefitted).format(
+                          CurrencyFormatOptions
+                        )}
+                      </TableCell>
+                    </>
+                  );
+                })}
+              </TableRow>
             ))}
-          </TableRow>
-          <TableRow>
-            <TableCell>Description</TableCell>
-            {budget.allIds.map((i) => (
-              <>
-                <TableCell key={`paid-${i}`}>paid</TableCell>
-                <TableCell key={`got-${i}`}>got</TableCell>
-              </>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {budget.purchases.map((p) => (
-            <TableRow key={p._id}>
-              <TableCell>{p.description}</TableCell>
-              {budget.allIds.map((i) => {
-                const benefactor = getUserBenefactor(p, i) as Benefactor;
+            <StyledTotalRow>
+              <TableCell>Total</TableCell>
+              {budget.allIds.map((i: string) => (
+                <>
+                  <TableCell key={`paid-${i}`}>
+                    {currency(getUserTotal(budget, i).totalPaid).format(
+                      CurrencyFormatOptions
+                    )}
+                  </TableCell>
+                  <TableCell key={`got-${i}`}>
+                    {currency(getUserTotal(budget, i).totalBenefitted).format(
+                      CurrencyFormatOptions
+                    )}
+                  </TableCell>
+                </>
+              ))}
+            </StyledTotalRow>
+            <StyledDiffRow>
+              <TableCell>Diff</TableCell>
+              {budget.allIds.map((i: string) => {
+                const { diff } = getUserTotal(budget, i);
                 return (
-                  <>
-                    <TableCell
-                      key={`paid-${i}`}
-                      sx={{
-                        color:
-                          benefactor.amountPaid === 0
-                            ? 'inherit'
-                            : benefactor.amountPaid < 0
-                            ? colors.red[300]
-                            : colors.green[300],
-                      }}
-                    >
-                      {currency(benefactor.amountPaid).format(
-                        CurrencyFormatOptions
-                      )}
-                    </TableCell>
-                    <TableCell
-                      key={`got-${i}`}
-                      sx={{
-                        color:
-                          benefactor.amountBenefitted === 0
-                            ? 'inherit'
-                            : benefactor.amountBenefitted > 0
-                            ? colors.red[300]
-                            : colors.green[300],
-                      }}
-                    >
-                      {currency(benefactor.amountBenefitted).format(
-                        CurrencyFormatOptions
-                      )}
-                    </TableCell>
-                  </>
+                  <TableCell
+                    colSpan={2}
+                    key={`paid-${i}`}
+                    align='left'
+                    sx={{
+                      color:
+                        diff === 0
+                          ? 'inherit'
+                          : diff < 0
+                          ? colors.red[300]
+                          : colors.green[300],
+                    }}
+                  >
+                    {currency(diff).format(CurrencyFormatOptionsWithPlus)}
+                  </TableCell>
                 );
               })}
-            </TableRow>
-          ))}
-          <StyledTotalRow>
-            <TableCell>Total</TableCell>
-            {budget.allIds.map((i) => (
-              <>
-                <TableCell key={`paid-${i}`}>
-                  {currency(getUserTotal(budget, i).totalPaid).format(
-                    CurrencyFormatOptions
-                  )}
-                </TableCell>
-                <TableCell key={`got-${i}`}>
-                  {currency(getUserTotal(budget, i).totalBenefitted).format(
-                    CurrencyFormatOptions
-                  )}
-                </TableCell>
-              </>
-            ))}
-          </StyledTotalRow>
-          <StyledDiffRow>
-            <TableCell>Diff</TableCell>
-            {budget.allIds.map((i) => {
-              const { diff } = getUserTotal(budget, i);
-              return (
-                <TableCell
-                  colSpan={2}
-                  key={`paid-${i}`}
-                  align='left'
-                  sx={{
-                    color:
-                      diff === 0
-                        ? 'inherit'
-                        : diff < 0
-                        ? colors.red[300]
-                        : colors.green[300],
-                  }}
-                >
-                  {currency(diff).format(CurrencyFormatOptionsWithPlus)}
-                </TableCell>
-              );
-            })}
-          </StyledDiffRow>
-        </TableBody>
-      </StyledTable>
+            </StyledDiffRow>
+          </TableBody>
+        </StyledTable>
+      </TableContainer>
     </Box>
   );
 });

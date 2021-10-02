@@ -17,6 +17,7 @@ services:
     networks:
       - backend
     command: npm run-script dev:run-backend
+
   saldo-frontend:
     build: .
     ports:
@@ -25,11 +26,13 @@ services:
       NODE_ENV: development
     volumes:
       - .:/home/app/appDir
+      - /home/app/appDir/node_modules
     environment:
       - NODE_ENV=development
     networks:
       - backend
-    command: npm run-script docker:start
+    command: npm run docker:start
+    
   mongo:
     image: 'mongo'
     restart: always

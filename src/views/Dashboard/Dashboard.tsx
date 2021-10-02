@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
-import { Budget } from 'src/models/Budget';
-import { RootContext } from 'src/state/RootContext';
+import { Budget } from '../../models/Budget';
+import { RootContext } from '../../state/RootContext';
 import { AddPurchase } from './AddPurchase/AddPurchase';
 import { AddTransfer } from './AddTransfer/AddTransfer';
 import { BudgetList } from './BudgetList/BudgetList';

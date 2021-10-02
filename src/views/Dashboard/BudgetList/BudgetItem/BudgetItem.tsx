@@ -29,7 +29,7 @@ import {
 import currency from 'currency.js';
 import { memo, useState } from 'react';
 import { useHistory } from 'react-router';
-import { Budget, UserTotal } from 'src/models/Budget';
+import { Budget, UserTotal } from '../../../../models/Budget';
 import { BudgetExpanded } from './BudgetExpanded';
 
 interface BudgetItemProps {
@@ -41,13 +41,13 @@ interface BudgetItemProps {
 
 export const CurrencyFormatOptions = {
   symbol: '€',
-  pattern: '# !',
-  negativePattern: '- # !',
+  pattern: '#!',
+  negativePattern: '- #!',
 };
 
 export const CurrencyFormatOptionsWithPlus = {
   ...CurrencyFormatOptions,
-  pattern: '+ # !',
+  pattern: '+ #!',
 };
 
 const formatName = (name: string) => {

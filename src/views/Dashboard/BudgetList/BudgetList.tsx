@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { Budget } from 'src/models/Budget';
+import { Budget } from '../../../models/Budget';
 import { SaldoBudgetItem } from './BudgetItem/BudgetItem';
 
 interface BudgetListProps {

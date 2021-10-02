@@ -13,7 +13,7 @@ import { Box } from '@mui/system';
 import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router';
-import { RootContext } from 'src/state/RootContext';
+import { RootContext } from '../../state/RootContext';
 
 export const AddBudget = observer(() => {
   const history = useHistory();

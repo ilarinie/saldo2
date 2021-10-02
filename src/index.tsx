@@ -4,7 +4,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/system';
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import App from './App';
@@ -14,7 +14,7 @@ import { RootContext, rootState } from './state/RootContext';
 import { theme } from './theme/index';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <RootContext.Provider value={rootState}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -23,7 +23,7 @@ ReactDOM.render(
         </Router>
       </ThemeProvider>
     </RootContext.Provider>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root')
 );
 

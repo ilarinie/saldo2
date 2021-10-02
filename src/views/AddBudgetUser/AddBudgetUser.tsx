@@ -13,7 +13,7 @@ import {
 import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
 import { useRouteMatch } from 'react-router';
-import { RootContext } from 'src/state/RootContext';
+import { RootContext } from '../../state/RootContext';
 
 export const AddBudgetUser = observer(() => {
   const rootState = useContext(RootContext);
@@ -50,7 +50,7 @@ export const AddBudgetUser = observer(() => {
       <Card>
         <CardContent>
           <List>
-            {budget.allIds.map((m) => (
+            {budget.allIds.map((m: string) => (
               <ListItem key={m}>
                 <ListItemText primary={budget.userMap[m].name} />
               </ListItem>

@@ -15,10 +15,10 @@ import { styled } from '@mui/system';
 import currency from 'currency.js';
 import { observer } from 'mobx-react-lite';
 import { useContext, useEffect, useState } from 'react';
-import { SaldoModal } from 'src/components/Modal/Modal';
-import { UserSelector } from 'src/components/UserSelector/UserSelector';
-import { Budget, Purchase, User } from 'src/models/Budget';
-import { RootContext } from 'src/state/RootContext';
+import { SaldoModal } from '../../../components/Modal/Modal';
+import { UserSelector } from '../../../components/UserSelector/UserSelector';
+import { Budget, Purchase, User } from '../../../models/Budget';
+import { RootContext } from '../../../state/RootContext';
 import { BenefactorEditor } from './BenefactorEditor';
 import { initBenefactors } from './initBenefactors';
 

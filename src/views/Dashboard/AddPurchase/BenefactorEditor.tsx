@@ -1,7 +1,7 @@
 import { Avatar, Button, ButtonGroup, Slider } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import currency from 'currency.js';
-import { Benefactor } from 'src/models/Budget';
+import { Benefactor } from '../../../models/Budget';
 import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem';
 
 interface BenefactorEditorProps {

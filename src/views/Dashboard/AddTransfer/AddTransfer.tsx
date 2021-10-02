@@ -11,10 +11,10 @@ import {
 } from '@mui/material';
 import currency from 'currency.js';
 import { useContext, useState } from 'react';
-import { SaldoModal } from 'src/components/Modal/Modal';
-import { UserSelector } from 'src/components/UserSelector/UserSelector';
-import { Benefactor, Budget, User } from 'src/models/Budget';
-import { RootContext } from 'src/state/RootContext';
+import { SaldoModal } from '../../../components/Modal/Modal';
+import { UserSelector } from '../../../components/UserSelector/UserSelector';
+import { Benefactor, Budget, User } from '../../../models/Budget';
+import { RootContext } from '../../../state/RootContext';
 import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem';
 
 interface AddTransferProps {

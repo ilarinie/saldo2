@@ -17,6 +17,8 @@ CMD ["node", "server/index.js"]
 COPY package.json ./
 RUN npm install
 
+COPY vite.config.ts $HOME/$SUBDIR/
+
 COPY . $HOME/$SUBDIR/
 
 ENV PATH $HOME/${SUBDIR}/node_modules/.bin:$PATH

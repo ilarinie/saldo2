@@ -1,10 +1,8 @@
 import currency from 'currency.js';
 import { BudgetType } from '../models/Budget';
-import {
-  BudgetResponse,
-  Purchase,
-  PurchaseUser,
-} from '../types/BudgetResponse';
+import { BudgetResponse } from '../types/BudgetResponse';
+import { Purchase } from '../types/Purchase';
+import { PurchaseUser } from '../types/PurchaseUser';
 
 interface UserTotalMap {
   [userId: string]: { totalPaid: number; totalBenefitted: number };

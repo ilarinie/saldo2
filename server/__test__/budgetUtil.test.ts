@@ -1,5 +1,5 @@
 import { BudgetType } from '../models/Budget';
-import { Purchase } from '../types/BudgetResponse';
+import { Purchase } from '../types/Purchase';
 import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse';
 import constants from './constants';
 

@@ -1,7 +1,8 @@
 import logger from '../logger';
 import BudgetModel, { BudgetType } from '../models/Budget';
 import PurchaseModel from '../models/PurchaseModel';
-import { BudgetResponse, Purchase } from '../types/BudgetResponse';
+import { BudgetResponse } from '../types/BudgetResponse';
+import { Purchase } from '../types/Purchase';
 import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse';
 
 const createBudgetQuery = (budgetId, userId, requireOwner) => {

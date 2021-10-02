@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { makeAutoObservable, runInAction } from 'mobx';
-import { Benefactor, Budget, Purchase } from 'src/models/Budget';
+import { Benefactor, BudgetResponse, Purchase } from 'server/types';
 import { BudgetStore } from './BudgetStore';
 
 type LoginState = 'PENDING' | 'UNAUTHORIZED' | 'LOGGED_IN';
@@ -15,7 +15,7 @@ export interface PurchaseCreationProps {
 
 export class RootState {
   purchases: Purchase[] = [];
-  selectedBudget: Budget | undefined;
+  selectedBudget: BudgetResponse | undefined;
 
   loginState: LoginState = 'PENDING';
   loginError: string | undefined;
@@ -73,7 +73,7 @@ export class RootState {
 
   private setupWebsocket = () => {
     const newWebsocket = new WebSocket(
-      process.env.REACT_APP_WEBSOCKET_URI || 'ws://localhost:3001/ws'
+      (import.meta.env.VITE_WEBSOCKET_URI || 'ws://localhost:3001/ws') as string
     );
     const bound = this.setupWebsocket;
 
@@ -141,7 +141,7 @@ export class RootState {
     }
   };
 
-  addUser = async (budget: Budget, newUserName: string) => {
+  addUser = async (budget: BudgetResponse, newUserName: string) => {
     try {
       await axios.post(`/api/budgets/${budget._id}/addnewusers`, {
         budgetId: budget._id,
