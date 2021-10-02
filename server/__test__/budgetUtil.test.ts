@@ -21,6 +21,7 @@ const users = [
 ];
 
 const basePurcase = {
+  _id: '123123123',
   budgetId: TEST_SALDO_BUDGET_ID,
   createdBy: users[0],
   deleted: false,
