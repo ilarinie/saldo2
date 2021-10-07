@@ -1,7 +1,7 @@
+/* eslint-disable */
 const dotenv = require('dotenv');
 dotenv.config();
 
-/* eslint-disable */
 import mongoose from 'mongoose';
 import { connectToDatabase } from '../database';
 import * as BudgetService from '../services/budget-service';
@@ -20,8 +20,6 @@ describe('budgetService test', () => {
     );
 
     expect(budget.name).toBe('saldo-budget');
-    console.log(JSON.stringify(budget.purchases, null, 2));
-    console.log(JSON.stringify(budget.totals, null, 2));
 
     await mongoose.connection.db.dropDatabase();
     await mongoose.connection.close();

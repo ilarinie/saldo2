@@ -24,11 +24,11 @@ import {
 } from '@mui/material';
 import currency from 'currency.js';
 import { useState } from 'react';
-import { Budget, Purchase } from 'src/models/Budget';
+import { BudgetResponse, Purchase } from 'server/types';
 import { CurrencyFormatOptions } from './BudgetItem';
 
 interface BudgetExpandedProps {
-  budget: Budget;
+  budget: BudgetResponse;
   deletePurchase: (purchaseId: string, budgetId: string) => void;
 }
 

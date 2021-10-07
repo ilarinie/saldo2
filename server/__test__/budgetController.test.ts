@@ -1,32 +1,31 @@
+/* eslint-disable */
 const dotenv = require('dotenv');
 dotenv.config();
 
-/* eslint-disable */
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { connectToDatabase } from '../database';
 import { app } from '../server';
 import constants from './constants';
 import { createSaldoTestBudget, TEST_SALDO_BUDGET_ID } from './seed';
+/* eslint-enable */
 
-const { TEST_USER_ID, TEST_USER_ID_2, TEST_BUDGET_ID, TEST_BUDGET_2_ID } =
-  constants;
+const { TEST_USER_ID, TEST_USER_ID_2, TEST_BUDGET_2_ID } = constants;
 
 // @ts-ignore
 process.env.NODE_ENV = 'test';
 
 describe('Endpoints spec', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     try {
       await connectToDatabase(process.env.TEST_MONGO_URI);
       await createSaldoTestBudget();
     } catch (err) {
       console.log(err);
-      console.log('ERRRR');
     }
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
     await mongoose.connection.close();
   });
@@ -78,6 +77,10 @@ describe('Endpoints spec', () => {
       expect(budget.name).toBe('newBudget');
       expect(budget.owners[0]._id).toBe(TEST_USER_ID);
     });
+    it(`doesn't create a budget without a name`, async () => {
+      const res = await request(app).post(`/api/budgets`).send({});
+      expect(res.status).toBe(406);
+    });
   });
 
   describe('Updates a budget', () => {
@@ -111,6 +114,47 @@ describe('Endpoints spec', () => {
       expect(res.status).toBe(200);
       const budget = res.body.resp;
       expect(budget.members[0]).toBe(undefined);
+    });
+  });
+
+  describe('Adds new members', () => {
+    it('adds manual members with proper request', async () => {
+      const res = await request(app)
+        .post(`/api/budgets/${TEST_SALDO_BUDGET_ID}/addnewusers`)
+        .send({
+          username: 'newBudgetUser',
+          budgetId: TEST_SALDO_BUDGET_ID,
+        });
+      expect(res.status).toBe(200);
+    });
+    it('returns 406 with incorrect params', async () => {
+      const res = await request(app)
+        .post(`/api/budgets/${TEST_SALDO_BUDGET_ID}/addnewusers`)
+        .send({
+          budgetId: TEST_SALDO_BUDGET_ID,
+        });
+      const error = res.body.errors[0];
+      expect(error.value).toBe('');
+      expect(error.msg).toBe('Invalid value');
+      expect(error.param).toBe('username');
+      expect(res.status).toBe(406);
+    });
+    it('returns 406 with incorrect budget id', async () => {
+      const res = await request(app)
+        .post(`/api/budgets/höpönpöppöö/addnewusers`)
+        .send({
+          username: 'james bond',
+        });
+      expect(res.status).toBe(406);
+    });
+
+    it('returns 406 with incorrect budget id', async () => {
+      const res = await request(app)
+        .post(`/api/budgets/615f417a3333fbdcc8f98f2c/addnewusers`)
+        .send({
+          username: 'james bond',
+        });
+      expect(res.status).toBe(403);
     });
   });
 });

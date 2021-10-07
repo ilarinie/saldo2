@@ -3,7 +3,6 @@ import passport from 'passport';
 const foo = (app) => {
   app.get('/api/auth/google', (req, res, next) => {
     console.log('faaa');
-    // @ts-ignore
     passport.authenticate('google', {
       scope: [
         'https://www.googleapis.com/auth/plus.login',
@@ -13,7 +12,6 @@ const foo = (app) => {
   });
   app.get(
     '/api/auth/google/callback',
-    // @ts-ignore
     passport.authenticate('google', {
       failureRedirect: '/api/auth/google/failure',
       successRedirect: '/',

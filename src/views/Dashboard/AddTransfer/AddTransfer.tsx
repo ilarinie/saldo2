@@ -11,21 +11,21 @@ import {
 } from '@mui/material';
 import currency from 'currency.js';
 import { useContext, useState } from 'react';
+import { Benefactor, BudgetResponse, PurchaseUser } from 'server/types';
 import { SaldoModal } from '../../../components/Modal/Modal';
 import { UserSelector } from '../../../components/UserSelector/UserSelector';
-import { Benefactor, Budget, User } from '../../../models/Budget';
 import { RootContext } from '../../../state/RootContext';
 import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem';
 
 interface AddTransferProps {
-  budget: Budget;
+  budget: BudgetResponse;
   open: boolean;
   onClose: () => void;
-  currentUser: User;
+  currentUser: PurchaseUser;
 }
 
 const generateBenefactors = (
-  budget: Budget,
+  budget: BudgetResponse,
   payerId: string,
   receiverId: string,
   amount: number

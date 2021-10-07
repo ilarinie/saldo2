@@ -9,13 +9,13 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useState } from 'react';
-import { User } from 'src/models/Budget';
+import { PurchaseUser } from 'server/types';
 import { UserListItem } from '../UserListItem/UserListItem';
 
 interface UserSelectorProps {
-  selectedUser: User;
+  selectedUser: PurchaseUser;
   userIds: string[];
-  userMap: { [key: string]: User };
+  userMap: { [key: string]: PurchaseUser };
   onUserSelected: (userId: string) => void;
   title: string;
 }
@@ -57,7 +57,7 @@ interface SimpleDialogProps {
   onClose: (userId: string) => void;
   open: boolean;
   userIds: string[];
-  userMap: { [key: string]: User };
+  userMap: { [key: string]: PurchaseUser };
   selectedValue: string;
   title: string;
 }

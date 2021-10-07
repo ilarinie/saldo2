@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  saldo-test-backend:
+    stdin_open: true
+    tty: true
+    build: .
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/home/app/appDir
+    environment:
+      - NODE_ENV=test
+      - MONGO_URI=mongodb://test-mongo/saldo-app
+      - TEST_MONGO_URI=mongodb://test-mongo/saldo-app-test
+      - SECRET=correcthorsebatterystaple
+      - TS_NODE_PROJECT=server/tsconfig.json
+    networks:
+      - testnet
+    command: npm run-script test-server:watchcoverage
+    
+  test-mongo:
+    image: 'mongo'
+    restart: always
+    volumes:
+      - ./mongo-volume:/data/db
+    networks:
+      - testnet
+    logging:
+      driver: 'none'
+ 
+networks:
+  testnet:

@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react-lite';
-import { Budget } from '../../../models/Budget';
+import { BudgetResponse } from 'server/types';
 import { SaldoBudgetItem } from './BudgetItem/BudgetItem';
 
 interface BudgetListProps {
   budgetIds: string[];
-  budgetMap: { [key: string]: Budget };
-  requestNewPurchase: (budget: Budget) => void;
-  requestNewTransfer: (budget: Budget) => void;
+  budgetMap: { [key: string]: BudgetResponse };
+  requestNewPurchase: (budget: BudgetResponse) => void;
+  requestNewTransfer: (budget: BudgetResponse) => void;
   onDeletePurchase: (purchaseId: string, budgetId: string) => void;
 }
 

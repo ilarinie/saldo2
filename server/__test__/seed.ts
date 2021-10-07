@@ -1,4 +1,4 @@
-import BudgetModel from '../models/Budget';
+import BudgetModel from '../models/BudgetModel';
 import PurchaseModel, { BenefactorDocument } from '../models/PurchaseModel';
 import UserModel from '../models/User';
 import constants from './constants';

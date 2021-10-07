@@ -15,9 +15,9 @@ import { styled } from '@mui/system';
 import currency from 'currency.js';
 import { observer } from 'mobx-react-lite';
 import { useContext, useEffect, useState } from 'react';
+import { BudgetResponse, Purchase, PurchaseUser } from 'server/types';
 import { SaldoModal } from '../../../components/Modal/Modal';
 import { UserSelector } from '../../../components/UserSelector/UserSelector';
-import { Budget, Purchase, User } from '../../../models/Budget';
 import { RootContext } from '../../../state/RootContext';
 import { BenefactorEditor } from './BenefactorEditor';
 import { initBenefactors } from './initBenefactors';
@@ -26,8 +26,8 @@ interface AddPurchaseProps {
   initialPurchase?: Purchase;
   open: boolean;
   onClose: () => void;
-  budget: Budget;
-  currentUser: User;
+  budget: BudgetResponse;
+  currentUser: PurchaseUser;
 }
 
 const StyledTextField = styled(TextField)`

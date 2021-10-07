@@ -1,11 +1,11 @@
 import currency from 'currency.js';
-import { User } from 'src/models/Budget';
+import { PurchaseUser } from 'server/types';
 
 export const initBenefactors = (
   amount: number,
   defaultMode: 'even-split' | 'saldo',
   payerId: string,
-  userMap: { [key: string]: User },
+  userMap: { [key: string]: PurchaseUser },
   memberIds: string[]
 ): any[] => {
   if (defaultMode === 'saldo') {

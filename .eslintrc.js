@@ -6,7 +6,8 @@ module.exports = {
   extends: [
     "plugin:@typescript-eslint/recommended",
     "prettier",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime"
   ],
   rules: {
     "max-len": [
@@ -16,6 +17,8 @@ module.exports = {
       }
     ],
     "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
+
   }
 }

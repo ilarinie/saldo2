@@ -1,4 +1,4 @@
-import { BudgetType } from '../models/Budget';
+import { BudgetType } from '../models/BudgetModel';
 import { Purchase } from '../types/Purchase';
 import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse';
 import constants from './constants';

@@ -1,11 +1,11 @@
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
-import { User } from 'src/models/Budget';
+import { PurchaseUser } from 'server/types';
 
 interface UserListItemProps {
-  user: User;
+  user: PurchaseUser;
   primary?: string;
   secondary?: string;
-  onClick: (user?: User) => void;
+  onClick: (user?: PurchaseUser) => void;
   icon?: JSX.Element;
 }
 

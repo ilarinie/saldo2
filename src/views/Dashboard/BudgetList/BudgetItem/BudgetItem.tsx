@@ -29,14 +29,14 @@ import {
 import currency from 'currency.js';
 import { memo, useState } from 'react';
 import { useHistory } from 'react-router';
-import { Budget, UserTotal } from '../../../../models/Budget';
+import { BudgetResponse, UserTotal } from 'server/types';
 import { BudgetExpanded } from './BudgetExpanded';
 
 interface BudgetItemProps {
-  budget: Budget;
-  requestNewPurchase: (budget: Budget) => void;
+  budget: BudgetResponse;
+  requestNewPurchase: (budget: BudgetResponse) => void;
   onDeletePurchase: (purchaseId: string, budgetId: string) => void;
-  requestNewTransfer: (budget: Budget) => void;
+  requestNewTransfer: (budget: BudgetResponse) => void;
 }
 
 export const CurrencyFormatOptions = {
@@ -174,11 +174,12 @@ export const SaldoBudgetItem = memo(
     return true;
   }
 );
+SaldoBudgetItem.displayName = 'SaldoBudgetItem';
 
 const BudgetStack = ({ members }: { members: UserTotal[] }) => (
   <List>
     {members.map((m) => (
-      <ListItem>
+      <ListItem key={m.user._id}>
         <ListItemAvatar>
           <Avatar src={m.user.picture} />
         </ListItemAvatar>

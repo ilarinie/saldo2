@@ -1,13 +1,20 @@
 import { defineConfig } from 'vite';
 import envCompatible from 'vite-plugin-env-compatible';
-import svgr from 'vite-plugin-svgr';
 import react from 'vite-preset-react';
 
 export default defineConfig({
   build: {
     outDir: 'build',
+    sourcemap: true,
   },
-  plugins: [react(), svgr(), envCompatible()],
+  plugins: [
+    react({
+      reactRefreshOptions: {
+        exclude: [/coverage/],
+      },
+    }),
+    envCompatible(),
+  ],
   server: {
     proxy: {
       '/api': {

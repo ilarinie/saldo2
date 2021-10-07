@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import { useContext, useState } from 'react';
-import { Budget } from '../../models/Budget';
+import { BudgetResponse } from 'server/types';
 import { RootContext } from '../../state/RootContext';
 import { AddPurchase } from './AddPurchase/AddPurchase';
 import { AddTransfer } from './AddTransfer/AddTransfer';
@@ -9,7 +9,7 @@ import { BudgetList } from './BudgetList/BudgetList';
 
 const newPurchaseModalStateInit = {
   open: false,
-  budget: undefined as undefined | Budget,
+  budget: undefined as undefined | BudgetResponse,
 };
 
 export const Dashboard = observer(() => {
@@ -26,13 +26,13 @@ export const Dashboard = observer(() => {
     newPurchaseModalStateInit
   );
 
-  const requestNewTransfer = (budget: Budget) => {
+  const requestNewTransfer = (budget: BudgetResponse) => {
     setNewTransferModalState({
       open: true,
       budget: budget,
     });
   };
-  const requestNewPurchase = (budget: Budget) => {
+  const requestNewPurchase = (budget: BudgetResponse) => {
     setNewPurchaseModalState({
       open: true,
       budget: budget,

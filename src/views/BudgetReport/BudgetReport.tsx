@@ -22,7 +22,9 @@ import {
 
 export const BudgetReport = observer(() => {
   const rootState = useContext(RootContext);
-  let match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/report');
+  const match = useRouteMatch<{ budgetId: string }>(
+    '/budgets/:budgetId/report'
+  );
   const budget = rootState.budgetStore.map[match?.params.budgetId as string];
 
   if (!budget) {

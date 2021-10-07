@@ -1,7 +1,7 @@
+/* eslint-disable */
 const dotenv = require('dotenv');
 dotenv.config();
 
-/* eslint-disable */
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { connectToDatabase } from '../database';
@@ -21,7 +21,7 @@ const {
 process.env.NODE_ENV = 'test';
 
 describe('PurchaseController spec', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     try {
       await connectToDatabase(process.env.TEST_MONGO_URI);
       await createBudgetTestBudget();
@@ -31,7 +31,7 @@ describe('PurchaseController spec', () => {
     }
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await mongoose.connection.db.dropDatabase();
     await mongoose.connection.close();
   });

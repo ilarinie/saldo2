@@ -1,7 +1,7 @@
 import { Avatar, Button, ButtonGroup, Slider } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import currency from 'currency.js';
-import { Benefactor } from '../../../models/Budget';
+import { Benefactor } from 'server/types';
 import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem';
 
 interface BenefactorEditorProps {
@@ -23,7 +23,7 @@ export const BenefactorEditor = ({
     const value = event.target.value;
     const currentValue = benefactors.find((e) => e.user._id === name)
       ?.amountBenefitted as number;
-    let diff = value - currentValue;
+    const diff = value - currentValue;
     const totalNumberMembers = benefactors.length - 1;
     const divided = currency(diff).distribute(totalNumberMembers);
     let i = -1;

@@ -1,7 +1,7 @@
 import currency from 'currency.js';
 import checkAuth from '../checkAuth';
 import logger from '../logger';
-import { BudgetType } from '../models/Budget';
+import { BudgetType } from '../models/BudgetModel';
 import PurchaseModel from '../models/PurchaseModel';
 import { getBudgetById } from '../services/budget-service';
 

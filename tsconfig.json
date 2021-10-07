@@ -17,14 +17,15 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths" : {
-      "src/*": ["./src/*"]
+      "src/*": ["./src/*"],
     },
-    "baseUrl": "."
+    "baseUrl": ".",
   },
   "references": [
     {
       "path": "./server/"
     }
   ],
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["coverage"]
 }

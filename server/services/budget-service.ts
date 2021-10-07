@@ -1,5 +1,5 @@
 import logger from '../logger';
-import BudgetModel, { BudgetType } from '../models/Budget';
+import BudgetModel, { BudgetType } from '../models/BudgetModel';
 import PurchaseModel from '../models/PurchaseModel';
 import { BudgetResponse } from '../types/BudgetResponse';
 import { Purchase } from '../types/Purchase';
@@ -80,16 +80,20 @@ const getBudget = async (budgetId, userId): Promise<BudgetResponse> => {
 };
 
 const createBudget = async (budget, userId) => {
-  const newBudget = await BudgetModel.create({
-    ...budget,
-    owners: [userId],
-  });
-  return await newBudget.populate('owners');
+  try {
+    const newBudget = await BudgetModel.create({
+      ...budget,
+      owners: [userId],
+    });
+    return await newBudget.populate('owners');
+  } catch (err) {
+    throw err;
+  }
 };
 
 const updateBudget = async (budgetId, userId, updateData) => {
   let updateQuery = updateData;
-  if (updateData.members) {
+  if (updateData.members && updateData.members.length > 0) {
     updateQuery = { $addToSet: { members: { $each: updateData.members } } };
   }
 
