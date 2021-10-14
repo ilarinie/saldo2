@@ -1,9 +1,9 @@
-import { BudgetType } from '../models/BudgetModel';
-import { Purchase } from '../types/Purchase';
-import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse';
-import constants from './constants';
+import { BudgetModelType } from '../models/BudgetModel'
+import { Purchase } from 'types'
+import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse'
+import constants from './constants'
 
-export const TEST_SALDO_BUDGET_ID = '6145af0340536d17d43c8c10';
+export const TEST_SALDO_BUDGET_ID = '6145af0340536d17d43c8c10'
 
 const users = [
   {
@@ -18,7 +18,7 @@ const users = [
     picture: '',
     googleProfileId: 'string',
   },
-];
+]
 
 const basePurcase = {
   _id: '123123123',
@@ -28,11 +28,11 @@ const basePurcase = {
   description: `Doesnt't matter.`,
   createdAt: '2010-00:00T00:00:00.000Z',
   updatedAt: '2010-00:00T00:00:00.000Z',
-};
+}
 
 describe('BudgetUtil', () => {
   it('parses Budget properly', () => {
-    const budget: BudgetType = {
+    const budget: BudgetModelType = {
       _id: TEST_SALDO_BUDGET_ID,
       name: 'saldo-budget',
       type: 'saldo',
@@ -41,7 +41,7 @@ describe('BudgetUtil', () => {
       deleted: false,
       createdAt: '2010-00:00T00:00:00.000Z',
       updatedAt: '2010-00:00T00:00:00.000Z',
-    };
+    }
 
     const purchases: Purchase[] = [
       {
@@ -92,23 +92,19 @@ describe('BudgetUtil', () => {
           },
         ],
       },
-    ];
+    ]
 
-    const newBudget = budgetPurchasesToBudgetResponse(budget, purchases);
+    const newBudget = budgetPurchasesToBudgetResponse(budget, purchases)
 
-    expect(newBudget.total).toBe(250.6);
-    const user1Totals = newBudget.totals.find(
-      (a) => a.user._id === constants.TEST_USER_ID
-    );
-    expect(user1Totals).toBeDefined();
-    expect(user1Totals?.totalPaid).toBe(150.4);
-    expect(user1Totals?.totalBenefitted).toBe(50);
+    expect(newBudget.total).toBe(250.6)
+    const user1Totals = newBudget.totals.find(a => a.user._id === constants.TEST_USER_ID)
+    expect(user1Totals).toBeDefined()
+    expect(user1Totals?.totalPaid).toBe(150.4)
+    expect(user1Totals?.totalBenefitted).toBe(50)
 
-    const user2Totals = newBudget.totals.find(
-      (a) => a.user._id === constants.TEST_USER_ID_2
-    );
-    expect(user2Totals).toBeDefined();
-    expect(user2Totals?.totalPaid).toBe(50);
-    expect(user2Totals?.totalBenefitted).toBe(150.4);
-  });
-});
+    const user2Totals = newBudget.totals.find(a => a.user._id === constants.TEST_USER_ID_2)
+    expect(user2Totals).toBeDefined()
+    expect(user2Totals?.totalPaid).toBe(50)
+    expect(user2Totals?.totalBenefitted).toBe(150.4)
+  })
+})

@@ -1,17 +1,18 @@
-import { defineConfig } from 'vite';
-import envCompatible from 'vite-plugin-env-compatible';
-import react from 'vite-preset-react';
+import { defineConfig } from 'vite'
+import envCompatible from 'vite-plugin-env-compatible'
+import react from 'vite-preset-react'
 
 export default defineConfig({
+  root: './client',
   build: {
-    outDir: 'build',
+    outDir: './build',
     sourcemap: true,
   },
   plugins: [
     react({
       reactRefreshOptions: {
-        exclude: [/coverage/],
-      },
+        include: './client'
+      }
     }),
     envCompatible(),
   ],
@@ -23,4 +24,4 @@ export default defineConfig({
       },
     },
   },
-});
+})

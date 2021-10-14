@@ -1,24 +1,27 @@
+/** @type {import('@types/eslint').Linter.Config} */
 module.exports = {
-  parser: "@typescript-eslint/parser",
-  plugins: [
-    "@typescript-eslint"
-  ],
-  extends: [
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:react/recommended",
-    "plugin:react/jsx-runtime"
-  ],
+  root: true,
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier', 'plugin:react/recommended', 'plugin:react/jsx-runtime'],
+  ignorePatterns: ['node_modules'],
   rules: {
-    "max-len": [
-      "error",
+    'max-len': [
+      'error',
       {
-        "code": 140
-      }
+        code: 250,
+      },
     ],
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
-    "@typescript-eslint/ban-ts-comment": "off"
-
-  }
+    'semi': ['warn', 'never'],
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
+  },
+  settings: {
+    react: {
+      version: '17.0.2',
+    },
+  },
 }

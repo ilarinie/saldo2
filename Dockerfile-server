@@ -1,0 +1,20 @@
+FROM node:14.16.1
+
+ENV USER=app
+
+ENV SUBDIR=appDir
+ENV HOME=/home/$USER
+WORKDIR $HOME/$SUBDIR
+
+EXPOSE 3001
+EXPOSE 3033
+
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install
+
+COPY vite.config.ts $HOME/$SUBDIR/
+
+COPY ./server $HOME/$SUBDIR/server
+
+ENV PATH $HOME/${SUBDIR}/node_modules/.bin:$PATH

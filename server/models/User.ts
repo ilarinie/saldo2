@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-export type UserType = {
-  _id: string;
-  name: string;
-  picture: string;
-  googleProfileId: string;
-};
+export type UserModelType = {
+  _id: string
+  name: string
+  picture: string
+  googleProfileId: string
+}
 
-const UserSchema = new mongoose.Schema<UserType>(
+const UserSchema = new mongoose.Schema<UserModelType>(
   {
     name: { type: String, unique: true, index: true },
     googleProfileId: { type: String },
@@ -16,6 +16,6 @@ const UserSchema = new mongoose.Schema<UserType>(
   {
     timestamps: true,
   }
-);
+)
 
-export default mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema)

@@ -1,1 +1,7 @@
 docker-compose.yml
+docker-compose.tests.yml
+node_modules
+dist
+dump
+coverage
+public

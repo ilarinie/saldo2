@@ -1,17 +1,13 @@
-import BudgetModel from '../models/BudgetModel';
-import PurchaseModel, { BenefactorDocument } from '../models/PurchaseModel';
-import UserModel from '../models/User';
-import constants from './constants';
+import BudgetModel from '../models/BudgetModel'
+import PurchaseModel, { BenefactorDocument } from '../models/PurchaseModel'
+import UserModel from '../models/User'
+import constants from './constants'
 
-export const TEST_SALDO_BUDGET_ID = '6145af0340536d17d43c8c10';
+export const TEST_SALDO_BUDGET_ID = '6145af0340536d17d43c8c10'
 
-const {
-  TEST_USER_ID,
-  TEST_USER_ID_2,
-  TEST_USER_ID_3,
-  TEST_BUDGET_ID,
-  TEST_BUDGET_2_ID,
-} = constants;
+export const TEST_SALDO_BUDGET_ID_2 = '6145af0340536d17d43c8c11'
+
+const { TEST_USER_ID, TEST_USER_ID_2, TEST_USER_ID_3, TEST_BUDGET_ID, TEST_BUDGET_2_ID } = constants
 
 const foo = async () => {
   await Promise.all([
@@ -75,8 +71,8 @@ const foo = async () => {
     //   creator: TEST_USER_ID_2,
     //   payer: TEST_USER_ID_2,
     // }),
-  ]);
-};
+  ])
+}
 
 export const createSaldoTestBudget = async () => {
   const createUsers = async () => {
@@ -89,8 +85,8 @@ export const createSaldoTestBudget = async () => {
         _id: TEST_USER_ID_2,
         name: 'test_user_2',
       }),
-    ]);
-  };
+    ])
+  }
   const createBudget = async () => {
     await BudgetModel.create({
       _id: TEST_SALDO_BUDGET_ID,
@@ -99,13 +95,9 @@ export const createSaldoTestBudget = async () => {
       owners: [TEST_USER_ID],
       members: [TEST_USER_ID_2],
       deleted: false,
-    });
-  };
-  const createPurchase = async (
-    payer: string,
-    benefactors: BenefactorDocument[],
-    amount: number
-  ) => {
+    })
+  }
+  const createPurchase = async (payer: string, benefactors: BenefactorDocument[], amount: number) => {
     return PurchaseModel.create({
       budgetId: TEST_SALDO_BUDGET_ID,
       amount,
@@ -114,8 +106,8 @@ export const createSaldoTestBudget = async () => {
       createdBy: TEST_USER_ID,
       deleted: false,
       description: `Doesnt't matter.`,
-    });
-  };
+    })
+  }
 
   await Promise.all([
     createUsers(),
@@ -144,8 +136,8 @@ export const createSaldoTestBudget = async () => {
       ],
       100
     ),
-  ]);
-};
+  ])
+}
 
 export const createBudgetTestBudget = async () => {
   const createUsers = async () => {
@@ -162,8 +154,8 @@ export const createBudgetTestBudget = async () => {
         _id: TEST_USER_ID_3,
         name: 'test_user_3',
       }),
-    ]);
-  };
+    ])
+  }
   const createBudget = async () => {
     await BudgetModel.create({
       _id: TEST_SALDO_BUDGET_ID,
@@ -172,13 +164,20 @@ export const createBudgetTestBudget = async () => {
       owners: [TEST_USER_ID],
       members: [TEST_USER_ID_2, TEST_USER_ID_3],
       deleted: false,
-    });
-  };
-  const createPurchase = async (
-    payer: string,
-    benefactors: BenefactorDocument[],
-    amount: number
-  ) => {
+    })
+  }
+
+  const createDummyBudget = async () => {
+    await BudgetModel.create({
+      _id: TEST_SALDO_BUDGET_ID_2,
+      name: 'budget-budget',
+      type: 'budget',
+      owners: [],
+      members: [],
+      deleted: false,
+    })
+  }
+  const createPurchase = async (payer: string, benefactors: BenefactorDocument[], amount: number) => {
     return PurchaseModel.create({
       budgetId: TEST_SALDO_BUDGET_ID,
       amount,
@@ -187,12 +186,13 @@ export const createBudgetTestBudget = async () => {
       createdBy: TEST_USER_ID,
       deleted: false,
       description: `Doesnt't matter.`,
-    });
-  };
+    })
+  }
 
   await Promise.all([
     createUsers(),
     createBudget(),
+    createDummyBudget(),
     // User 1 ostaa kaljakorin 30.00
     // User 1 paid: 30, ben 10
     // User 2 paid: 0, ben 10
@@ -232,7 +232,7 @@ export const createBudgetTestBudget = async () => {
       ],
       9.3
     ),
-  ]);
-};
+  ])
+}
 
-export default foo;
+export default foo

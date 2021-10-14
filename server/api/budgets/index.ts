@@ -1,0 +1,85 @@
+import { checkSchema, Schema } from 'express-validator'
+import logger from '../../services/logger'
+import { BudgetService } from '../../services/BudgetService'
+import * as UserService from '../../services/UserService'
+import { Express } from 'express'
+import { handleValidationError } from '../../middlewares/handleValidationError'
+import { isBudgetMember, isBudgetOwner } from '../../middlewares/isBudgetMember'
+
+const NewBudgetSchema: Schema = {
+  name: {
+    trim: true,
+    notEmpty: true,
+  },
+}
+
+const AddBudgetUserSchema: Schema = {
+  username: {
+    trim: true,
+    notEmpty: true,
+  },
+}
+
+namespace BudgetController {
+  export const getUserBudgets = async (req, res) => {
+    const budgets = await BudgetService.getUserBudgets(req.user._id)
+    res.status(200).sendResponse({ message: '', payload: budgets })
+  }
+
+  export const getBudgetById = async (req, res) => {
+    res.sendResponse({ message: '', payload: req.budget })
+  }
+
+  export const createBudget = async (req, res) => {
+    try {
+      const budget = await BudgetService.createBudget(req.body, req.user._id)
+      res.status(200).sendResponse({ message: 'Budget created', payload: budget })
+    } catch (err) {
+      logger.error(err)
+      res.status(500).send('Internal server error.')
+    }
+  }
+
+  export const updateBudget = async (req, res, next) => {
+    try {
+      const budget = await BudgetService.updateBudget(req.params.budgetId, req.user._id, req.body)
+      res.status(200).send({ resp: budget })
+    } catch (err) {
+      logger.error(err)
+      next({ status: 400, message: 'Failed to update budget', payload: err })
+    }
+  }
+
+  export const deleteBudget = async (req, res, next) => {
+    try {
+      await BudgetService.deleteBudget(req.params.budgetId, req.user._id)
+      res.status(203).send({ resp: 'OK' })
+    } catch (err) {
+      logger.error(err)
+      next({ status: 400, message: 'Failed to delete budget', payload: err })
+    }
+  }
+
+  export const addBudgetUsers = async (req, res) => {
+    const { username } = req.body
+    try {
+      const { budget } = req
+      const newUser = await UserService.createUserByUserName(username)
+      await BudgetService.updateBudget(budget._id, req.user._id, {
+        members: [newUser._id],
+      })
+      res.status(200).sendResponse({ message: 'Success', payload: {} })
+    } catch (err) {
+      res.status(500).send('Server error')
+    }
+  }
+}
+
+export default (app: Express, baseUrl: string) => {
+  app.get(`${baseUrl}`, BudgetController.getUserBudgets)
+  app.get(`${baseUrl}/:budgetId`, isBudgetMember, BudgetController.getBudgetById)
+  app.post(`${baseUrl}`, checkSchema(NewBudgetSchema), handleValidationError, BudgetController.createBudget)
+  app.put(`${baseUrl}/:budgetId`, BudgetController.updateBudget)
+  app.delete(`${baseUrl}/:budgetId`, BudgetController.deleteBudget)
+  app.post(`${baseUrl}/:budgetId/addnewusers`, isBudgetOwner, checkSchema(AddBudgetUserSchema), handleValidationError, BudgetController.addBudgetUsers)
+}

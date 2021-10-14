@@ -1,22 +1,24 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
+import { BudgetModelType } from './BudgetModel'
+import { UserModelType } from './User'
 
-export type PurchaseType = {
-  amount: number;
-  description: string;
-  deleted: boolean;
-  budgetId: any;
-  createdBy: any;
-  createdAt: string;
-  updatedAt: string;
+export type PurchaseModelType = {
+  amount: number
+  description: string
+  deleted: boolean
+  budgetId: typeof mongoose.Types.ObjectId | BudgetModelType | string
+  createdBy: typeof mongoose.Types.ObjectId | UserModelType | string
+  createdAt: string
+  updatedAt: string
   benefactors: Array<{
-    amountPaid: number;
-    amountBenefitted: number;
-    user: string;
-  }>;
-  type: 'transfer' | 'purchase';
-};
+    amountPaid: number
+    amountBenefitted: number
+    user: string
+  }>
+  type: 'transfer' | 'purchase'
+}
 // Schema for purchase
-const PurchaseSchema = new mongoose.Schema<PurchaseType>(
+const PurchaseSchema = new mongoose.Schema<PurchaseModelType>(
   {
     amount: { type: Number },
     description: { type: String },
@@ -35,12 +37,12 @@ const PurchaseSchema = new mongoose.Schema<PurchaseType>(
   {
     timestamps: true,
   }
-);
+)
 
 export interface BenefactorDocument {
-  amountPaid: number;
-  amountBenefitted: number;
-  user: string;
+  amountPaid: number
+  amountBenefitted: number
+  user: string
 }
 
-export default mongoose.model('Purchase', PurchaseSchema);
+export default mongoose.model('Purchase', PurchaseSchema)

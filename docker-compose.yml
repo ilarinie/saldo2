@@ -2,31 +2,43 @@ version: '3.5'
 
 services:
   saldo-backend:
-    build: .
+    build:
+      dockerfile: Dockerfile-server
+      context: .
     ports:
       - "3001:3001"
       - "3033:3033"
     environment:
       NODE_ENV: development
     volumes:
-      - .:/home/app/appDir
+      - ./server:/home/app/appDir/server
+      - ./node_modules:/home/app/appDir/node_modules
+      - ./package.json:/home/app/appDir/package.json
     environment:
       - NODE_ENV=development
       - MONGO_URI=mongodb://mongo/saldo-app
       - SECRET=correcthorsebatterystaple
+      - GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
     networks:
       - backend
     command: npm run-script dev:run-backend
 
   saldo-frontend:
-    build: .
+    build:
+      dockerfile: Dockerfile-client
+      context: .
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: development
     volumes:
-      - .:/home/app/appDir
-      - /home/app/appDir/node_modules
+      - ./client:/home/app/appDir/client
+      - ./package.json:/home/app/appDir/package.json
+      - ./vite.config.ts:/home/app/appDir/vite.config.ts
+      - ./types:/home/app/appDir/types
+      - ./node_modules:/home/app/appDir/node_modules
     environment:
       - NODE_ENV=development
     networks:
