@@ -49,6 +49,9 @@ app.use(bodyParser.json())
 
 auth(app, '/api/auth')
 
+purchases(app, checkAuth, '/api/purchases')
+budgets(app, checkAuth, '/api/budgets')
+
 if (process.env.NODE_ENV === 'production') {
   logger.info('Serving client')
   app.use(express.static(path.resolve(__dirname, './public')))
@@ -59,10 +62,6 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.post('*', (req, res) => res.status(404).send('foo'))
 }
-
-// app.use(checkAuth)
-purchases(app, checkAuth, '/api/purchases')
-budgets(app, checkAuth, '/api/budgets')
 
 app.use(errorHandler)
 
