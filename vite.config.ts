@@ -6,7 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   root: './client',
   build: {
-    outDir: './build',
+    outDir: '../build',
     sourcemap: true,
   },
   plugins: [

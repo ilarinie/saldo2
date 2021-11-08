@@ -1,5 +1,5 @@
-import { BudgetModelType } from '../models/BudgetModel'
 import { Purchase } from 'types'
+import { BudgetModelType } from '../models/BudgetModel'
 import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse'
 import constants from './constants'
 
@@ -28,6 +28,7 @@ const basePurcase = {
   description: `Doesnt't matter.`,
   createdAt: '2010-00:00T00:00:00.000Z',
   updatedAt: '2010-00:00T00:00:00.000Z',
+  type: 'purchase',
 }
 
 describe('BudgetUtil', () => {

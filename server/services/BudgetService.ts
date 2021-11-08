@@ -1,7 +1,6 @@
-import logger from './logger'
+import { Budget, Purchase } from 'types'
 import BudgetModel, { BudgetModelType } from '../models/BudgetModel'
 import PurchaseModel from '../models/PurchaseModel'
-import { Budget, Purchase } from 'types'
 import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse'
 
 export namespace BudgetService {
@@ -37,7 +36,9 @@ export namespace BudgetService {
 
   export const getBudgetById = async (budgetId, userId, requireOwner = false): Promise<Budget> => {
     try {
-      const budget: BudgetModelType = await BudgetModel.findOne(createBudgetQuery(budgetId, userId, requireOwner)).populate('owners').populate('members')
+      const budget: BudgetModelType = await BudgetModel.findOne(createBudgetQuery(budgetId, userId, requireOwner))
+        .populate('owners')
+        .populate('members')
       if (budget) {
         const purchases: Purchase[] = await PurchaseModel.find({
           $and: [{ deleted: false }, { budgetId: budget._id }],
@@ -74,7 +75,7 @@ export namespace BudgetService {
       updateQuery = { $addToSet: { members: { $each: updateData.members } } }
     }
 
-    const budget = await BudgetModel.findOneAndUpdate(createBudgetQuery(budgetId, userId, true), { ...updateQuery }, { new: true })
+    const budget = (await BudgetModel.findOneAndUpdate(createBudgetQuery(budgetId, userId, true), { ...updateQuery }, { new: true })) as any
     await budget.populate('owners')
     await budget.populate('members')
     return budget
