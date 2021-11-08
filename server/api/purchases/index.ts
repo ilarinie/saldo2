@@ -1,21 +1,20 @@
-import logger from '../../services/logger'
-import PurchaseModel from '../../models/PurchaseModel'
 import { Express, RequestHandler } from 'express'
 import { checkSchema } from 'express-validator'
-import { isBudgetMember } from '../../middlewares/isBudgetMember'
-import { UserModelType } from '../../models/User'
-import { NewPurchaseSchema } from './NewPurchaseSchema'
 import { handleValidationError } from '../../middlewares/handleValidationError'
+import { isBudgetMember } from '../../middlewares/isBudgetMember'
+import PurchaseModel from '../../models/PurchaseModel'
+import { UserModelType } from '../../models/User'
+import logger from '../../services/logger'
+import { NewPurchaseSchema } from './NewPurchaseSchema'
 
 namespace PurchaseController {
   export const create: RequestHandler = async (req, res, next) => {
     const { amount, description, benefactors, type } = req.body
-    logger.info(`POST /api/purchases`,
-      {
-        metadata: {
-          body: req.body
-        }
-      })
+    logger.info(`POST /api/purchases`, {
+      metadata: {
+        body: req.body,
+      },
+    })
     try {
       const purchase = await PurchaseModel.create({
         amount,
@@ -40,7 +39,7 @@ namespace PurchaseController {
   }
 }
 
-export default (app: Express, baseUrl: string) => {
-  app.post(baseUrl, isBudgetMember, checkSchema(NewPurchaseSchema), handleValidationError, PurchaseController.create)
-  app.delete(`${baseUrl}/:id`, PurchaseController.deletePurchase)
+export default (app: Express, checkAuth, baseUrl: string) => {
+  app.post(baseUrl, checkAuth, isBudgetMember, checkSchema(NewPurchaseSchema), handleValidationError, PurchaseController.create)
+  app.delete(`${baseUrl}/:id`, checkAuth, PurchaseController.deletePurchase)
 }

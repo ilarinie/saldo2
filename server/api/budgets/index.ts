@@ -1,10 +1,10 @@
-import { checkSchema, Schema } from 'express-validator'
-import logger from '../../services/logger'
-import { BudgetService } from '../../services/BudgetService'
-import * as UserService from '../../services/UserService'
 import { Express } from 'express'
+import { checkSchema, Schema } from 'express-validator'
 import { handleValidationError } from '../../middlewares/handleValidationError'
 import { isBudgetMember, isBudgetOwner } from '../../middlewares/isBudgetMember'
+import { BudgetService } from '../../services/BudgetService'
+import logger from '../../services/logger'
+import * as UserService from '../../services/UserService'
 
 const NewBudgetSchema: Schema = {
   name: {
@@ -75,11 +75,18 @@ namespace BudgetController {
   }
 }
 
-export default (app: Express, baseUrl: string) => {
-  app.get(`${baseUrl}`, BudgetController.getUserBudgets)
-  app.get(`${baseUrl}/:budgetId`, isBudgetMember, BudgetController.getBudgetById)
-  app.post(`${baseUrl}`, checkSchema(NewBudgetSchema), handleValidationError, BudgetController.createBudget)
-  app.put(`${baseUrl}/:budgetId`, BudgetController.updateBudget)
-  app.delete(`${baseUrl}/:budgetId`, BudgetController.deleteBudget)
-  app.post(`${baseUrl}/:budgetId/addnewusers`, isBudgetOwner, checkSchema(AddBudgetUserSchema), handleValidationError, BudgetController.addBudgetUsers)
+export default (app: Express, checkAuth, baseUrl: string) => {
+  app.get(`${baseUrl}`, checkAuth, BudgetController.getUserBudgets)
+  app.get(`${baseUrl}/:budgetId`, checkAuth, isBudgetMember, BudgetController.getBudgetById)
+  app.post(`${baseUrl}`, checkAuth, checkSchema(NewBudgetSchema), handleValidationError, BudgetController.createBudget)
+  app.put(`${baseUrl}/:budgetId`, checkAuth, BudgetController.updateBudget)
+  app.delete(`${baseUrl}/:budgetId`, checkAuth, BudgetController.deleteBudget)
+  app.post(
+    `${baseUrl}/:budgetId/addnewusers`,
+    checkAuth,
+    isBudgetOwner,
+    checkSchema(AddBudgetUserSchema),
+    handleValidationError,
+    BudgetController.addBudgetUsers
+  )
 }

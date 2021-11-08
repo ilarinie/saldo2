@@ -60,9 +60,9 @@ if (process.env.NODE_ENV === 'production') {
   app.post('*', (req, res) => res.status(404).send('foo'))
 }
 
-app.use(checkAuth)
-purchases(app, '/api/purchases')
-budgets(app, '/api/budgets')
+// app.use(checkAuth)
+purchases(app, checkAuth, '/api/purchases')
+budgets(app, checkAuth, '/api/budgets')
 
 app.use(errorHandler)
 
