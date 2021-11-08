@@ -12,6 +12,6 @@ if (fs.existsSync('./dist')) {
   fse.removeSync('./dist')
 }
 
-childProcess.execSync('tsc --build types/tsconfig.json && tsc --noEmit --project server/tsconfig.json && node server/esbuild.js && vite build', { stdio: 'inherit' })
+childProcess.execSync('npx tsc --build types/tsconfig.json && npx tsc --noEmit --project server/tsconfig.json && node server/esbuild.js && npx vite build', { stdio: 'inherit' })
 
 fse.moveSync('./build', './dist/public', { overwrite: true })
