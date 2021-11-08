@@ -46,7 +46,7 @@ services:
     command: npm run docker:start
     
   mongo:
-    image: 'mongo'
+    image: mongo:5.0.3
     restart: always
     ports:
       - '27017-27019:27017-27019'
@@ -57,3 +57,6 @@ services:
  
 networks:
   backend:
+
+volumes:
+  node_modules:

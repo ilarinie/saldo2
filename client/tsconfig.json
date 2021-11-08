@@ -23,6 +23,6 @@
       "path": "../types/"
     }
   ],
-  "files": ["../server/custom.d.ts", "./store/extractPayload.ts"],
+  "files": ["../server/custom.d.ts", "./store/extractPayload.ts", "utils/CurrencyFormatOptions.tsx", "./views/Dashboard/BudgetList/BudgetItem/PurchaseItem.tsx", "./views/Dashboard/BudgetList/BudgetItem/SaldoStack.tsx", "./views/Dashboard/BudgetList/BudgetItem/BudgetStack.tsx"],
   "include": ["./"]
 }

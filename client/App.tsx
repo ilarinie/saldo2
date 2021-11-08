@@ -1,32 +1,22 @@
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
 import MenuIcon from '@mui/icons-material/Menu'
-import {
-  Box,
-  Container,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Snackbar,
-  SwipeableDrawer,
-  Typography,
-} from '@mui/material'
+import { Box, Container, IconButton, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer, Typography } from '@mui/material'
+import { unwrapResult } from '@reduxjs/toolkit'
 import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import Div100vh from 'react-div-100vh'
 import { useSelector } from 'react-redux'
 import { Route, Switch, useHistory } from 'react-router'
-import { selectLoginStatus, checkCurrentUser, setLoginStatus, setCurrentUser } from './store/authSlice'
+import { PurchaseUser } from 'types'
+import { checkCurrentUser, selectLoginStatus, setCurrentUser, setLoginStatus } from './store/authSlice'
+import { useAppDispatch } from './store/hooks'
 import { AddBudget } from './views/AddBudget/AddBudget'
 import { AddBudgetUser } from './views/AddBudgetUser/AddBudgetUser'
+import { AddPurchase } from './views/AddPurchase/AddPurchase'
 import { BudgetReport } from './views/BudgetReport/BudgetReport'
 import { Dashboard } from './views/Dashboard/Dashboard'
-import { useAppDispatch } from './store/hooks'
-import { PurchaseUser } from 'types'
 import LoginView from './views/Login'
-import { unwrapResult } from '@reduxjs/toolkit'
 
 export const App = observer(() => {
   const dispatch = useAppDispatch()
@@ -84,13 +74,14 @@ export const App = observer(() => {
           </SwipeableDrawer>
           <Box
             sx={{
+              paddingTop: '5px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
             }}
           >
-            <Typography variant='h2' gutterBottom>
-              Saldo
+            <Typography variant='h4' sx={{ fontFamily: 'LogoFont', textAlign: 'center' }} gutterBottom>
+              - SALDO -
             </Typography>
             <IconButton onClick={() => setDrawerOpen(!drawerOpen)} sx={{ marginBottom: '17px' }}>
               <MenuIcon />
@@ -100,6 +91,7 @@ export const App = observer(() => {
             <Route exact path='/' component={Dashboard} />
             <Route path='/addbudget' component={AddBudget} />
             <Route path='/budgets/:budgetId/adduser' component={AddBudgetUser} />
+            <Route path='/budgets/:budgetId/addpurchase' component={AddPurchase} />
             <Route path='/budgets/:budgetId/report' component={BudgetReport} />
           </Switch>
         </Container>

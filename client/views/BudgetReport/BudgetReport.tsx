@@ -1,11 +1,10 @@
 import { colors, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { Box, styled } from '@mui/system'
-import { useGetBudgetsQuery } from '../../store/budgetApi'
-import currency from 'currency.js'
+import { formatCurrency } from 'client/utils/formatCurrency'
 import { observer } from 'mobx-react-lite'
 import { useRouteMatch } from 'react-router'
 import { Benefactor, Budget, Purchase, UserTotal } from 'types'
-import { CurrencyFormatOptions, CurrencyFormatOptionsWithPlus } from '../Dashboard/BudgetList/BudgetItem/BudgetItem'
+import { useGetBudgetsQuery } from '../../store/budgetApi'
 
 export const BudgetReport = observer(() => {
   const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/report')
@@ -62,7 +61,7 @@ export const BudgetReport = observer(() => {
                             benefactor.amountPaid === 0 ? 'rgba(0,0,0,0)' : benefactor.amountPaid < 0 ? colors.red[300] : colors.green[300],
                         }}
                       >
-                        {currency(benefactor.amountPaid).format(CurrencyFormatOptions)}
+                        {formatCurrency(benefactor.amountPaid)}
                       </TableCell>
                       <TableCell
                         key={`got-${i}`}
@@ -71,11 +70,11 @@ export const BudgetReport = observer(() => {
                             benefactor.amountBenefitted === 0
                               ? 'rgba(0,0,0,0)'
                               : benefactor.amountBenefitted > 0
-                                ? colors.red[300]
-                                : colors.green[300],
+                              ? colors.red[300]
+                              : colors.green[300],
                         }}
                       >
-                        {currency(benefactor.amountBenefitted).format(CurrencyFormatOptions)}
+                        {formatCurrency(benefactor.amountBenefitted)}
                       </TableCell>
                     </>
                   )
@@ -86,8 +85,8 @@ export const BudgetReport = observer(() => {
               <TableCell>Total</TableCell>
               {budget.allIds.map((i: string) => (
                 <>
-                  <TableCell key={`paid-${i}`}>{currency(getUserTotal(budget, i).totalPaid).format(CurrencyFormatOptions)}</TableCell>
-                  <TableCell key={`got-${i}`}>{currency(getUserTotal(budget, i).totalBenefitted).format(CurrencyFormatOptions)}</TableCell>
+                  <TableCell key={`paid-${i}`}>{formatCurrency(getUserTotal(budget, i).totalPaid)}</TableCell>
+                  <TableCell key={`got-${i}`}>{formatCurrency(getUserTotal(budget, i).totalBenefitted)}</TableCell>
                 </>
               ))}
             </StyledTotalRow>
@@ -104,7 +103,7 @@ export const BudgetReport = observer(() => {
                       color: diff === 0 ? 'inherit' : diff < 0 ? colors.red[300] : colors.green[300],
                     }}
                   >
-                    {currency(diff).format(CurrencyFormatOptionsWithPlus)}
+                    {formatCurrency(diff, true)}
                   </TableCell>
                 )
               })}

@@ -2,5 +2,7 @@ body {
   margin: 0;
 }
 
-html {
+@font-face {
+  font-family: 'LogoFont';
+  src: url('./assets/Azureon-rlyx.woff');
 }

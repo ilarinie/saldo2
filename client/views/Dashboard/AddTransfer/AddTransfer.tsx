@@ -1,12 +1,12 @@
 import CloseRounded from '@mui/icons-material/CloseRounded'
 import { Button, CardActions, CardContent, CardHeader, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { useCreatePurchaseMutation } from '../../../store/purchaseApi'
+import { formatCurrency } from 'client/utils/formatCurrency'
 import currency from 'currency.js'
 import { useState } from 'react'
 import { Benefactor, Budget, PurchaseUser } from 'types'
-import { SaldoModal } from '../../../components/Modal/Modal'
+import { SaldoModal } from '../../../components/SaldoModal/SaldoModal'
 import { UserSelector } from '../../../components/UserSelector/UserSelector'
-import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem'
+import { useCreatePurchaseMutation } from '../../../store/purchaseApi'
 
 interface AddTransferProps {
   budget: Budget
@@ -60,8 +60,9 @@ export const AddTransfer = ({ budget, open, onClose, currentUser }: AddTransferP
     const benefactors = generateBenefactors(budget, selectedPayer, selectedReceiver, amount)
     await createPurchase({
       amount,
-      description: `Transfer from ${budget.userMap[selectedPayer].name.split(' ')[0]} to ${budget.userMap[selectedReceiver].name.split(' ')[0]
-        }`,
+      description: `Transfer from ${budget.userMap[selectedPayer].name.split(' ')[0]} to ${
+        budget.userMap[selectedReceiver].name.split(' ')[0]
+      }`,
       budgetId: budget._id,
       benefactors,
       type: 'purchase',
@@ -119,8 +120,9 @@ export const AddTransfer = ({ budget, open, onClose, currentUser }: AddTransferP
             })
           }
         />
-        <Typography sx={{ marginTop: '8px' }} variant='caption'>{`Tranfer ${currency(amount || 0).format(CurrencyFormatOptions)} from ${budget.userMap[selectedPayer].name
-          } to ${budget.userMap[selectedReceiver].name}`}</Typography>
+        <Typography sx={{ marginTop: '8px' }} variant='caption'>{`Tranfer ${formatCurrency(amount || 0)} from ${
+          budget.userMap[selectedPayer].name
+        } to ${budget.userMap[selectedReceiver].name}`}</Typography>
         <CardActions disableSpacing sx={{ marginTop: '16px' }}>
           <Button fullWidth variant='outlined' color='info' onClick={onSave}>
             Save

@@ -1,13 +1,21 @@
 import currency from 'currency.js'
 import { PurchaseUser } from 'types'
 
-export const initBenefactors = (
-  amount: number,
-  defaultMode: 'even-split' | 'saldo',
-  payerId: string,
-  userMap: { [key: string]: PurchaseUser },
-  memberIds: string[]
-): any[] => {
+export type InitBenefactorParams = {
+  amount?: number | ''
+  payerId?: string
+  defaultMode?: 'even-split' | 'saldo'
+  userMap?: { [key: string]: PurchaseUser }
+  memberIds?: string[]
+}
+
+export const initBenefactors = ({
+  amount = 0,
+  payerId = '',
+  defaultMode = 'saldo',
+  userMap = {},
+  memberIds = [],
+}: InitBenefactorParams): any[] => {
   if (defaultMode === 'saldo') {
     const membersAmount = currency(amount).distribute(memberIds.length - 1)
     return memberIds.map((m, index) => {

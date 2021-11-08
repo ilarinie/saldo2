@@ -1,56 +1,22 @@
-import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
-import ArrowRightIcon from '@mui/icons-material/ArrowRight'
-import AssessmentIcon from '@mui/icons-material/Assessment'
+import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import PersonAddIcon from '@mui/icons-material/PersonAdd'
-import {
-  Avatar,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Collapse,
-  colors,
-  Container,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Stack,
-  styled,
-  Typography,
-} from '@mui/material'
-import currency from 'currency.js'
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import { Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, Collapse, IconButton, styled } from '@mui/material'
 import { memo, useState } from 'react'
 import { useHistory } from 'react-router'
-import { Budget, UserTotal } from 'types'
+import { Budget } from 'types'
 import { BudgetExpanded } from './BudgetExpanded'
-
+import { BudgetItemMenu } from './BudgetItemMenu'
+import { BudgetStack } from './BudgetStack'
+import { SaldoStack } from './SaldoStack'
 interface BudgetItemProps {
   budget: Budget
-  requestNewPurchase: (budget: Budget) => void
   onDeletePurchase: (purchaseId: string, budgetId: string) => void
   requestNewTransfer: (budget: Budget) => void
 }
 
-export const CurrencyFormatOptions = {
-  symbol: '€',
-  pattern: '#!',
-  negativePattern: '- #!',
-}
-
-export const CurrencyFormatOptionsWithPlus = {
-  ...CurrencyFormatOptions,
-  pattern: '+ #!',
-}
-
-const formatName = (name: string) => {
+export const formatName = (name: string) => {
   return name.split(' ')[0]
 }
 
@@ -65,8 +31,8 @@ const ExpandMore = styled((props: any) => {
   }),
 }))
 
-export const SaldoBudgetItem = memo(
-  ({ budget, requestNewPurchase, onDeletePurchase, requestNewTransfer }: BudgetItemProps) => {
+export const BudgetItem = memo(
+  ({ budget, onDeletePurchase, requestNewTransfer }: BudgetItemProps) => {
     const [expanded, setExpanded] = useState(false)
     const history = useHistory()
     const [anchorEl, setAnchorEl] = useState(null)
@@ -93,44 +59,32 @@ export const SaldoBudgetItem = memo(
       <Card sx={{ marginBottom: '1em' }}>
         <CardHeader
           title={budget.name}
+          titleTypographyProps={{
+            sx: {
+              fontFamily: 'LogoFont ',
+            },
+          }}
           action={
             <IconButton ref={anchorEl} onClick={onMenuOpen}>
               <MoreVertIcon />
             </IconButton>
           }
         />
-        <Menu
-          id='basic-menu'
-          anchorEl={anchorEl}
-          open={open}
-          onClose={() => onMenuClose()}
-          MenuListProps={{
-            'aria-labelledby': 'basic-button',
-          }}
-        >
-          <MenuItem onClick={() => onMenuClose(`/budgets/${budget._id}/adduser`)}>
-            <ListItemIcon>
-              <PersonAddIcon />
-            </ListItemIcon>
-            <ListItemText>Add user</ListItemText>
-          </MenuItem>
-          <MenuItem onClick={() => onMenuClose(`/budgets/${budget._id}/report`)}>
-            <ListItemIcon>
-              <AssessmentIcon />
-            </ListItemIcon>
-            <ListItemText>Report</ListItemText>
-          </MenuItem>
-        </Menu>
+        <BudgetItemMenu budgetType={budget.type} onMenuClose={onMenuClose} anchorEl={anchorEl} budgetId={budget._id} open={open} />
         <CardContent>
           {budget.type === 'saldo' ? <SaldoStack member1={member1} member2={member2} /> : <BudgetStack members={totals} />}
         </CardContent>
         <CardActions disableSpacing>
-          <Button variant='text' size='small' onClick={() => requestNewPurchase(budget)}>
-            Add
-          </Button>
-          <Button variant='text' size='small' onClick={() => requestNewTransfer(budget)}>
-            Transfer
-          </Button>
+          <ButtonGroup>
+            <Button variant='text' size='small' onClick={() => history.push(`/budgets/${budget._id}/addpurchase`)}>
+              <AddIcon />
+              &nbsp; Add
+            </Button>
+            <Button variant='text' size='small' onClick={() => requestNewTransfer(budget)}>
+              <SwapHorizIcon />
+              &nbsp; Transfer
+            </Button>
+          </ButtonGroup>
           <ExpandMore expand={expanded} onClick={handleExpandClick} aria-expanded={expanded} aria-label='show more'>
             <ExpandMoreIcon />
           </ExpandMore>
@@ -148,78 +102,4 @@ export const SaldoBudgetItem = memo(
     return true
   }
 )
-SaldoBudgetItem.displayName = 'SaldoBudgetItem'
-
-const BudgetStack = ({ members }: { members: UserTotal[] }) => (
-  <List>
-    {members.map(m => (
-      <ListItem key={m.user._id}>
-        <ListItemAvatar>
-          <Avatar src={m.user.picture} />
-        </ListItemAvatar>
-        <ListItemText
-          secondaryTypographyProps={{
-            color: m.diff > 0 ? colors.green[500] : colors.red[500],
-          }}
-          primary={m.user.name}
-          secondary={currency(m.diff).format(CurrencyFormatOptionsWithPlus)}
-        />
-      </ListItem>
-    ))}
-  </List>
-)
-
-const SaldoStack = ({ member1, member2 }: { member1: UserTotal; member2?: UserTotal }) => {
-  if (!member2) {
-    return null
-  }
-  return (
-    <Stack direction='row'>
-      <Container
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          flexGrow: 0,
-          width: '50px',
-        }}
-      >
-        <Avatar src={member1.user.picture} sx={{ marginBottom: '4px' }} />
-        <Typography>{formatName(member1.user.name)}</Typography>
-      </Container>
-      <Container
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          flexGrow: 1,
-          width: '100%',
-          justifyContent: 'center',
-        }}
-      >
-        <ArrowLeftIcon
-          sx={{
-            visibility: member1.diff > 0 ? 'visible' : 'hidden',
-          }}
-        />
-        <Typography variant='bigCurrency'>{currency(member1.diff).format(CurrencyFormatOptions)}</Typography>
-        <ArrowRightIcon
-          sx={{
-            visibility: member1.diff > 0 ? 'hidden' : 'visible',
-          }}
-        />
-      </Container>
-      <Container
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          flexGrow: 0,
-          width: '50px',
-        }}
-      >
-        <Avatar src={member2.user.picture} sx={{ marginBottom: '4px' }} />
-        <Typography>{formatName(member2.user.name)}</Typography>
-      </Container>
-    </Stack>
-  )
-}
+BudgetItem.displayName = 'SaldoBudgetItem'

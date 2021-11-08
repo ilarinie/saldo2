@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import envCompatible from 'vite-plugin-env-compatible'
 import react from 'vite-preset-react'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   root: './client',
@@ -11,10 +12,11 @@ export default defineConfig({
   plugins: [
     react({
       reactRefreshOptions: {
-        include: './client'
-      }
+        include: './client',
+      },
     }),
     envCompatible(),
+    tsconfigPaths(),
   ],
   server: {
     proxy: {

@@ -1,18 +1,17 @@
-import { Avatar, Button, ButtonGroup, Slider } from '@mui/material'
+import { Avatar, Slider } from '@mui/material'
 import { Box, styled } from '@mui/system'
+import { formatCurrency } from 'client/utils/formatCurrency'
 import currency from 'currency.js'
 import { Benefactor } from 'types'
-import { CurrencyFormatOptions } from '../BudgetList/BudgetItem/BudgetItem'
 
 interface BenefactorEditorProps {
   benefactors: Benefactor[]
   defaultMode?: 'even-split' | 'saldo'
   total: number
   onBenefactorsChanged: (benefactors: Benefactor[]) => void
-  onDefaultModeChanged: (mode: 'saldo' | 'even-split') => void
 }
 
-export const BenefactorEditor = ({ benefactors, onBenefactorsChanged, total, onDefaultModeChanged }: BenefactorEditorProps) => {
+export const BenefactorEditor = ({ benefactors, onBenefactorsChanged, total }: BenefactorEditorProps) => {
   const onAmountChanged = (event: any) => {
     const name = event.target.name
     const value = event.target.value
@@ -41,24 +40,21 @@ export const BenefactorEditor = ({ benefactors, onBenefactorsChanged, total, onD
   }
 
   return (
-    <Box>
-      <ButtonGroup>
-        <Button onClick={() => onDefaultModeChanged('even-split')}>Even split</Button>
-      </ButtonGroup>
-      <Button onClick={() => onDefaultModeChanged('saldo')}>Saldo</Button>
+    <Box sx={{ position: 'relative' }}>
+      {total === 0 && <DisabledOverlay />}
       {benefactors.map(b => (
         <StyledSliderContainer key={b.user._id}>
           <Box
             sx={{
-              width: '50px',
-              marginRight: '24px',
+              width: '30px',
+              marginRight: '15px',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
-            <Avatar src={b.user.picture} />
-            {b.user.name.split(' ')[0]}
+            <Avatar sx={{ width: '30px', height: '30px' }} src={b.user.picture} />
+            <small style={{ fontSize: '0.7rem' }}>{b.user.name.split(' ')[0]}</small>
           </Box>
           <ActualSliderContainer>
             <Slider
@@ -69,24 +65,47 @@ export const BenefactorEditor = ({ benefactors, onBenefactorsChanged, total, onD
               step={0.1}
               max={total}
               onChange={onAmountChanged}
-              valueLabelDisplay='on'
               color='secondary'
-              valueLabelFormat={value => currency(value).format(CurrencyFormatOptions)}
             />
           </ActualSliderContainer>
+          <Box
+            sx={{
+              width: '50px',
+              marginLeft: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <div>{formatCurrency(b.amountBenefitted)}</div>
+          </Box>
         </StyledSliderContainer>
       ))}
     </Box>
   )
 }
 
+const DisabledOverlay = styled(Box)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2;
+  backdrop-filter: grayscale(1);
+`
+
 const StyledSliderContainer = styled(Box)`
   display: flex;
   width: 100%;
-  margin-top: 40px;
+  margin-bottom: 8px;
   justify-content: space-between;
+  align-content: center;
 `
 
 const ActualSliderContainer = styled(Box)`
   flex-grow: 1;
+  margin-left: 1em;
+  display: flex;
 `
