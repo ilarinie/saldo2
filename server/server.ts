@@ -5,11 +5,11 @@ import express from 'express'
 import http from 'http'
 import path from 'path'
 import WebSocket from 'ws'
-import checkAuth from './middlewares/checkAuth'
 import { auth, budgets, purchases } from './api'
+import checkAuth from './middlewares/checkAuth'
+import { errorHandler } from './middlewares/errorHandler'
 import logger from './services/logger'
 import passport from './services/passport'
-import { errorHandler } from './middlewares/errorHandler'
 
 dotenv.config()
 
@@ -48,9 +48,6 @@ app.get('/api', (req, res) => {
 app.use(bodyParser.json())
 
 auth(app, '/api/auth')
-app.use(checkAuth)
-purchases(app, '/api/purchases')
-budgets(app, '/api/budgets')
 
 if (process.env.NODE_ENV === 'production') {
   logger.info('Serving client')
@@ -63,7 +60,10 @@ if (process.env.NODE_ENV === 'production') {
   app.post('*', (req, res) => res.status(404).send('foo'))
 }
 
-app.use(errorHandler)
+app.use(checkAuth)
+purchases(app, '/api/purchases')
+budgets(app, '/api/budgets')
 
+app.use(errorHandler)
 
 export { server, app, wss }
