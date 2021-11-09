@@ -26,6 +26,7 @@ import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router-dom'
+import { Benefactor } from 'types'
 import { BenefactorEditor } from './BenefactorEditor'
 import { initBenefactors } from './initBenefactors'
 import { SaldoPurchaseCreatedInfoBox } from './PurchaseCreatedInfoBox'
@@ -48,6 +49,8 @@ export const AddPurchase = observer(() => {
     modalOpen: false,
     originalDiff: 0,
     newDiff: 0,
+    purchaseDescription: '',
+    purchaseAmount: 0,
   })
 
   const onMenuClose = (mode?: any) => {
@@ -105,6 +108,8 @@ export const AddPurchase = observer(() => {
         modalOpen: true,
         originalDiff: currentDiff,
         newDiff: Math.abs(newDiff),
+        purchaseDescription: description,
+        purchaseAmount: currency(amount).value,
       })
     }
   }, [isSuccess])
@@ -139,6 +144,7 @@ export const AddPurchase = observer(() => {
       setAmount(purchase.amount)
       setDescription(purchase.description)
       setBenefactors(purchase.benefactors)
+      setSelectedPayerId(purchase.benefactors.find((b: Benefactor) => b.amountPaid > 0).user._id)
     } else {
       setDescription(newValue)
     }
@@ -246,14 +252,26 @@ export const AddPurchase = observer(() => {
         </Button>
       </CardActions>
       <SmallSaldoModal
-        open={true}
+        open={saldoPurchaseModalConf.modalOpen}
         onClose={() => {
-          console.log('foo')
+          setSaldoPurchaseModalConf({
+            modalOpen: false,
+            newDiff: 0,
+            originalDiff: 0,
+            purchaseDescription: '',
+            purchaseAmount: 0,
+          })
+          history.push('/')
         }}
         height='200px'
         width='200px'
       >
-        <SaldoPurchaseCreatedInfoBox previousDiff={300.12} newDiff={308.8} />
+        <SaldoPurchaseCreatedInfoBox
+          purchaseDescription={saldoPurchaseModalConf.purchaseDescription}
+          previousDiff={saldoPurchaseModalConf.originalDiff}
+          newDiff={saldoPurchaseModalConf.newDiff}
+          purchaseAmount={saldoPurchaseModalConf.purchaseAmount}
+        />
       </SmallSaldoModal>
     </FullPageContainer>
   )
