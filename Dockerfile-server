@@ -9,13 +9,8 @@ WORKDIR $HOME/$SUBDIR
 EXPOSE 3001
 EXPOSE 3033
 
-RUN wget https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-64-0.0.9.tgz
-RUN tar xf ./esbuild-linux-64-0.0.9.tgz
-RUN cp ./package/bin/esbuild /usr/local/bin/esbuild
-
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install
 
 COPY vite.config.ts $HOME/$SUBDIR/
 
