@@ -1,11 +1,12 @@
+import { server } from './server'
 import { connectToDatabase } from './services/database'
 import logger from './services/logger'
-import { server } from './server'
 
 const port = process.env.PORT || 3033
 
 connectToDatabase(process.env.MONGO_URI)
   .then(() => {
+    console.log('asas')
     logger.info(`Connected to mongoDB at ${process.env.MONGO_URI}`)
   })
   .catch(err => {

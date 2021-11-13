@@ -46,11 +46,11 @@ export const AddPurchase = observer(() => {
   const menuOpen = Boolean(anchorEl)
 
   const [saldoPurchaseModalConf, setSaldoPurchaseModalConf] = useState({
-    modalOpen: false,
-    originalDiff: 0,
-    newDiff: 0,
-    purchaseDescription: '',
-    purchaseAmount: 0,
+    modalOpen: true,
+    originalDiff: 20.02,
+    newDiff: 30.02,
+    purchaseDescription: 'foo',
+    purchaseAmount: 10.0,
   })
 
   const onMenuClose = (mode?: any) => {
@@ -263,8 +263,8 @@ export const AddPurchase = observer(() => {
           })
           history.push('/')
         }}
-        height='200px'
-        width='200px'
+        height='400px'
+        width='300px'
       >
         <SaldoPurchaseCreatedInfoBox
           purchaseDescription={saldoPurchaseModalConf.purchaseDescription}

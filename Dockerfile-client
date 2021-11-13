@@ -11,7 +11,10 @@ EXPOSE 3033
 
 COPY package.json $WORKDIR
 COPY package-lock.json $WORKDIR
+RUN npm install --no-audit
 
 COPY vite.config.ts $HOME/$SUBDIR/
 
 COPY ./client $HOME/$SUBDIR/client
+
+ENV PATH $HOME/${SUBDIR}/node_modules/.bin:$PATH

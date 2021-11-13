@@ -11,8 +11,7 @@ EXPOSE 3033
 
 COPY package.json ./
 COPY package-lock.json ./
-
-COPY vite.config.ts $HOME/$SUBDIR/
+RUN npm install --no-audit
 
 COPY ./server $HOME/$SUBDIR/server
 

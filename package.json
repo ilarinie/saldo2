@@ -55,6 +55,7 @@
     "react-swipezor": "^1.0.6",
     "react-vis": "^1.11.7",
     "react-window": "^1.8.6",
+    "recharts": "^2.1.6",
     "styled-components": "^5.3.1",
     "supertest": "^6.1.6",
     "ts-node-dev": "^1.1.8",
@@ -75,7 +76,7 @@
     "esbuild": "0.13.4"
   },
   "scripts": {
-    "dev:run-backend": "npm rebuild esbuild && npm-run-all --parallel backend:*",
+    "dev:run-backend": "npm-run-all --parallel backend:*",
     "backend:build": "node server/esbuild.watch.js",
     "backend:run": "nodemon --config server/nodemon.json",
     "build-backend": "node server/esbuild.js",

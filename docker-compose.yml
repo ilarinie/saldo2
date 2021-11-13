@@ -8,11 +8,11 @@ services:
     ports:
       - "3001:3001"
       - "3033:3033"
+      - "9229:9229"
     environment:
       NODE_ENV: development
     volumes:
       - ./server:/home/app/appDir/server
-      - ./node_modules:/home/app/appDir/node_modules
       - ./package.json:/home/app/appDir/package.json
     environment:
       - NODE_ENV=development
@@ -38,7 +38,6 @@ services:
       - ./package.json:/home/app/appDir/package.json
       - ./vite.config.ts:/home/app/appDir/vite.config.ts
       - ./types:/home/app/appDir/types
-      - ./node_modules:/home/app/appDir/node_modules
     environment:
       - NODE_ENV=development
     networks:
@@ -57,6 +56,3 @@ services:
  
 networks:
   backend:
-
-volumes:
-  node_modules:

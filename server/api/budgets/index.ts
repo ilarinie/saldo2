@@ -43,7 +43,7 @@ namespace BudgetController {
   export const updateBudget = async (req, res, next) => {
     try {
       const budget = await BudgetService.updateBudget(req.params.budgetId, req.user._id, req.body)
-      res.status(200).send({ resp: budget })
+      res.status(200).sendResponse({ message: 'Budget updated', payload: budget })
     } catch (err) {
       logger.error(err)
       next({ status: 400, message: 'Failed to update budget', payload: err })
@@ -53,7 +53,7 @@ namespace BudgetController {
   export const deleteBudget = async (req, res, next) => {
     try {
       await BudgetService.deleteBudget(req.params.budgetId, req.user._id)
-      res.status(203).send({ resp: 'OK' })
+      res.status(203).sendResponse({ message: 'Budget removed', payload: {} })
     } catch (err) {
       logger.error(err)
       next({ status: 400, message: 'Failed to delete budget', payload: err })

@@ -1,5 +1,6 @@
 import { Express, RequestHandler } from 'express'
 import { checkSchema } from 'express-validator'
+import BudgetActionLog from 'server/models/BudgetActionLog'
 import { handleValidationError } from '../../middlewares/handleValidationError'
 import { isBudgetMember } from '../../middlewares/isBudgetMember'
 import PurchaseModel from '../../models/PurchaseModel'
@@ -9,7 +10,7 @@ import { NewPurchaseSchema } from './NewPurchaseSchema'
 
 namespace PurchaseController {
   export const create: RequestHandler = async (req, res, next) => {
-    const { amount, description, benefactors, type } = req.body
+    const { amount, description, benefactors, type, budgetId } = req.body
     logger.info(`POST /api/purchases`, {
       metadata: {
         body: req.body,
@@ -21,8 +22,14 @@ namespace PurchaseController {
         description,
         benefactors,
         type,
-        budgetId: req.budget._id,
+        budgetId,
         createdBy: (req.user as UserModelType)._id,
+      })
+      await BudgetActionLog.create({
+        budgetId,
+        user: (req.user as UserModelType)._id,
+        action: 'create_purchase',
+        meta: purchase,
       })
       res.sendResponse({ message: 'Purchase created', payload: purchase })
     } catch (err: any) {
@@ -32,7 +39,7 @@ namespace PurchaseController {
   export const deletePurchase: RequestHandler = async (req, res, next) => {
     try {
       await PurchaseModel.findByIdAndUpdate(req.params.id, { deleted: true })
-      res.status(203).send()
+      res.status(203).sendResponse({ message: 'Purchase removed', payload: {} })
     } catch (err) {
       next({ status: 500, message: 'Error creating purchase', payload: err })
     }
