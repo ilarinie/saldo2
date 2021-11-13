@@ -46,11 +46,11 @@ export const AddPurchase = observer(() => {
   const menuOpen = Boolean(anchorEl)
 
   const [saldoPurchaseModalConf, setSaldoPurchaseModalConf] = useState({
-    modalOpen: true,
-    originalDiff: 20.02,
-    newDiff: 30.02,
-    purchaseDescription: 'foo',
-    purchaseAmount: 10.0,
+    modalOpen: false,
+    originalDiff: 0,
+    newDiff: 0,
+    purchaseDescription: '',
+    purchaseAmount: 0,
   })
 
   const onMenuClose = (mode?: any) => {
