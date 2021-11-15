@@ -5,7 +5,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 import { Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, Collapse, IconButton, styled } from '@mui/material'
 import { memo, useState } from 'react'
 import { useHistory } from 'react-router'
-import { Budget } from 'types'
+import { Budget, PurchaseUser } from 'types'
 import { BudgetExpanded } from './BudgetExpanded'
 import { BudgetItemMenu } from './BudgetItemMenu'
 import { BudgetStack } from './BudgetStack'
@@ -14,6 +14,7 @@ interface BudgetItemProps {
   budget: Budget
   onDeletePurchase: (purchaseId: string, budgetId: string) => void
   requestNewTransfer: (budget: Budget) => void
+  currentUser: PurchaseUser
 }
 
 export const formatName = (name: string) => {
@@ -32,7 +33,7 @@ const ExpandMore = styled((props: any) => {
 }))
 
 export const BudgetItem = memo(
-  ({ budget, onDeletePurchase, requestNewTransfer }: BudgetItemProps) => {
+  ({ budget, onDeletePurchase, requestNewTransfer, currentUser }: BudgetItemProps) => {
     const [expanded, setExpanded] = useState(false)
     const history = useHistory()
     const [anchorEl, setAnchorEl] = useState(null)
@@ -52,16 +53,29 @@ export const BudgetItem = memo(
     }
 
     const { totals } = budget
-    const member1 = totals[0]
-    const member2 = totals[1]
+
+    const currentUserTotal = totals.find(t => t.user._id === currentUser._id)
+    const otherUserTotal = totals.find(t => t.user._id !== currentUser._id)
 
     return (
       <Card sx={{ marginBottom: '1em' }}>
         <CardHeader
           title={budget.name}
+          subheader={budget.type === 'saldo' && otherUserTotal && `with ${otherUserTotal?.user.name}`}
+          sx={{
+            backgroundColor: 'primary.main',
+          }}
           titleTypographyProps={{
             sx: {
               fontFamily: 'LogoFont ',
+            },
+          }}
+          subheaderTypographyProps={{
+            sx: {
+              fontSize: '0.85rem',
+              fontVariant: 'small-caps',
+              marginTop: '-10px',
+              fontWeight: 500,
             },
           }}
           action={
@@ -72,7 +86,7 @@ export const BudgetItem = memo(
         />
         <BudgetItemMenu budgetType={budget.type} onMenuClose={onMenuClose} anchorEl={anchorEl} budgetId={budget._id} open={open} />
         <CardContent>
-          {budget.type === 'saldo' ? <SaldoStack member1={member1} member2={member2} /> : <BudgetStack members={totals} />}
+          {budget.type === 'saldo' ? <SaldoStack {...{ currentUserTotal, otherUserTotal }} /> : <BudgetStack members={totals} />}
         </CardContent>
         <CardActions disableSpacing>
           <ButtonGroup>

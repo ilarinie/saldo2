@@ -1,5 +1,4 @@
-import { observer } from 'mobx-react-lite'
-import { Budget } from 'types'
+import { Budget, PurchaseUser } from 'types'
 import { BudgetItem } from './BudgetItem/BudgetItem'
 
 interface BudgetListProps {
@@ -7,13 +6,15 @@ interface BudgetListProps {
   budgetMap: { [key: string]: Budget }
   requestNewTransfer: (budget: Budget) => void
   onDeletePurchase: (purchaseId: string, budgetId: string) => void
+  currentUser: PurchaseUser
 }
 
-export const BudgetList = observer(({ budgetIds, budgetMap, onDeletePurchase, requestNewTransfer }: BudgetListProps) => {
+export const BudgetList = ({ budgetIds, budgetMap, onDeletePurchase, requestNewTransfer, currentUser }: BudgetListProps) => {
   return (
     <>
       {budgetIds.map(b => (
         <BudgetItem
+          currentUser={currentUser}
           onDeletePurchase={onDeletePurchase}
           requestNewTransfer={requestNewTransfer}
           key={b + budgetMap[b].total}
@@ -22,4 +23,4 @@ export const BudgetList = observer(({ budgetIds, budgetMap, onDeletePurchase, re
       ))}
     </>
   )
-})
+}

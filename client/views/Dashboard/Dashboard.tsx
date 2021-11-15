@@ -1,5 +1,4 @@
 import { Box } from '@mui/material'
-import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { Budget } from 'types'
 import { useGetBudgetsQuery } from '../../store/budgetApi'
@@ -13,7 +12,7 @@ const newPurchaseModalStateInit = {
   budget: undefined as undefined | Budget,
 }
 
-export const Dashboard = observer(() => {
+export const Dashboard = () => {
   const currentUser = useAppSelector(state => state.auth.currentUser)
 
   const { data, isLoading, error } = useGetBudgetsQuery()
@@ -40,6 +39,7 @@ export const Dashboard = observer(() => {
         <>
           <Box>
             <BudgetList
+              currentUser={currentUser}
               budgetIds={data.ids}
               budgetMap={data.map}
               requestNewTransfer={requestNewTransfer}
@@ -58,4 +58,4 @@ export const Dashboard = observer(() => {
       )}
     </>
   )
-})
+}

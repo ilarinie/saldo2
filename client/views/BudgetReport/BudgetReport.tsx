@@ -1,12 +1,11 @@
 import { colors, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { Box, styled } from '@mui/system'
 import { formatCurrency } from 'client/utils/formatCurrency'
-import { observer } from 'mobx-react-lite'
 import { useRouteMatch } from 'react-router'
 import { Benefactor, Budget, Purchase, UserTotal } from 'types'
 import { useGetBudgetsQuery } from '../../store/budgetApi'
 
-export const BudgetReport = observer(() => {
+export const BudgetReport = () => {
   const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/report')
   const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId as string] || undefined
 
@@ -113,7 +112,7 @@ export const BudgetReport = observer(() => {
       </TableContainer>
     </Box>
   )
-})
+}
 
 const StyledTable = styled(Table)`
   tr:nth-of-type(2) {

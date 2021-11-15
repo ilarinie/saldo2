@@ -22,7 +22,6 @@ import { useGetBudgetsQuery } from 'client/store/budgetApi'
 import { useCreatePurchaseMutation } from 'client/store/purchaseApi'
 import { selectPurchaseAutocompletionOptions } from 'client/store/purchaseAutocompleteOptions'
 import currency from 'currency.js'
-import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router-dom'
@@ -36,7 +35,7 @@ const StyledTextField = styled(TextField)`
   width: 100%;
 `
 
-export const AddPurchase = observer(() => {
+export const AddPurchase = () => {
   const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/addpurchase')
   const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId || '']
   const history = useHistory()
@@ -275,4 +274,4 @@ export const AddPurchase = observer(() => {
       </SmallSaldoModal>
     </FullPageContainer>
   )
-})
+}

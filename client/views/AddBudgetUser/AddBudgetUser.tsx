@@ -1,11 +1,10 @@
 import { Box, Button, Card, CardContent, List, ListItem, ListItemText, Paper, TextField, Typography } from '@mui/material'
-import { useAddBudgetUserMutation, useGetBudgetsQuery } from '../../store/budgetApi'
-import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { useRouteMatch } from 'react-router'
 import { Budget } from 'types'
+import { useAddBudgetUserMutation, useGetBudgetsQuery } from '../../store/budgetApi'
 
-export const AddBudgetUser = observer(() => {
+export const AddBudgetUser = () => {
   const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/adduser')
   const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId || ''] as Budget
   const [newUserName, setNewUserName] = useState('')
@@ -23,7 +22,6 @@ export const AddBudgetUser = observer(() => {
   }
 
   const [addBudgetUser] = useAddBudgetUserMutation()
-
 
   const onAddUser = () => {
     if (validuserName(newUserName)) {
@@ -73,4 +71,4 @@ export const AddBudgetUser = observer(() => {
       </Card>
     </Paper>
   )
-})
+}

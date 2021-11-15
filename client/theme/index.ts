@@ -1,10 +1,12 @@
 import { createTheme } from '@mui/material'
+import { lightBlue } from '@mui/material/colors'
 
 export const theme = createTheme({
   typography: {
     bigCurrency: {
-      fontSize: '1.5rem',
+      fontSize: '30px',
       fontWeight: 500,
+      fontFamily: 'LogoFont',
     },
     subtitle1: {
       marginTop: '8px',
@@ -12,6 +14,9 @@ export const theme = createTheme({
   },
   palette: {
     mode: 'dark',
+    primary: {
+      main: lightBlue[500],
+    },
   },
 })
 

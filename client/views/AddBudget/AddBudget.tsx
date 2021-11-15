@@ -1,11 +1,10 @@
 import { Button, Card, CardActions, CardContent, CardHeader, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import { useAddBudgetMutation } from '../../store/budgetApi'
-import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { useHistory } from 'react-router'
+import { useAddBudgetMutation } from '../../store/budgetApi'
 
-export const AddBudget = observer(() => {
+export const AddBudget = () => {
   const history = useHistory()
   const [name, setName] = useState('')
   const [type, setType] = useState('budget' as 'saldo' | 'budget')
@@ -16,9 +15,7 @@ export const AddBudget = observer(() => {
       try {
         await addBudget({ name, type })
         history.push('/')
-      } catch (err) {
-
-      }
+      } catch (err) {}
     }
   }
 
@@ -47,4 +44,4 @@ export const AddBudget = observer(() => {
       </Card>
     </Box>
   )
-})
+}

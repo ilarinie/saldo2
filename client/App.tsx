@@ -1,15 +1,15 @@
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined'
-import MenuIcon from '@mui/icons-material/Menu'
-import { Box, Container, IconButton, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer, Typography } from '@mui/material'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { Avatar, Box, Container, List, ListItem, ListItemIcon, ListItemText, SwipeableDrawer, Typography } from '@mui/material'
 import { unwrapResult } from '@reduxjs/toolkit'
-import { observer } from 'mobx-react-lite'
 import { useEffect, useState } from 'react'
 import Div100vh from 'react-div-100vh'
 import { useSelector } from 'react-redux'
 import { Route, Switch, useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { PurchaseUser } from 'types'
-import { checkCurrentUser, selectLoginStatus, setCurrentUser, setLoginStatus } from './store/authSlice'
+import { checkCurrentUser, selectCurrentUser, selectLoginStatus, setCurrentUser, setLoginStatus } from './store/authSlice'
 import { useAppDispatch } from './store/hooks'
 import { AddBudget } from './views/AddBudget/AddBudget'
 import { AddBudgetUser } from './views/AddBudgetUser/AddBudgetUser'
@@ -18,7 +18,7 @@ import { BudgetReport } from './views/BudgetReport/BudgetReport'
 import { Dashboard } from './views/Dashboard/Dashboard'
 import LoginView from './views/Login'
 
-export const App = observer(() => {
+export const App = () => {
   const dispatch = useAppDispatch()
   useEffect(() => {
     const checkForLogin = async () => {
@@ -35,6 +35,7 @@ export const App = observer(() => {
     checkForLogin()
   }, [])
   const loginStatus = useSelector(selectLoginStatus)
+  const currentUser = useSelector(selectCurrentUser)
 
   const history = useHistory()
 
@@ -52,8 +53,7 @@ export const App = observer(() => {
         onClose={rootState.closeSnackbar}
         message={rootState.snackBarMessage.message}
       /> */}
-      {loginStatus === 'PENDING' && <div>loading</div>}
-      {loginStatus === 'UNAUTHORIZED' && <LoginView />}
+      {loginStatus !== 'PENDING' && <LoginView />}
       {loginStatus === 'LOGGED_IN' && (
         <Container maxWidth='lg'>
           <SwipeableDrawer onOpen={() => setDrawerOpen(true)} open={drawerOpen} onClose={() => setDrawerOpen(false)} anchor='right'>
@@ -70,6 +70,14 @@ export const App = observer(() => {
                 </ListItemIcon>
                 <ListItemText primary='Add budget' />
               </ListItem>
+              <ListItem button onClick={() => doNavigate('/api/auth/logout')}>
+                <Link to='/api/auth/logout'>
+                  <ListItemIcon>
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='Log Out' />
+                </Link>
+              </ListItem>
             </List>
           </SwipeableDrawer>
           <Box
@@ -83,9 +91,11 @@ export const App = observer(() => {
             <Typography variant='h4' sx={{ fontFamily: 'LogoFont', textAlign: 'center' }} gutterBottom>
               - SALDO -
             </Typography>
-            <IconButton onClick={() => setDrawerOpen(!drawerOpen)} sx={{ marginBottom: '17px' }}>
-              <MenuIcon />
-            </IconButton>
+            <Avatar
+              src={currentUser.picture}
+              onClick={() => setDrawerOpen(!drawerOpen)}
+              sx={{ marginBottom: '17px', width: '30px', height: '30px' }}
+            />
           </Box>
           <Switch>
             <Route exact path='/' component={Dashboard} />
@@ -98,6 +108,6 @@ export const App = observer(() => {
       )}
     </Div100vh>
   )
-})
+}
 
 export default App
