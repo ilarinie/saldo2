@@ -53,7 +53,7 @@ export const App = () => {
         onClose={rootState.closeSnackbar}
         message={rootState.snackBarMessage.message}
       /> */}
-      {loginStatus !== 'PENDING' && <LoginView />}
+      {loginStatus !== 'LOGGED_IN' && <LoginView />}
       {loginStatus === 'LOGGED_IN' && (
         <Container maxWidth='lg'>
           <SwipeableDrawer onOpen={() => setDrawerOpen(true)} open={drawerOpen} onClose={() => setDrawerOpen(false)} anchor='right'>
