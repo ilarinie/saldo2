@@ -17,14 +17,12 @@ import {
 import { Box, styled } from '@mui/system'
 import { FullPageContainer, SmallSaldoModal } from 'client/components'
 import { UserSelector } from 'client/components/UserSelector/UserSelector'
-import { selectCurrentUser } from 'client/store/authSlice'
-import { useGetBudgetsQuery } from 'client/store/budgetApi'
+import { useBudgetViewData } from 'client/hooks/useBudgetViewData'
 import { useCreatePurchaseMutation } from 'client/store/purchaseApi'
 import { selectPurchaseAutocompletionOptions } from 'client/store/purchaseAutocompleteOptions'
 import currency from 'currency.js'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Benefactor } from 'types'
 import { BenefactorEditor } from './BenefactorEditor'
 import { initBenefactors } from './initBenefactors'
@@ -36,20 +34,22 @@ const StyledTextField = styled(TextField)`
 `
 
 export const AddPurchase = () => {
-  const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/addpurchase')
-  const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId || '']
-  const history = useHistory()
-  const currentUser = useSelector(selectCurrentUser)
+  // const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/addpurchase')
+  // const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId || '']
+  // const history = useHistory()
+  // const currentUser = useSelector(selectCurrentUser)
+  const { budget, history, currentUser } = useBudgetViewData()
+
   const purchaseAutocompleteOptions = useSelector(selectPurchaseAutocompletionOptions(budget))
   const [anchorEl, setAnchorEl] = useState(null)
   const menuOpen = Boolean(anchorEl)
 
   const [saldoPurchaseModalConf, setSaldoPurchaseModalConf] = useState({
     modalOpen: false,
-    originalDiff: 0,
-    newDiff: 0,
+    originalDiff: 200,
+    newDiff: 100,
     purchaseDescription: '',
-    purchaseAmount: 0,
+    purchaseAmount: 100,
   })
 
   const onMenuClose = (mode?: any) => {
@@ -113,18 +113,16 @@ export const AddPurchase = () => {
     }
   }, [isSuccess])
 
-  const validation = usePurchaseValidation(amount, description)
+  const { validationResult: validation, isInvalidInputs } = usePurchaseValidation(amount, description)
 
-  const isInvalidInputs = () => {
-    console.log(validation)
-
-    return (
-      !validation.amount.isValid || !validation.description.isValid || !validation.amount.isTouched || !validation.description.isTouched
-    )
-  }
+  // const isInvalidInputs = () => {
+  //   return (
+  //     !validation.amount.isValid || !validation.description.isValid || !validation.amount.isTouched || !validation.description.isTouched
+  //   )
+  // }
 
   const onSave = async () => {
-    if (isInvalidInputs()) {
+    if (isInvalidInputs) {
       return
     }
     await createPurchase({
@@ -243,7 +241,7 @@ export const AddPurchase = () => {
         <BenefactorEditor benefactors={benefactors} onBenefactorsChanged={setBenefactors} total={amount || 0} />
       </CardContent>
       <CardActions disableSpacing>
-        <Button disabled={isInvalidInputs()} fullWidth color='info' variant='outlined' onClick={onSave}>
+        <Button disabled={isInvalidInputs} fullWidth color='info' variant='outlined' onClick={onSave}>
           Save
         </Button>
         <Button color='error' fullWidth variant='outlined' onClick={() => history.goBack()}>

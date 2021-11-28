@@ -1,13 +1,11 @@
-import { colors, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Button, colors, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { Box, styled } from '@mui/system'
+import { useBudgetViewData } from 'client/hooks/useBudgetViewData'
 import { formatCurrency } from 'client/utils/formatCurrency'
-import { useRouteMatch } from 'react-router'
 import { Benefactor, Budget, Purchase, UserTotal } from 'types'
-import { useGetBudgetsQuery } from '../../store/budgetApi'
 
 export const BudgetReport = () => {
-  const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/report')
-  const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId as string] || undefined
+  const { budget, history } = useBudgetViewData()
 
   if (!budget) {
     return null
@@ -23,6 +21,7 @@ export const BudgetReport = () => {
 
   return (
     <Box maxWidth='100vw' sx={{ overflow: 'scroll' }}>
+      <Button onClick={() => history.goBack()}>Go back</Button>
       <TableContainer component={Paper}>
         <StyledTable size='small'>
           <TableHead>

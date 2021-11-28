@@ -60,6 +60,7 @@ export const BudgetItem = memo(
     return (
       <Card sx={{ marginBottom: '1em' }}>
         <CardHeader
+          onClick={() => history.push(`/budgets/${budget._id}`)}
           title={budget.name}
           subheader={budget.type === 'saldo' && otherUserTotal && `with ${otherUserTotal?.user.name}`}
           sx={{

@@ -13,6 +13,7 @@ export const usePurchaseValidation = (amount: any, description: any) => {
       error: '',
     },
   })
+  const [isInvalidInputs, setIsInvalidInputs] = useState(false)
   const didMountRef = useRef(false)
 
   useEffect(() => {
@@ -35,7 +36,8 @@ export const usePurchaseValidation = (amount: any, description: any) => {
         error: isValidAmount ? '' : 'Amount is invalid',
       },
     })
+    setIsInvalidInputs(!isValidAmount || !isValidDescription)
   }
 
-  return validation
+  return { validationResult: validation, isInvalidInputs }
 }

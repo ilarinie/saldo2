@@ -5,7 +5,6 @@ export type Purchase = {
   createdBy: import('.').PurchaseUser
   amount: number
   benefactors: import('.').Benefactor[]
-  createdAt: string
   updatedAt: string
   type: string
-}
+} & import('./HasCreationDate').HasCreationDate
