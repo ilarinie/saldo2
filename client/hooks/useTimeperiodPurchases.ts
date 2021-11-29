@@ -2,7 +2,7 @@ import { startOfMonth, startOfToday } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { Purchase } from 'types'
 
-export enum Timeperiod {
+export const enum Timeperiod {
   TODAY,
   THIS_MONTH,
 }

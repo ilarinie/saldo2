@@ -65,8 +65,6 @@ export const BudgetDetailsView = ({ budget, currentUser }: BudgetDetailsViewProp
 
   return (
     <DetailContainer>
-      {console.log(timeperiodPurchases)}
-      {console.log(monthlyPurchaseData)}
       <TitlePanel>
         <Typography variant='h1' sx={{ fontFamily: 'LogoFont', fontSize: '32px' }} gutterBottom>
           {budget.name}
@@ -94,7 +92,10 @@ export const BudgetDetailsView = ({ budget, currentUser }: BudgetDetailsViewProp
             <Line dataKey='value' dot={false} type='linear' />
             <YAxis axisLine={false} tickLine={false} tickFormatter={value => formatCurrency(value)} domain={['dataMin', 'dataMax']} />
             <Tooltip
-              formatter={(value, time, props) => [`value: ${value}`, `time: ${new Date(props.payload.time).toLocaleDateString()}`]}
+              formatter={(value: number, time: number, props: any) => [
+                `value: ${value}`,
+                `time: ${new Date(props.payload.time).toLocaleDateString()}`,
+              ]}
             />
             <XAxis
               type='number'
