@@ -2,10 +2,10 @@ import AddIcon from '@mui/icons-material/Add'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
-import { Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, Collapse, IconButton, styled } from '@mui/material'
-import { memo, useState } from 'react'
+import { Button,ButtonGroup,Card,CardActions,CardContent,CardHeader,Collapse,IconButton,styled } from '@mui/material'
+import { memo,useState } from 'react'
 import { useHistory } from 'react-router'
-import { Budget, PurchaseUser } from 'types'
+import { Budget,PurchaseUser } from 'types'
 import { BudgetExpanded } from './BudgetExpanded'
 import { BudgetItemMenu } from './BudgetItemMenu'
 import { BudgetStack } from './BudgetStack'
@@ -63,9 +63,6 @@ export const BudgetItem = memo(
           onClick={() => history.push(`/budgets/${budget._id}`)}
           title={budget.name}
           subheader={budget.type === 'saldo' && otherUserTotal && `with ${otherUserTotal?.user.name}`}
-          sx={{
-            backgroundColor: 'primary.main',
-          }}
           titleTypographyProps={{
             sx: {
               fontFamily: 'LogoFont ',

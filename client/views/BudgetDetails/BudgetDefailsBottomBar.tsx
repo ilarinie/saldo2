@@ -3,20 +3,26 @@ import AssessmentIcon from '@mui/icons-material/Assessment'
 import ListIcon from '@mui/icons-material/ListAltOutlined'
 import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 import { styled } from '@mui/system'
-import { useHistory } from 'react-router-dom'
 
 interface BudgetDetailsBottomBarProps {
-  budgetId: string
+  selectedIndex: number
+  setSelectedIndex: (index: number) => void
 }
 
-export const BudgetDetailsBottomBar = ({ budgetId }: BudgetDetailsBottomBarProps) => {
-  const history = useHistory()
-
+export const BudgetDetailsBottomBar = ({ selectedIndex, setSelectedIndex }: BudgetDetailsBottomBarProps) => {
   return (
-    <BudgetDetailsBottomBarContainer showLabels>
-      <BottomNavigationAction label='Add purchase' icon={<AddBoxIcon />} onClick={() => history.push(`/budgets/${budgetId}/addpurchase`)} />
-      <BottomNavigationAction label='Purchase List' icon={<ListIcon />} onClick={() => history.push(`/budgets/${budgetId}/purchaselist`)} />
-      <BottomNavigationAction label='Report' icon={<AssessmentIcon />} onClick={() => history.push(`/budgets/${budgetId}/report`)} />
+    <BudgetDetailsBottomBarContainer
+      showLabels
+      value={selectedIndex}
+      onChange={(event, newValue) => {
+        console.log(newValue)
+        setSelectedIndex(newValue)
+      }}
+    >
+      <BottomNavigationAction label='Saldo' icon={<AddBoxIcon />} />
+      <BottomNavigationAction label='Add purchase' icon={<AddBoxIcon />} />
+      <BottomNavigationAction label='Purchase List' icon={<ListIcon />} />
+      <BottomNavigationAction label='Report' icon={<AssessmentIcon />} />
     </BudgetDetailsBottomBarContainer>
   )
 }

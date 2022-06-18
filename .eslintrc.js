@@ -17,11 +17,6 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-namespace': 'off',
-    '@typescript-eslint/no-explicit-any': 'off'
-  },
-  settings: {
-    react: {
-      version: '17.0.2',
-    },
-  },
+    '@typescript-eslint/no-explicit-any': 'warn'
+  }
 }

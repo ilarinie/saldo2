@@ -10,7 +10,7 @@ interface AppBarProps {
 
 export const AppBar = ({ currentUser, setDrawerOpen, isDrawerOpen }: AppBarProps) => {
   return (
-    <AppBarContainer>
+    <AppBarContainer position='static'>
       <AppTitle variant='h4' gutterBottom>
         - SALDO -
       </AppTitle>
@@ -35,4 +35,8 @@ const AppBarContainer = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  /* background: #000;
+  width: 100vw;
+  top: 0;
+  left: 0; */
 `

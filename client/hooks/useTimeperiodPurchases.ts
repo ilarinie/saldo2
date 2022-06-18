@@ -41,7 +41,7 @@ export const useTimeperiodPurchases = (purchases: Purchase[], timeperiod: Timepe
         timestamp = startOfMonth(new Date()).toISOString()
         break
     }
-    let magicIndex = purchases.slice().findIndex(purchase => purchase.createdAt < timestamp)
+    const magicIndex = purchases.slice().findIndex(purchase => purchase.createdAt < timestamp)
     return purchases.slice(0, magicIndex)
   }
 

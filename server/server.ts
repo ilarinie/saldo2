@@ -5,9 +5,10 @@ import express from 'express'
 import http from 'http'
 import path from 'path'
 import WebSocket from 'ws'
-import { auth, budgets, purchases } from './api'
+import { auth,budgets,purchases } from './api'
 import checkAuth from './middlewares/checkAuth'
 import { errorHandler } from './middlewares/errorHandler'
+import loggerMiddleware from './middlewares/loggerMiddleware'
 import logger from './services/logger'
 import passport from './services/passport'
 
@@ -17,7 +18,8 @@ const app = express()
 
 app.use(
   cookieSession({
-    secret: 'asdasdasd',
+    secret: process.env.SECRET,
+    maxAge: 1000 * 60 * 60 * 24 * 30 * 2,
   })
 )
 
@@ -46,9 +48,10 @@ app.get('/api', (req, res) => {
 })
 
 app.use(bodyParser.json())
+// @ts-ignore
+app.use(loggerMiddleware)
 
 auth(app, '/api/auth')
-
 purchases(app, checkAuth, '/api/purchases')
 budgets(app, checkAuth, '/api/budgets')
 
@@ -65,4 +68,5 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(errorHandler)
 
-export { server, app, wss }
+export { server,app,wss }
+

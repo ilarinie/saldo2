@@ -10,7 +10,7 @@ export type UserModelType = {
 const UserSchema = new mongoose.Schema<UserModelType>(
   {
     name: { type: String, unique: true, index: true },
-    googleProfileId: { type: String },
+    googleProfileId: { type: String, unique: true, index: true },
     picture: { type: String },
   },
   {

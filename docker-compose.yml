@@ -9,8 +9,6 @@ services:
       - "3001:3001"
       - "3033:3033"
       - "9229:9229"
-    environment:
-      NODE_ENV: development
     volumes:
       - ./server:/home/app/appDir/server
       - ./package.json:/home/app/appDir/package.json
@@ -31,8 +29,6 @@ services:
       context: .
     ports:
       - "3000:3000"
-    environment:
-      NODE_ENV: development
     volumes:
       - ./client:/home/app/appDir/client
       - ./package.json:/home/app/appDir/package.json

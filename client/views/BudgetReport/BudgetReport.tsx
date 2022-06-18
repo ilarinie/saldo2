@@ -1,12 +1,13 @@
-import { Button, colors, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { colors, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { Box, styled } from '@mui/system'
-import { useBudgetViewData } from 'client/hooks/useBudgetViewData'
 import { formatCurrency } from 'client/utils/formatCurrency'
 import { Benefactor, Budget, Purchase, UserTotal } from 'types'
 
-export const BudgetReport = () => {
-  const { budget, history } = useBudgetViewData()
+type BudgetReportProps = {
+  budget?: Budget
+}
 
+export const BudgetReport = ({ budget }: BudgetReportProps) => {
   if (!budget) {
     return null
   }
@@ -21,7 +22,6 @@ export const BudgetReport = () => {
 
   return (
     <Box maxWidth='100vw' sx={{ overflow: 'scroll' }}>
-      <Button onClick={() => history.goBack()}>Go back</Button>
       <TableContainer component={Paper}>
         <StyledTable size='small'>
           <TableHead>

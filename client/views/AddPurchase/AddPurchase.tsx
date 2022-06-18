@@ -23,7 +23,7 @@ import { selectPurchaseAutocompletionOptions } from 'client/store/purchaseAutoco
 import currency from 'currency.js'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Benefactor } from 'types'
+import { Benefactor, Budget, PurchaseUser } from 'types'
 import { BenefactorEditor } from './BenefactorEditor'
 import { initBenefactors } from './initBenefactors'
 import { SaldoPurchaseCreatedInfoBox } from './PurchaseCreatedInfoBox'
@@ -33,13 +33,14 @@ const StyledTextField = styled(TextField)`
   width: 100%;
 `
 
-export const AddPurchase = () => {
-  // const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId/addpurchase')
-  // const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId || '']
-  // const history = useHistory()
-  // const currentUser = useSelector(selectCurrentUser)
-  const { budget, history, currentUser } = useBudgetViewData()
+type AddPurchaseProps = {
+  budget: Budget,
+  currentUser: PurchaseUser
+  onPurchaseCreated: () => void
+  onCancel: () => void
+}
 
+export const AddPurchase = ({ budget, currentUser, onPurchaseCreated, onCancel }: AddPurchaseProps) => {
   const purchaseAutocompleteOptions = useSelector(selectPurchaseAutocompletionOptions(budget))
   const [anchorEl, setAnchorEl] = useState(null)
   const menuOpen = Boolean(anchorEl)
@@ -244,7 +245,7 @@ export const AddPurchase = () => {
         <Button disabled={isInvalidInputs} fullWidth color='info' variant='outlined' onClick={onSave}>
           Save
         </Button>
-        <Button color='error' fullWidth variant='outlined' onClick={() => history.goBack()}>
+        <Button color='error' fullWidth variant='outlined' onClick={onCancel}>
           Cancel
         </Button>
       </CardActions>
@@ -258,7 +259,7 @@ export const AddPurchase = () => {
             purchaseDescription: '',
             purchaseAmount: 0,
           })
-          history.push('/')
+          onPurchaseCreated()
         }}
         height='400px'
         width='300px'
