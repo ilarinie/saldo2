@@ -10,7 +10,7 @@ import { BudgetDetailsView } from './BudgetDetailsView'
 
 export const BudgetDetailsContainer = () => {
   const { budget, currentUser } = useBudgetViewData()
-  const [selectedIndex, setSelectedIndex] = useState(1)
+  const [selectedIndex, setSelectedIndex] = useState(0)
 
   const renderTab = () => {
     if (!budget) {

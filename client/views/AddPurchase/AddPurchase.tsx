@@ -45,7 +45,7 @@ export const AddPurchase = ({ budget, currentUser, onPurchaseCreated, onCancel }
   const menuOpen = Boolean(anchorEl)
 
   const [saldoPurchaseModalConf, setSaldoPurchaseModalConf] = useState({
-    modalOpen: true,
+    modalOpen: false,
     originalDiff: 200,
     newDiff: 100,
     purchaseDescription: 'budvar',
