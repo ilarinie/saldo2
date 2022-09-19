@@ -17,7 +17,6 @@ import {
 import { Box, styled } from '@mui/system'
 import { FullPageContainer, SmallSaldoModal } from 'client/components'
 import { UserSelector } from 'client/components/UserSelector/UserSelector'
-import { useBudgetViewData } from 'client/hooks/useBudgetViewData'
 import { useCreatePurchaseMutation } from 'client/store/purchaseApi'
 import { selectPurchaseAutocompletionOptions } from 'client/store/purchaseAutocompleteOptions'
 import currency from 'currency.js'
@@ -46,10 +45,10 @@ export const AddPurchase = ({ budget, currentUser, onPurchaseCreated, onCancel }
   const menuOpen = Boolean(anchorEl)
 
   const [saldoPurchaseModalConf, setSaldoPurchaseModalConf] = useState({
-    modalOpen: false,
+    modalOpen: true,
     originalDiff: 200,
     newDiff: 100,
-    purchaseDescription: '',
+    purchaseDescription: 'budvar',
     purchaseAmount: 100,
   })
 
@@ -115,12 +114,6 @@ export const AddPurchase = ({ budget, currentUser, onPurchaseCreated, onCancel }
   }, [isSuccess])
 
   const { validationResult: validation, isInvalidInputs } = usePurchaseValidation(amount, description)
-
-  // const isInvalidInputs = () => {
-  //   return (
-  //     !validation.amount.isValid || !validation.description.isValid || !validation.amount.isTouched || !validation.description.isTouched
-  //   )
-  // }
 
   const onSave = async () => {
     if (isInvalidInputs) {
@@ -214,7 +207,7 @@ export const AddPurchase = ({ budget, currentUser, onPurchaseCreated, onCancel }
             userMap={budget.userMap}
           />
         )}
-        <Box
+        {/* <Box
           sx={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -238,8 +231,8 @@ export const AddPurchase = ({ budget, currentUser, onPurchaseCreated, onCancel }
             <MenuItem onClick={() => onMenuClose('even-split')}>Even-split</MenuItem>
             <MenuItem onClick={() => onMenuClose('saldo')}>Saldo</MenuItem>
           </Menu>
-        </Box>
-        <BenefactorEditor benefactors={benefactors} onBenefactorsChanged={setBenefactors} total={amount || 0} />
+        </Box> */}
+        {/* <BenefactorEditor benefactors={benefactors} onBenefactorsChanged={setBenefactors} total={amount || 0} /> */}
       </CardContent>
       <CardActions disableSpacing>
         <Button disabled={isInvalidInputs} fullWidth color='info' variant='outlined' onClick={onSave}>

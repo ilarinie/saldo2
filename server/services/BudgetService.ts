@@ -2,6 +2,7 @@ import { Budget, Purchase } from 'types'
 import BudgetModel, { BudgetModelType } from '../models/BudgetModel'
 import PurchaseModel from '../models/PurchaseModel'
 import { budgetPurchasesToBudgetResponse } from '../utils/budgetPurchasesToBudgetResponse'
+import logger from './logger'
 
 export namespace BudgetService {
   const createBudgetQuery = (budgetId, userId, requireOwner) => {
@@ -91,6 +92,7 @@ export namespace BudgetService {
       res = await BudgetModel.find({
         $and: [ownerOrMemberQuery(userId, false), { deleted: false }],
       })
+      console.log(userId)
       const budgets = await Promise.all([...res.map(r => getBudgetById(r._id, userId))])
       return Promise.resolve(budgets)
     } catch (err) {

@@ -93,7 +93,7 @@ export const BudgetDetailsView = ({ budget, currentUser }: BudgetDetailsViewProp
             },
           ]}
         />
-        <Typography variant='h6' sx={{ marginTop: '1em' }}>
+        {/* <Typography variant='h6' sx={{ marginTop: '1em' }}>
           Monthly change
         </Typography>
         <ResponsiveContainer height={200} width='100%'>
@@ -126,7 +126,7 @@ export const BudgetDetailsView = ({ budget, currentUser }: BudgetDetailsViewProp
               }}
             />
           </LineChart>
-        </ResponsiveContainer>
+        </ResponsiveContainer> */}
       </TitlePanel>
     </DetailContainer>
   )

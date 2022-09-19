@@ -5,7 +5,7 @@ import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemIcon, ListItemTex
 import { formatCurrency } from 'client/utils/formatCurrency'
 import { useState } from 'react'
 import { Purchase } from 'types'
-import { getPayer } from './BudgetExpanded'
+import { getPayer } from '../../views/Dashboard/BudgetList/BudgetItem/BudgetExpanded'
 
 export const PurchaseItem = ({
   purchase,

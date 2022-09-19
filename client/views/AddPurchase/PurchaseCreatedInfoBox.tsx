@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import CountUp from 'react-countup'
 import { useHistory } from 'react-router-dom'
 import audio from '../../assets/cash.mp3'
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+import { formatCurrency } from 'client/utils/formatCurrency'
 
 interface SaldoPurchaseCreatedInfoBoxProps {
   previousDiff: number
@@ -30,21 +32,12 @@ export const SaldoPurchaseCreatedInfoBox = ({
   }, [])
 
   return (
-    <Container sx={{ padding: '1em', textAlign: 'center' }}>
+    <Container sx={{ padding: '1em', textAlign: 'center', height: '90%'}}>
       <Typography variant='h4'>Saldo updated</Typography>
-      <Box>
-        {purchaseDescription}&nbsp;
-        {showPurchase && (
-          <>
-            {' '}
-            <CountUp start={purchaseAmount} end={0} duration={3} decimals={2} delay={1} onEnd={() => setShowPurchase(false)} /> €{' '}
-          </>
-        )}
-        <Box>
-          <Typography variant='h6'>New saldo</Typography>
-          <CountUp start={previousDiff} end={newDiff} duration={3} decimals={2} delay={1} /> €
-        </Box>
-      </Box>
+      <Typography marginTop={8} variant='h6'>Added</Typography>
+      <Typography variant='h5' sx={{ textTransform: 'uppercase', fontVariant: 'small-caps'}}>{purchaseDescription} {formatCurrency(purchaseAmount)}</Typography>
+      <Typography marginTop={2} variant='h6'>New saldo</Typography>
+      <Typography variant='h5'>{formatCurrency(newDiff)}</Typography>
     </Container>
   )
 }

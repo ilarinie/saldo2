@@ -8,3 +8,6 @@ export { SaldoTotalPanel } from './SaldoTotalPanel/SaldoTotalPanel'
 export { SideBar } from './SideBar/SideBar'
 export { SmallSaldoModal } from './SmallSaldoModal/SmallSaldoModal'
 export { ArrowIcon }
+export { PurchaseItem } from './PurchaseItem/PurchaseItem'
+export { PurchaseList } from './PurchaseList/PurchaseList'
+

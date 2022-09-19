@@ -102,7 +102,7 @@ export const BudgetItem = memo(
           </ExpandMore>
         </CardActions>
         <Collapse in={expanded} timeout='auto' unmountOnExit>
-          <BudgetExpanded budget={budget} deletePurchase={onDeletePurchase} />
+          <BudgetExpanded budget={budget} />
         </Collapse>
       </Card>
     )

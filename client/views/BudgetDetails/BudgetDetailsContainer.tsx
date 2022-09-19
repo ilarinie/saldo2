@@ -1,36 +1,37 @@
 import { Container } from '@mui/material'
-import { styled } from '@mui/system'
-import { LoadingBox } from 'client/components'
+import { LoadingBox, PurchaseList } from 'client/components'
 import { useBudgetViewData } from 'client/hooks/useBudgetViewData'
 import { useState } from 'react'
 import { Budget } from 'types'
 import { AddPurchase } from '../AddPurchase/AddPurchase'
 import { BudgetReport } from '../BudgetReport/BudgetReport'
-import { PurchaseList } from '../PurchaseList/PurchaseList'
 import { BudgetDetailsBottomBar } from './BudgetDefailsBottomBar'
 import { BudgetDetailsView } from './BudgetDetailsView'
 
 export const BudgetDetailsContainer = () => {
   const { budget, currentUser } = useBudgetViewData()
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [selectedIndex, setSelectedIndex] = useState(1)
 
   const renderTab = () => {
+    if (!budget) {
+      return null
+    }
     switch (selectedIndex) {
       case 0:
-        return <BudgetDetailsView budget={budget as Budget} currentUser={currentUser} />
+        return <BudgetDetailsView budget={budget} currentUser={currentUser} />
       case 1:
         return (
           <AddPurchase
-            budget={budget as Budget}
+            budget={budget}
             currentUser={currentUser}
             onCancel={() => setSelectedIndex(0)}
             onPurchaseCreated={() => setSelectedIndex(0)}
           />
         )
       case 2:
-        return <PurchaseList budget={budget as Budget} currentUser={currentUser} />
+        return <PurchaseList budget={budget} />
       case 3:
-        return <BudgetReport budget={budget as Budget} />
+        return <BudgetReport budget={budget} />
       default:
         return null
     }

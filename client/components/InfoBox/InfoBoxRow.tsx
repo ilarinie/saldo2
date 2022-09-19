@@ -22,7 +22,7 @@ const InfoBoxRowContainer = styled(Box)`
   display: flex;
   height: 132px;
   padding: 16px 0;
-  justify-content: space-around;
+  justify-content: space-evenly;
 `
 
 const InfoBoxContainer = styled(Box)`
