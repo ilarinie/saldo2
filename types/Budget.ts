@@ -9,4 +9,5 @@ export type Budget = {
   total: number
   type: 'budget' | 'saldo'
   totals: import('.').UserTotal[]
+  newTotal?: number
 }

@@ -10,11 +10,7 @@ export type PurchaseModelType = {
   createdBy: typeof mongoose.Types.ObjectId | UserModelType | string
   createdAt: string
   updatedAt: string
-  benefactors: Array<{
-    amountPaid: number
-    amountBenefitted: number
-    user: string
-  }>
+  benefactors: Array<BenefactorDocument>
   type: 'transfer' | 'purchase'
 }
 // Schema for purchase

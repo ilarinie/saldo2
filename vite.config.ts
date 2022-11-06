@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import envCompatible from 'vite-plugin-env-compatible'
-import react from 'vite-preset-react'
+import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
@@ -9,13 +9,13 @@ export default defineConfig({
     outDir: '../build',
     sourcemap: true,
   },
+  esbuild: {
+    loader: 'tsx',
+    exclude: '*.test.js',
+    target: '',
+  },
   plugins: [
-    react({
-      reactRefreshOptions: {
-        include: './client',
-      },
-    }),
-    envCompatible(),
+    react(),
     tsconfigPaths(),
   ],
   server: {

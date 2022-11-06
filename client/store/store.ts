@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+import { api } from './api'
 import authReducer from './authSlice'
 import { budgetApi } from './budgetApi'
 import { purchaseApi } from './purchaseApi'
@@ -6,8 +7,7 @@ import purchaseAutocompleteOptionsReducer from './purchaseAutocompleteOptions'
 
 export const store = configureStore({
   reducer: {
-    [budgetApi.reducerPath]: budgetApi.reducer,
-    [purchaseApi.reducerPath]: purchaseApi.reducer,
+    [api.reducerPath]: api.reducer,
     auth: authReducer,
     purchaseAutocompleteOptions: purchaseAutocompleteOptionsReducer,
   },

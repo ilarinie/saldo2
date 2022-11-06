@@ -13,6 +13,7 @@ services:
       - ./server:/home/app/appDir/server
       - ./package.json:/home/app/appDir/package.json
     environment:
+      - DEV_USER_ID=61409e603ec03c3cb2361973
       - NODE_ENV=development
       - MONGO_URI=mongodb://mongo/saldo-app
       - SECRET=correcthorsebatterystaple
@@ -46,8 +47,6 @@ services:
       - '27017-27019:27017-27019'
     networks:
       - backend
-    logging:
-      driver: 'none'
  
 networks:
   backend:

@@ -1,21 +1,34 @@
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { Avatar, IconButton, ListItem, ListItemAvatar, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import { Box, IconButton, ListItem, ListItemIcon, ListItemText, Menu, MenuItem, styled, Typography } from '@mui/material'
 import { formatCurrency } from 'client/utils/formatCurrency'
+import { purchaseNameToEmojiMapper } from 'client/utils/purchaseNameToEmojiMapper'
 import { useState } from 'react'
-import { Purchase } from 'types'
-import { getPayer } from '../../views/Dashboard/BudgetList/BudgetItem/BudgetExpanded'
+import { Purchase, PurchaseUser } from 'types'
 
-export const PurchaseItem = ({
-  purchase,
-  deletePurchase,
-  onPurchaseSelected,
-}: {
+type PurchaseItemProps = {
   purchase: Purchase
   deletePurchase: (purchaseId: string, budgetId: string) => void
   onPurchaseSelected: (purchase: Purchase) => void
-}) => {
+  currentUser: PurchaseUser
+}
+
+const getPurchaseDiff = (purchase: Purchase, currentUser: PurchaseUser) => {
+  const benefactor = purchase.benefactors.find(b => b.user._id === currentUser._id)
+  if (!benefactor) {
+    return 0
+  }
+  if (benefactor.amountBenefitted !== 0) {
+    return benefactor.amountBenefitted * -1
+  }
+  if (benefactor.amountPaid) {
+    return benefactor.amountPaid
+  }
+  return 0
+}
+
+export const PurchaseItem = ({ currentUser, purchase, deletePurchase, onPurchaseSelected }: PurchaseItemProps) => {
   const onDeletePurchase = () => {
     /* eslint-disable */
     const duu = confirm('Sure u want delete?')
@@ -24,6 +37,8 @@ export const PurchaseItem = ({
     }
     onMenuClose()
   }
+
+  const purchaseDiff = getPurchaseDiff(purchase, currentUser)
 
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
@@ -45,19 +60,15 @@ export const PurchaseItem = ({
     <ListItem
       secondaryAction={
         <IconButton edge='end' aria-label='delete' onClick={onMenuOpen}>
-          <MoreVertIcon />
+          <MoreHorizIcon />
         </IconButton>
       }
     >
-      <ListItemAvatar>
-        <Avatar src={getPayer(purchase).picture} />
-      </ListItemAvatar>
-      <ListItemText
-        primary={purchase.description}
-        secondary={`${formatCurrency(purchase.amount)} - ${new Date(purchase.createdAt).toLocaleTimeString()} ${new Date(purchase.createdAt)
-          .toLocaleDateString()
-          .substr(0, 5)}`}
-      />
+      <ListItemIcon>
+        <Badge negative={purchaseDiff < 0}>{formatCurrency(purchaseDiff, true)}</Badge>
+        <Typography sx={{ fontWeight: '300', marginRight: '1em' }}>{purchaseNameToEmojiMapper(purchase.description)}</Typography>
+      </ListItemIcon>
+      <ListItemText sx={{ fontSize: '1.2rem', textTransform: 'capitalize', fontWeight: 800 }} primary={`${purchase.description} `} />
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}
@@ -83,3 +94,16 @@ export const PurchaseItem = ({
     </ListItem>
   )
 }
+
+const Badge = styled(Box)<{ negative: boolean }>(
+  ({ negative }) => `
+  background: #258525a8;
+  color: #fff;
+  font-weight: 500;
+  margin-right: 1em;
+  border-radius: 3px;
+  min-width: 9ch;
+  text-align: center;
+  ${negative && 'background: #d43636db;'}
+`
+)

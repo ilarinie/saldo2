@@ -1,5 +1,7 @@
 FROM node:14.16.1-alpine
 
+RUN npm install -g npm@8.8.0
+
 ENV USER=app
 
 ENV SUBDIR=appDir
@@ -9,9 +11,12 @@ WORKDIR $HOME/$SUBDIR
 EXPOSE 3001
 EXPOSE 3033
 
+
+COPY .npmrc $WORKDIR
+
 COPY package.json $WORKDIR
 COPY package-lock.json $WORKDIR
-RUN npm install --no-audit
+RUN npm ci
 
 COPY vite.config.ts $HOME/$SUBDIR/
 

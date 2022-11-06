@@ -1,13 +1,17 @@
 import { selectCurrentUser } from 'client/store/authSlice'
-import { useGetBudgetsQuery } from 'client/store/budgetApi'
+import { useLazyGetBudgetQuery } from 'client/store/budgetApi'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory, useRouteMatch } from 'react-router'
 
-export const useBudgetViewData = () => {
-  const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId')
-  const budget = useGetBudgetsQuery().data?.map[match?.params.budgetId || '']
+export const useBudgetViewData = (budgetId: string) => {
+  const [trigger, result] = useLazyGetBudgetQuery()
   const history = useHistory()
   const currentUser = useSelector(selectCurrentUser)
 
-  return { budget, history, currentUser }
+  useEffect(() => {
+    trigger(budgetId)
+  }, [])
+
+  return { budget: result.currentData, history, currentUser, trigger }
 }

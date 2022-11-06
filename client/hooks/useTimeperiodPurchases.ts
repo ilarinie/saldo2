@@ -24,10 +24,11 @@ export const useTimeperiodPurchases = (purchases: Purchase[], timeperiod: Timepe
 
   useEffect(() => {
     const filteredPurchases = filterPurchases()
+    const { total, userDiffs } = countTotals(filteredPurchases)
     setTimeperiodPurchaseData({
       timeperiodPurchases: filteredPurchases.sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
-      total: countTotals(filteredPurchases).total,
-      counts: {},
+      total: total,
+      counts: userDiffs,
     })
   }, [purchases])
 
@@ -46,13 +47,24 @@ export const useTimeperiodPurchases = (purchases: Purchase[], timeperiod: Timepe
   }
 
   const countTotals = (filteredPurchases: Purchase[]) => {
-    console.log(filteredPurchases)
-    const data = {
-      counts: {},
+    const data: {
+      total: number
+      userDiffs: {
+        [userId: string]: number
+      }
+    } = {
       total: 0,
+      userDiffs: {},
     }
     filteredPurchases.forEach(p => {
       data.total = data.total + p.amount
+      p.benefactors.forEach(b => {
+        if (!data.userDiffs[b.user._id]) {
+          data.userDiffs[b.user._id] = 0
+        }
+        data.userDiffs[b.user._id] = data.userDiffs[b.user._id] - b.amountBenefitted
+        data.userDiffs[b.user._id] = data.userDiffs[b.user._id] + b.amountPaid
+      })
     })
     return data
   }

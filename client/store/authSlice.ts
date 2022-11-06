@@ -14,7 +14,8 @@ const initialState: AuthState = {
     currentUser: {
         _id: '',
         name: '',
-        picture: ''
+        picture: '',
+        defaultBudgetId: ''
     },
     status: 'PENDING'
 }

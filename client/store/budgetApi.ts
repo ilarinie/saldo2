@@ -1,12 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Budget } from 'types'
+import { api } from './api'
 import { extractPayload } from './extractPayload'
 import { createPurchaseOptions } from './purchaseAutocompleteOptions'
 
-export const budgetApi = createApi({
-  reducerPath: 'budgetApi',
-  refetchOnFocus: true,
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+export const budgetApi = api.injectEndpoints({
   endpoints: builder => ({
     getBudgets: builder.query<{ ids: string[]; map: { [key: string]: Budget } }, void>({
       query: () => '/budgets',
@@ -28,12 +25,29 @@ export const budgetApi = createApi({
         }
       },
     }),
+    getBudget: builder.query<Budget, string>({
+      query: budgetId => `/budgets/${budgetId}`,
+      transformResponse: (response: { message: string; payload: Budget }, meta) => {
+        return response.payload
+      },
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const budgetData = await (await queryFulfilled).data
+          dispatch(createPurchaseOptions(budgetData))
+        } catch (err) {
+          console.error('Could not create purchase options')
+        }
+      },
+      providesTags: result => (result ? [{ type: 'Budget', id: result._id }] : []),
+    }),
     refreshBudget: builder.query<Budget, { budgetId: string }>({
       query: ({ budgetId }) => `/budgets/${budgetId}`,
       transformResponse: extractPayload,
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        console.log('bong')
         try {
           const budget = await (await queryFulfilled).data
+          console.log('newBudget', budget)
           dispatch(updateBudgetInCacheAction(budget))
           dispatch(createPurchaseOptions(budget))
         } catch (err) {
@@ -67,7 +81,7 @@ export const budgetApi = createApi({
   }),
 })
 
-const updateBudgetInCacheAction = (budget: Budget) =>
+export const updateBudgetInCacheAction = (budget: Budget) =>
   budgetApi.util.updateQueryData('getBudgets', undefined, state => {
     if (!state.ids.includes(budget._id)) {
       state.ids.push(budget._id)
@@ -75,6 +89,6 @@ const updateBudgetInCacheAction = (budget: Budget) =>
     state.map[budget._id] = budget
   })
 
-export const { useGetBudgetsQuery, useAddBudgetUserMutation, useAddBudgetMutation } = budgetApi
+export const { useGetBudgetQuery, useLazyGetBudgetQuery, useGetBudgetsQuery, useAddBudgetUserMutation, useAddBudgetMutation } = budgetApi
 
 export default budgetApi.reducer

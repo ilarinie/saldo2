@@ -5,6 +5,9 @@ const checkAuth = async (req, res, next) => {
   if (process.env.NODE_ENV === 'test') {
     req.user = await UserService.findOrCreateTestUser()
   }
+  if (process.env.NODE_ENV === 'development') {
+    req.user = await UserService.findOrCreateDevUser()
+  }
   if (req.user) {
     next()
   } else {

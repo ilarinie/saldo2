@@ -23,6 +23,5 @@
       "path": "../types/"
     }
   ],
-  "files": ["../server/custom.d.ts"],
   "include": ["./"]
 }

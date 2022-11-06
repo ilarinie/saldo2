@@ -27,6 +27,19 @@ const findOrCreateFromGoogleProfile = async googleProfile => {
   return user
 }
 
+const findOrCreateDevUser = async () => {
+  let user
+  user = await UserModel.findById(process.env.DEV_USER_ID)
+  if (!user) {
+    user = await UserModel.create({
+      name: 'test_user',
+      picture: 'https://asdasdasd',
+      _id: constants.TEST_USER_ID,
+    })
+  }
+  return user
+}
+
 const findOrCreateTestUser = async () => {
   let user
   user = await UserModel.findById(constants.TEST_USER_ID)
@@ -48,4 +61,4 @@ const createUserByUserName = async (username: string) => {
   return newUser
 }
 
-export { findById, findOrCreateFromGoogleProfile, findOrCreateTestUser, createUserByUserName }
+export { findOrCreateDevUser, findById, findOrCreateFromGoogleProfile, findOrCreateTestUser, createUserByUserName }
