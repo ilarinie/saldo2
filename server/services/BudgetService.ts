@@ -37,7 +37,7 @@ export namespace BudgetService {
 
   export const getBudgetById = async (budgetId, userId, requireOwner = false): Promise<Budget> => {
     try {
-      const budget: BudgetModelType = await BudgetModel.findOne(createBudgetQuery(budgetId, userId, requireOwner))
+      const budget: BudgetModelType | null = await BudgetModel.findOne(createBudgetQuery(budgetId, userId, requireOwner))
         .populate('owners')
         .populate('members')
       if (budget) {

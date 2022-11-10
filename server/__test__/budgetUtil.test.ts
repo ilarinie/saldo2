@@ -11,12 +11,14 @@ const users = [
     name: 'test_user_1',
     picture: '',
     googleProfileId: 'string',
+    defaultBudgetId: '',
   },
   {
     _id: constants.TEST_USER_ID_2,
     name: 'test_user_2',
     picture: '',
     googleProfileId: 'string',
+    defaultBudgetId: '',
   },
 ]
 
@@ -29,6 +31,7 @@ const basePurcase = {
   createdAt: '2010-00:00T00:00:00.000Z',
   updatedAt: '2010-00:00T00:00:00.000Z',
   type: 'purchase',
+  purchaseId: '',
 }
 
 describe('BudgetUtil', () => {

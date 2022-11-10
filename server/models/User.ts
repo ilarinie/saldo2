@@ -5,6 +5,7 @@ export type UserModelType = {
   name: string
   picture: string
   googleProfileId: string
+  defaultBudgetId: string
 }
 
 const UserSchema = new mongoose.Schema<UserModelType>(
