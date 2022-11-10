@@ -1,48 +1,48 @@
 version: '3.5'
 
 services:
-  saldo-backend:
-    build:
-      dockerfile: Dockerfile-server
-      context: .
-    ports:
-      - "3001:3001"
-      - "3033:3033"
-      - "9229:9229"
-    volumes:
-      - ./server:/home/app/appDir/server
-      - ./package.json:/home/app/appDir/package.json
-    environment:
-      - DEV_USER_ID=61409e603ec03c3cb2361973
-      - NODE_ENV=development
-      - MONGO_URI=mongodb://mongo/saldo-app
-      - SECRET=correcthorsebatterystaple
-      - GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-    networks:
-      - backend
-    command: npm run-script dev:run-backend
+  # saldo-backend:
+  #   build:
+  #     dockerfile: Dockerfile-server
+  #     context: .
+  #   ports:
+  #     - "3001:3001"
+  #     - "3033:3033"
+  #     - "9229:9229"
+  #   volumes:
+  #     - ./server:/home/app/appDir/server
+  #     - ./package.json:/home/app/appDir/package.json
+  #   environment:
+  #     - DEV_USER_ID=61409e603ec03c3cb2361973
+  #     - NODE_ENV=development
+  #     - MONGO_URI=mongodb://mongo/saldo-app
+  #     - SECRET=correcthorsebatterystaple
+  #     - GOOGLE_CALLBACK_URL=http://localhost:3000/api/auth/google/callback
+  #     - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+  #     - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+  #   networks:
+  #     - backend
+  #   command: npm run-script dev:run-backend
 
-  saldo-frontend:
-    build:
-      dockerfile: Dockerfile-client
-      context: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./client:/home/app/appDir/client
-      - ./package.json:/home/app/appDir/package.json
-      - ./vite.config.ts:/home/app/appDir/vite.config.ts
-      - ./types:/home/app/appDir/types
-    environment:
-      - NODE_ENV=development
-    networks:
-      - backend
-    command: npm run docker:start
+  # saldo-frontend:
+  #   build:
+  #     dockerfile: Dockerfile-client
+  #     context: .
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./client:/home/app/appDir/client
+  #     - ./package.json:/home/app/appDir/package.json
+  #     - ./vite.config.ts:/home/app/appDir/vite.config.ts
+  #     - ./types:/home/app/appDir/types
+  #   environment:
+  #     - NODE_ENV=development
+  #   networks:
+  #     - backend
+  #   command: npm run docker:start
     
   mongo:
-    image: mongo:5.0.3
+    image: mongo:6.0.2
     ports:
       - '27017-27019:27017-27019'
     networks:

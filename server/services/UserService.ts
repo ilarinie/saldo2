@@ -1,5 +1,6 @@
 import UserModel from '../models/User'
 import constants from '../__test__/constants'
+import logger from './logger'
 
 // const create = async () => {}
 
@@ -29,7 +30,9 @@ const findOrCreateFromGoogleProfile = async googleProfile => {
 
 const findOrCreateDevUser = async () => {
   let user
+
   user = await UserModel.findById(process.env.DEV_USER_ID)
+
   if (!user) {
     user = await UserModel.create({
       name: 'test_user',

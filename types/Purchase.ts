@@ -7,4 +7,5 @@ export type Purchase = {
   benefactors: import('.').Benefactor[]
   updatedAt: string
   type: string
+  purchaseId: string
 } & import('./HasCreationDate').HasCreationDate

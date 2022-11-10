@@ -27,6 +27,7 @@ export const purchaseNameToEmojiMapper = (purchaseName: string) => {
       'kalja',
       'pyynikki',
       'punk ipa',
+      'punk',
       'ale goc',
       'brown ale',
       'karhu',
@@ -34,6 +35,7 @@ export const purchaseNameToEmojiMapper = (purchaseName: string) => {
       'sandels',
       'uruquell',
       'urquell',
+      'happy',
     ])
   ) {
     return beerEmoji
@@ -59,7 +61,7 @@ export const purchaseNameToEmojiMapper = (purchaseName: string) => {
   if (includesAny(purchaseName, ['napue', 'captain morgan'])) {
     return drinkEmoji
   }
-  if (includesAny(purchaseName, ['sidu', 'bulmers', 'coke', 'happy joe', 'haze', 'hazy', 'lonkero', 'sidukka', 'thatchers'])) {
+  if (includesAny(purchaseName, ['katy', 'sidu', 'bulmers', 'coke', 'happy joe', 'haze', 'hazy', 'lonkero', 'sidukka', 'thatchers'])) {
     return siduEmoji
   }
   if (includesAny(purchaseName, ['kapten', 'ettan', 'kessu', 'nuusk', 'snuus', 'snögö', 'spaddendeeros', 'r42', 'rolls royce'])) {

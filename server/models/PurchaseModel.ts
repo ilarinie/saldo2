@@ -12,6 +12,7 @@ export type PurchaseModelType = {
   updatedAt: string
   benefactors: Array<BenefactorDocument>
   type: 'transfer' | 'purchase'
+  purchaseId: string
 }
 // Schema for purchase
 const PurchaseSchema = new mongoose.Schema<PurchaseModelType>(
@@ -29,6 +30,7 @@ const PurchaseSchema = new mongoose.Schema<PurchaseModelType>(
     ],
     createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
     type: { type: String },
+    purchaseId: { type: String, index: true },
   },
   {
     timestamps: true,

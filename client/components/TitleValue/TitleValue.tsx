@@ -1,20 +1,20 @@
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/system'
-import { formatCurrency } from 'client/utils/formatCurrency'
+import { ReactNode } from 'react'
 
 type TitleValueProps = {
   first: string
-  value: string
+  children: ReactNode
   second: string
 }
 
-export const TitleValue = ({ first, value, second }: TitleValueProps) => {
+export const TitleValue = ({ first, children, second }: TitleValueProps) => {
   return <TitleValueContainer>
     <TitleContainer>
       <Typography>{first}</Typography>
     </TitleContainer>
     <ValueContainer>
-      <Typography>{value}</Typography>
+      {children}
     </ValueContainer>
     <TitleContainer>
       <Typography>{second}</Typography>

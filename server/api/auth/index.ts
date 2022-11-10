@@ -1,6 +1,7 @@
 import { Express } from 'express'
 import passport from 'passport'
 import checkAuth from 'server/middlewares/checkAuth'
+import logger from 'server/services/logger'
 import type { Handler } from './Handler'
 
 
@@ -20,7 +21,7 @@ namespace AuthController {
     },
   ]
   export const logout: Handler = (req, res) => {
-    req.logout()
+    req.logout((err) => logger.error(JSON.stringify(err, null, 2)))
     res.redirect('/')
   }
   export const checkLogin: Handler = (req, res) => {

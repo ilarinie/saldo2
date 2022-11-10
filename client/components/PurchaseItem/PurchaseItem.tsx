@@ -65,7 +65,7 @@ export const PurchaseItem = ({ currentUser, purchase, deletePurchase, onPurchase
       }
     >
       <ListItemIcon>
-        <Badge negative={purchaseDiff < 0}>{formatCurrency(purchaseDiff, true)}</Badge>
+        <Badge negative={String(purchaseDiff < 0)}>{formatCurrency(purchaseDiff, true)}</Badge>
         <Typography sx={{ fontWeight: '300', marginRight: '1em' }}>{purchaseNameToEmojiMapper(purchase.description)}</Typography>
       </ListItemIcon>
       <ListItemText sx={{ fontSize: '1.2rem', textTransform: 'capitalize', fontWeight: 800 }} primary={`${purchase.description} `} />
@@ -95,7 +95,7 @@ export const PurchaseItem = ({ currentUser, purchase, deletePurchase, onPurchase
   )
 }
 
-const Badge = styled(Box)<{ negative: boolean }>(
+const Badge = styled(Box)<{ negative: string }>(
   ({ negative }) => `
   background: #258525a8;
   color: #fff;
@@ -104,6 +104,6 @@ const Badge = styled(Box)<{ negative: boolean }>(
   border-radius: 3px;
   min-width: 9ch;
   text-align: center;
-  ${negative && 'background: #d43636db;'}
+  ${negative === 'true' && 'background: #d43636db;'}
 `
 )

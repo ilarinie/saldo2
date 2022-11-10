@@ -14,13 +14,12 @@ const getTransports = () => {
     return [
       new winston.transports.Console({ format: consoleFormat }),
       new winston.transports.File({ filename: 'app.log', format: fileFormat }),
-      new winston.transports.MongoDB({ db: process.env.MONGO_URI as string, options: { useUnifiedTopoplogy: true } }),
+      new winston.transports.MongoDB({ db: process.env.MONGO_URI as string, options: {} }),
     ]
   } else {
     return [
       new winston.transports.Console({ format: consoleFormat }),
       new winston.transports.File({ filename: 'dev.log', format: fileFormat }),
-      new winston.transports.MongoDB({ db: process.env.MONGO_URI as string, options: { useUnifiedTopoplogy: true } }),
     ]
   }
 }
@@ -34,7 +33,7 @@ const consoleFormat = winston.format.combine(
         log.level,
         `${new Date(log.timestamp).toDateString()} ${new Date(log.timestamp).toLocaleTimeString('fi-FI', { hour12: false })} [ ${
           log.level
-        } ]\t${log.message}`
+        } ]\t${log.message} ${log.metadata ? JSON.stringify(log.metadata, null, 2) : ''}`
       )
   })
 )

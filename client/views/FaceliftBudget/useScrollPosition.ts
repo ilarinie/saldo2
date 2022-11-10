@@ -7,13 +7,13 @@ export const useScrollPosition = () => {
     setScrollPosition(position)
   }
 
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll, { passive: true })
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll)
-  //   }
-  // }, [])
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
-  return 0
+  return scrollPosition
 }

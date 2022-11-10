@@ -4,11 +4,13 @@ import authReducer from './authSlice'
 import { budgetApi } from './budgetApi'
 import { purchaseApi } from './purchaseApi'
 import purchaseAutocompleteOptionsReducer from './purchaseAutocompleteOptions'
+import { toastReducer } from './toastSlice'
 
 export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     auth: authReducer,
+    toast: toastReducer,
     purchaseAutocompleteOptions: purchaseAutocompleteOptionsReducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware().concat([purchaseApi.middleware, budgetApi.middleware]),

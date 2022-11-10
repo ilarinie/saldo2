@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export const usePurchaseValidation = (amount: any, description: any) => {
   const [validation, setValidation] = useState({
@@ -14,14 +14,19 @@ export const usePurchaseValidation = (amount: any, description: any) => {
     },
   })
   const [isInvalidInputs, setIsInvalidInputs] = useState(false)
-  const didMountRef = useRef(false)
 
   useEffect(() => {
-    if (didMountRef.current) return doValidate()
-    else didMountRef.current = true
+    doValidate()
   }, [amount, description])
 
+  const allValuesEmpty = () => {
+    return (!description || description === '') && (!amount || amount === '')
+  }
+
   const doValidate = () => {
+    if (allValuesEmpty()) {
+      return resetValidation()
+    }
     const isValidAmount = amount !== '' && amount !== undefined
     const isValidDescription = description !== '' && description !== undefined && typeof description === 'string'
     setValidation({
@@ -39,5 +44,21 @@ export const usePurchaseValidation = (amount: any, description: any) => {
     setIsInvalidInputs(!isValidAmount || !isValidDescription)
   }
 
-  return { validationResult: validation, isInvalidInputs }
+  const resetValidation = () => {
+    setIsInvalidInputs(false)
+    setValidation({
+      description: {
+        isTouched: false,
+        isValid: true,
+        error: '',
+      },
+      amount: {
+        isTouched: false,
+        isValid: true,
+        error: '',
+      },
+    })
+  }
+
+  return { validationResult: validation, isInvalidInputs, resetValidation }
 }

@@ -6,14 +6,21 @@ import { CssBaseline } from '@mui/material'
 import { ThemeProvider } from '@mui/system'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
+
 import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import App from './App'
 import './index.css'
 import { store } from './store/store'
 import { theme } from './theme/index'
+import { WebsocketService } from './websocket-service'
 
-ReactDOM.render(
+const ws = new WebsocketService()
+
+const root = createRoot(document.getElementById('root') as HTMLElement)
+
+root.render(
   <StrictMode>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -23,8 +30,7 @@ ReactDOM.render(
         </Router>
       </ThemeProvider>
     </Provider>
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 )
 
 // If you want to start measuring performance in your app, pass a function

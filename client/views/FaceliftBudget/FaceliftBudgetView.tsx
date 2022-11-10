@@ -11,14 +11,26 @@ import { useGetBudgetQuery } from 'client/store/budgetApi'
 import { useSelector } from 'react-redux'
 import { useRouteMatch } from 'react-router'
 import { selectCurrentUser } from 'client/store/authSlice'
-import { formatCurrency } from 'client/utils/formatCurrency'
-import { useScrollPosition } from './useScrollPosition'
+import { useCreatePurchaseMutation } from 'client/store/purchaseApi'
+import { Purchase } from 'types'
+import { v4 } from 'uuid'
 
 export const FaceliftBudgetView = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const match = useRouteMatch<{ budgetId: string }>('/budgets/:budgetId')
-  const { data: budget } = useGetBudgetQuery(match?.params.budgetId || '')
+  const { currentData: budget } = useGetBudgetQuery(match?.params.budgetId || '')
+  const [createPurchase] = useCreatePurchaseMutation()
+
   const currentUser = useSelector(selectCurrentUser)
+
+  const onCloseCreateModal = (purchase?: Partial<Purchase>) => {
+    const purchaseId = v4()
+    console.log('foppa', purchaseId)
+    if (purchase) {
+      createPurchase({ ...purchase, purchaseId })
+    }
+    setModalOpen(false)
+  }
 
   const { update } = useCountUp({
     ref: 'foo',
@@ -31,46 +43,74 @@ export const FaceliftBudgetView = () => {
     useEasing: true,
   })
 
-  const { counts: dailyCounts } = useTimeperiodPurchases(budget?.purchases ?? [], Timeperiod.TODAY)
-  const { total: monthlyTotal, counts: monthlyCounts } = useTimeperiodPurchases(budget?.purchases ?? [], Timeperiod.THIS_MONTH)
+  const { update: updateDailyTotal } = useCountUp({
+    ref: 'faa',
+    start: 0,
+    end: 0,
+    startOnMount: true,
+    decimal: ',',
+    decimals: 2,
+    decimalPlaces: 2,
+    useEasing: true,
+  })
+
+  const { update: updateMonthlyTotal } = useCountUp({
+    ref: 'fii',
+    start: 0,
+    end: 0,
+    startOnMount: true,
+    decimal: ',',
+    decimals: 2,
+    decimalPlaces: 2,
+    useEasing: true,
+  })
+
+  const { counts: dailyCounts } = useTimeperiodPurchases(budget?.purchases ?? [], Timeperiod.TODAY, (userDiffs: any) => {
+    updateDailyTotal(userDiffs[currentUser._id] ?? 0)
+  })
+  const { counts: monthlyCounts } = useTimeperiodPurchases(budget?.purchases ?? [], Timeperiod.THIS_MONTH, (userDiffs: any) => {
+    updateMonthlyTotal(userDiffs[currentUser._id] ?? 0)
+  })
 
   useEffect(() => {
     update(budget?.totals.find(t => t.user._id === currentUser._id)?.diff || 0)
   }, [budget?.total])
 
-  const scrollPosition = useScrollPosition()
-
   return (
-    <BudgetContainer onScroll={event => console.log(event)}>
+    <BudgetContainer>
       <>
         <Cont sx={{ marginTop: '10px' }} onClick={() => setModalOpen(true)}>
           +
         </Cont>
-        <Cont2 onClick={() => scroll.scrollToTop()}>{scrollPosition > 75 && <KeyboardArrowUpIcon sx={{ marginTop: '10px' }} />}</Cont2>
+        <Cont2 onClick={() => scroll.scrollToTop({ duration: 500 })}>
+          <KeyboardArrowUpIcon sx={{ marginTop: '10px' }} />
+        </Cont2>
         <SumContainer>
-          <SumContents isOnTop={scrollPosition < 75}>
+          <SumContents isontop='true'>
             <div id='foo' />€
           </SumContents>
         </SumContainer>
         <RestContainer>
+          <ValuesContainer>
+            <TitleValue second='today' first={dailyCounts[currentUser._id] < 0 ? 'down' : 'up'}>
+              <div id='faa' />
+            </TitleValue>
+            <TitleValue second='last 30d' first={monthlyCounts[currentUser._id] < 0 ? 'down' : 'up'}>
+              <div id='fii' />
+            </TitleValue>
+          </ValuesContainer>
+
           {budget ? (
             <>
-              <ValuesContainer>
-                <TitleValue
-                  second='today'
-                  first={dailyCounts[currentUser._id] < 0 ? 'down' : 'up'}
-                  value={formatCurrency(dailyCounts[currentUser._id])}
-                />
-                <TitleValue
-                  second='this month'
-                  first={monthlyCounts[currentUser._id] < 0 ? 'down' : 'up'}
-                  value={formatCurrency(monthlyCounts[currentUser._id])}
-                />
-              </ValuesContainer>
               <ListContainer>
-                <PurchaseList currentUser={currentUser} budget={budget} />
+                <PurchaseList currentUser={currentUser} budget={budget} limit={20} />
               </ListContainer>
-              <CreateModal modalOpen={modalOpen} onClose={() => setModalOpen(false)} budget={budget} currentUser={currentUser} />
+              <CreateModal
+                modalOpen={modalOpen}
+                onClose={purchase => onCloseCreateModal(purchase)}
+                budget={budget}
+                currentUser={currentUser}
+              />
             </>
           ) : (
             <div style={{ height: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -82,6 +122,22 @@ export const FaceliftBudgetView = () => {
     </BudgetContainer>
   )
 }
+
+const LoadingOverlay = styled(Box)`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(5px);
+  flex-direction: column;
+  font-size: 0.5rem;
+  z-index: 10;
+`
 
 const Cont = styled(Box)`
   position: fixed;
@@ -101,15 +157,15 @@ const BudgetContainer = styled(Box)`
   display: flex;
   flex-direction: column;
 `
-const SumContents = styled(Box)<{ isOnTop: boolean }>(
-  ({ theme, isOnTop }) => `
+const SumContents = styled(Box)<{ isontop: string }>(
+  ({ theme, isontop }) => `
   z-index: 1;
-  transition: 0.1s linear;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  ${!isOnTop && 'font-size: 1rem; height: 75px; translate: scale(0.33);'}
+  min-height: 90px;
+  ${isontop !== 'true' && 'font-size: 1rem; height: 75px; translate: scale(0.33);'}
 `
 )
 
@@ -124,7 +180,7 @@ const SumContainer = styled(Box)(
   width: 100vw;
   z-index: 1;
   background: ${theme.palette.background.default};
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 300;
 `
 )

@@ -1,4 +1,6 @@
-FROM node:14.16.1-alpine
+FROM node:18.12.0-alpine
+
+RUN npm install -g npm@8.8.0
 
 ENV USER=app
 
@@ -9,9 +11,11 @@ WORKDIR $HOME/$SUBDIR
 EXPOSE 3001
 EXPOSE 3033
 
+COPY .npmrc ./
+
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install --no-audit
+RUN npm ci
 
 COPY ./server $HOME/$SUBDIR/server
 

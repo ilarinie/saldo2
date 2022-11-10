@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import envCompatible from 'vite-plugin-env-compatible'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -9,19 +8,16 @@ export default defineConfig({
     outDir: '../build',
     sourcemap: true,
   },
-  esbuild: {
-    loader: 'tsx',
-    exclude: '*.test.js',
-    target: '',
-  },
-  plugins: [
-    react(),
-    tsconfigPaths(),
-  ],
+  plugins: [react(), tsconfigPaths()],
+  assetsInclude: ['assets'],
   server: {
+    port: 3000,
     proxy: {
+      '/ws': {
+        target: 'http://localhost:3033/ws',
+      },
       '/api': {
-        target: 'http://saldo-backend:3033',
+        target: 'http://localhost:3033',
         changeOrigin: false,
       },
     },

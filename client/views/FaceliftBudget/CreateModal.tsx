@@ -5,36 +5,38 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Dialog,
   InputAdornment,
   Modal,
+  Slide,
   styled,
   TextField,
   Typography,
 } from '@mui/material'
 import { UserSelector } from 'client/components/UserSelector/UserSelector'
-import { useCreatePurchaseMutation } from 'client/store/purchaseApi'
 import { selectPurchaseAutocompletionOptions } from 'client/store/purchaseAutocompleteOptions'
 import currency from 'currency.js'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, forwardRef } from 'react'
 import { useSelector } from 'react-redux'
-import { Benefactor, Budget, PurchaseUser } from 'types'
+import { TransitionProps } from 'react-transition-group/Transition'
+import { Benefactor, Budget, Purchase, PurchaseUser } from 'types'
 import { initBenefactors } from '../AddPurchase/initBenefactors'
 import { usePurchaseValidation } from '../AddPurchase/usePurchaseValidation'
 
 interface CreateModalProps {
   modalOpen: boolean
-  onClose: (props?: { originalDiff: number; newDiff: number }) => void
+  onClose: (purchase?: Partial<Purchase>) => void
   budget: Budget
   currentUser: PurchaseUser
 }
 
 const style = {
+  // top: '25%',
   bottom: '0',
-  top: '0',
   left: '0px',
   right: '0px',
   width: '100%',
-  height: '100%',
+  height: '480px',
   boxShadow: 24,
   p: 4,
 }
@@ -42,6 +44,15 @@ const style = {
 const StyledTextField = styled(TextField)`
   width: 100%;
 `
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction='up' ref={ref} {...props} />
+})
 
 export const CreateModal = (props: CreateModalProps) => {
   const { budget } = props
@@ -66,29 +77,27 @@ export const CreateModal = (props: CreateModalProps) => {
     setBenefactors(initBenefactors(defaultBenefactorParams()))
   }, [selectedPayerId])
 
-  const [createPurchase] = useCreatePurchaseMutation()
-
-  const onClose = () => {
+  const onClose = (purchase?: Partial<Purchase>) => {
+    props.onClose(purchase)
     setSelectedPayerId(props.currentUser._id as string)
     setAmount('' as '' | number)
     setDescription('')
-    props.onClose()
+    resetValidation()
   }
 
-  const { validationResult: validation, isInvalidInputs } = usePurchaseValidation(amount, description)
+  const { validationResult: validation, isInvalidInputs, resetValidation } = usePurchaseValidation(amount, description)
 
   const onSave = async () => {
     if (isInvalidInputs) {
       return
     }
-    await createPurchase({
+    onClose({
       amount: amount as number,
       description,
       budgetId: budget?._id,
       benefactors,
       type: 'purchase',
     })
-    props.onClose()
   }
   const onChange = (event: any, newValue: any) => {
     if (!newValue) {
@@ -105,8 +114,8 @@ export const CreateModal = (props: CreateModalProps) => {
   }
 
   return (
-    <Modal open={props.modalOpen} onClose={() => onClose()}>
-      <Card sx={{ ...style, position: 'absolute' }}>
+    <Dialog open={props.modalOpen} onClose={() => onClose()} TransitionComponent={Transition}>
+      <Card sx={{ padding: '1em' }}>
         <CardHeader titleTypographyProps={{ sx: { fontFamily: 'LogoFont' } }} title='Add purchase' />
         <CardContent>
           <Autocomplete
@@ -127,6 +136,7 @@ export const CreateModal = (props: CreateModalProps) => {
                 label='Description'
                 error={!validation.description.isValid}
                 helperText={validation.description.error}
+                variant='outlined'
               />
             )}
           />
@@ -134,6 +144,7 @@ export const CreateModal = (props: CreateModalProps) => {
             sx={{
               marginTop: '1em',
             }}
+            variant='outlined'
             type='number'
             label='Amount'
             value={amount}
@@ -174,6 +185,6 @@ export const CreateModal = (props: CreateModalProps) => {
           </Button>
         </CardActions>
       </Card>
-    </Modal>
+    </Dialog>
   )
 }

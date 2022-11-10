@@ -1,23 +1,25 @@
-import { Container } from '@mui/material'
+import { Alert, Snackbar } from '@mui/material'
 import { useEffect, useState } from 'react'
 import Div100vh from 'react-div-100vh'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Route, Switch, useHistory } from 'react-router'
-import { AppBar, SideBar } from './components'
 import { useCheckLoginStatus } from './hooks/useCheckLoginStatus'
 import { selectCurrentUser } from './store/authSlice'
-import { AddBudget } from './views/AddBudget/AddBudget'
-import { AddBudgetUser } from './views/AddBudgetUser/AddBudgetUser'
-import { BudgetDetailsContainer } from './views/BudgetDetails/BudgetDetailsContainer'
-import { Dashboard } from './views/Dashboard/Dashboard'
+import { RootState } from './store/store'
+import { closeToast } from './store/toastSlice'
 import { FaceliftBudgetView } from './views/FaceliftBudget/FaceliftBudgetView'
 import LoginView from './views/Login'
-import { UserSettings } from './views/UserSettings/UserSettings'
 
 export const App = () => {
   const loginStatus = useCheckLoginStatus()
   const currentUser = useSelector(selectCurrentUser)
   const history = useHistory()
+  const toastState = useSelector((state: RootState) => state.toast)
+  const dispatch = useDispatch()
+
+  const onCloseToast = () => {
+    dispatch(closeToast())
+  }
 
   const [drawerOpen, setDrawerOpen] = useState(false)
   // const { settings } = useLocalStorageUserSettings()
@@ -33,31 +35,30 @@ export const App = () => {
     }
   }, [loginStatus])
 
-  const renderMainView = () => (
-    <>
-      <Container maxWidth='lg'>
-        <AppBar setDrawerOpen={setDrawerOpen} isDrawerOpen={drawerOpen} currentUser={currentUser} />
-      </Container>
-      <Container maxWidth='lg' sx={{ height: 'calc(100% - 54px)' }}>
-        <SideBar drawerOpen={drawerOpen} doNavigate={doNavigate} setDrawerOpen={setDrawerOpen} />
-        <Switch>
-          <Route exact path='/' component={Dashboard} />
-          <Route path='/addbudget' component={AddBudget} />
-          <Route exact path='/budgets/:budgetId/adduser' component={AddBudgetUser} />
-          <Route path='/budgets/:budgetId' component={BudgetDetailsContainer} />
-          <Route path='/settings' component={UserSettings} />
-        </Switch>
-      </Container>
-    </>
-  )
+  // const renderMainView = () => (
+  //   <>
+  //     <Container maxWidth='lg'>
+  //       <AppBar setDrawerOpen={setDrawerOpen} isDrawerOpen={drawerOpen} currentUser={currentUser} />
+  //     </Container>
+  //     <Container maxWidth='lg' sx={{ height: 'calc(100% - 54px)' }}>
+  //       <SideBar drawerOpen={drawerOpen} doNavigate={doNavigate} setDrawerOpen={setDrawerOpen} />
+  //       <Switch>
+  //         <Route exact path='/' component={Dashboard} />
+  //         <Route path='/addbudget' component={AddBudget} />
+  //         <Route exact path='/budgets/:budgetId/adduser' component={AddBudgetUser} />
+  //         <Route path='/budgets/:budgetId' component={BudgetDetailsContainer} />
+  //         <Route path='/settings' component={UserSettings} />
+  //       </Switch>
+  //     </Container>
+  //   </>
+  // )
   return (
     <Div100vh>
-      {/* <Snackbar
-        open={rootState.snackBarOpen}
-        autoHideDuration={6000}
-        onClose={rootState.closeSnackbar}
-        message={rootState.snackBarMessage.message}
-      /> */}
+      <Snackbar open={toastState.isOpen} autoHideDuration={6000} onClose={onCloseToast}>
+        <Alert onClose={onCloseToast} severity={toastState.type} sx={{ width: '100%' }}>
+          {toastState.message}
+        </Alert>
+      </Snackbar>
       {loginStatus !== 'LOGGED_IN' && <LoginView />}
       {loginStatus === 'LOGGED_IN' && (
         <>
