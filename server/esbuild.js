@@ -11,10 +11,10 @@ esbuild.build({
   minify: false,
   platform: 'node',
   sourcemap: true,
-  target: 'node12',
+  target: 'node14',
   loader: {
     '.ts': 'ts'
   },
   tsconfig: './server/tsconfig.json',
-  plugins: [nodeExternalsPlugin()]
-}).catch(() => process.exit(1))
+  plugins: [nodeExternalsPlugin()],
+}).then(() => console.log('joo?')).catch(() => process.exit(1))

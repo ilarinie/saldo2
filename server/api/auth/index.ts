@@ -1,7 +1,7 @@
 import { Express } from 'express'
 import passport from 'passport'
-import checkAuth from 'server/middlewares/checkAuth'
-import logger from 'server/services/logger'
+import checkAuth from '../../middlewares/checkAuth'
+import logger from '../../services/logger'
 import type { Handler } from './Handler'
 
 

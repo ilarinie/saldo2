@@ -12,6 +12,19 @@ if (fs.existsSync('./dist')) {
   fse.removeSync('./dist')
 }
 
-childProcess.execSync('npx tsc --build types/tsconfig.json && npx tsc --noEmit --project server/tsconfig.json && node server/esbuild.js && npx vite build', { stdio: 'inherit' })
+const main = async () => {
+const { execa } = await import('execa')
+childProcess.execSync('npm list esbuild', { stdio: 'inherit'})
 
-fse.moveSync('./build', './dist/public', { overwrite: true })
+  console.log('building server')
+  childProcess.execSync('npx tsc -p server/tsconfig.json', { stdio: 'inherit'})
+  console.log('server built')
+  console.log('building client')
+  childProcess.execSync('npx vite build', { stdio: 'inherit'})
+  console.log('client built')
+  fse.moveSync('./build', './dist/public', { overwrite: true })
+
+}
+
+main()
+

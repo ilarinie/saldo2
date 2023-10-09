@@ -16,7 +16,7 @@ import { store } from './store/store'
 import { theme } from './theme/index'
 import { WebsocketService } from './websocket-service'
 
-const ws = new WebsocketService()
+// const ws = new WebsocketService()
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
 

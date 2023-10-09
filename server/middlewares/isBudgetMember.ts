@@ -1,7 +1,7 @@
 import { checkSchema, Schema } from "express-validator"
 import { Middleware } from "express-validator/src/base"
 import { Types } from "mongoose"
-import { BudgetService } from 'server/services/BudgetService'
+import { BudgetService } from '../services/BudgetService'
 import { handleValidationError } from "./handleValidationError"
 
 const BudgetIdSchema: Schema = {
